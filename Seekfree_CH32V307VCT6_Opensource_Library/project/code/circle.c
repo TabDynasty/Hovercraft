@@ -23,13 +23,13 @@ void check_Right_Circle();
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
-void check_Lcircle_Lgarage()
+void check_Lcircle()
 {
     if(circle_type == CIRCLE_NONE &&garage_type==GARAGE_NONE && Lpt0_found && !Lpt1_found && is_straight1&&Lpt0_rpts0s_id<25)//左边长直道，右边近角点
     {
-        circle_garage_type=1;
+        circle_type=1;
     }
-    if(circle_garage_type==1)//车库圆环共同标志
+    if(circle_type==1)
     {
             check_Left_Cross();
             if(far_conf0_max<20&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过20，但判断太过严格，容易判不到
@@ -38,11 +38,8 @@ void check_Lcircle_Lgarage()
             aim_distance=380;
             none_right_line = 0;
             have_right_line = 0;
-          }else if(far_conf0_max>75)//车库标志，远线有角点，大于75，可以修改
-          {
-              garage_type=GARAGE_FOUND_LEFT;
           }
-            circle_garage_type=0;
+            circle_type=0;
     }
 }
 
@@ -52,14 +49,14 @@ void check_Lcircle_Lgarage()
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
-void check_Rcircle_Rgarage()
+void check_Rcircle()
 {
     if (circle_type == CIRCLE_NONE &&garage_type==GARAGE_NONE&& Lpt1_found && is_straight0&&Lpt1_rpts1s_id<40) //左边长直道，右边近角点
     {
-        circle_garage_type=1;
+        circle_type=1;
 
     }
-    if(circle_garage_type==1)//车库圆环共同标志
+    if(circle_type==1)
        {
             check_Right_Cross();//搜远线
             if(far_conf1_max<40&&far_conf1_max>0)//圆环标志，远线是弧线，角度最大不超过20，但判断太过严格，容易判不到
@@ -68,9 +65,6 @@ void check_Rcircle_Rgarage()
             none_right_line = 0;
             have_right_line = 0;
 
-            }else if(far_conf1_max>60)//车库标志，远线有角点，大于75，可以修改
-            {
-                garage_type=GARAGE_FOUND_RIGHT;
             }
             circle_garage_type=0;
 //                        if(c_g_ciecleflag==0)
@@ -91,10 +85,10 @@ void check_Rcircle_Rgarage()
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
-void check_circle_garage()
+void check_circle()
 {
-    check_Lcircle_Lgarage();
-    check_Rcircle_Rgarage();
+    check_Lcircle();
+    check_Rcircle();
 }
 
 /******************************************************************************
@@ -122,7 +116,7 @@ void run_Lcircle()
             case CIRCLE_LEFT_IN:
                 track_type = TRACK_LEFT;
                 if(rpts1s_num < 0.2 / sample_dist)none_right_line++;
-                if(none_right_line>3)//调整none——line可以改变响应时间
+                if(none_right_line>3)//调整none_line可以改变响应时间
                 {
                     check_Right_Cross();
                     farline_type=1;//切寻远线
@@ -198,7 +192,7 @@ void run_Rcircle()
 
                 //if(rpts0s_num < 0.2 / sample_dist) none_left_line++;
 
-                if(far_Lpt1_found&&ipts1_num<20)//调整none——line可以改变响应时间
+                if(far_Lpt1_found&&ipts1_num<20)//调整none_line可以改变响应时间
                 {
                     check_Left_Cross();
                     Integral_vel_flag=1;

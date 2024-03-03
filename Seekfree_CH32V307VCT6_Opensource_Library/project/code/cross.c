@@ -166,7 +166,7 @@ void run_Cross()
 }
 /******************************************************************************
 * FunctionName   : check_Left_Cross()
-* Description    : 十字,圆环，车库左远线的处理
+* Description    : 十字,圆环左远线的处理
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
@@ -175,7 +175,7 @@ void check_Left_Cross()
     //以下是寻找起始点
 
     //十字情况
-    if(Lpt0_found&&garage_type==GARAGE_NONE)//左近L角点找到,则向左上上偏移作为寻找原线的起始点,并且不是车库，防止入左车库时识别到斑马线有L角点
+    if(Lpt0_found)//左近L角点找到,则向左上上偏移作为寻找原线的起始点
     {
          inv_Lpt0[0]=Cal_inv_rot_x(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
          inv_Lpt0[1]=Cal_inv_rot_y(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
@@ -186,19 +186,18 @@ void check_Left_Cross()
          far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))-5;//偏移是为了防止还在黑线处
 
     }
-    if(circle_type==CIRCLE_RIGHT_IN||garage_type==GARAGE_FOUND_RIGHT)
+    if(circle_type==CIRCLE_RIGHT_IN)
     {
         if(far_Lpt1_found){
         inv_far_Lpt1[0]=Cal_inv_rot_x((far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][0]),far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][1]);
         inv_far_Lpt1[1]=Cal_inv_rot_y((far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][0]),far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][1]);
-       //将寻到的右远线的L角点向右下偏移30后当成左远线的起始点，此时可寻左远线入环，入车库
+       //将寻到的右远线的L角点向右下偏移30后当成左远线的起始点，此时可寻左远线入环
         far_x0=round(inv_far_Lpt1[0])+20;
         far_y0=round(inv_far_Lpt1[1])+10;
         }else{
             far_x0=40;
             far_y0=100;
         }
-
     }
 
 
@@ -259,7 +258,7 @@ void check_Left_Cross()
     nms_angle(far_rpts0a, far_rpts0a_num, far_rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);
     far_rpts0an_num = far_rpts0a_num;
     find_far_L0();
-    if(circle_garage_type==0)
+    if(circle_type==0)
         {
         if(cross_type!=CROSS_NONE)
         {
@@ -275,14 +274,14 @@ void check_Left_Cross()
 
 /******************************************************************************
 * FunctionName   : check_Right_Cross()
-* Description    : 十字，圆环，车库右远线的处理
+* Description    : 十字，圆环右远线的处理
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
 void check_Right_Cross()
 {
     //以下是寻找远线起始点
-    if(Lpt1_found&&garage_type==GARAGE_NONE)//右近L角点找到,则向右上偏移作为寻找原线的起始点,并且不是车库，防止入右车库时识别到斑马线有L角点
+    if(Lpt1_found)//右近L角点找到,则向右上偏移作为寻找原线的起始点
     {
         inv_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
         inv_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
@@ -292,7 +291,8 @@ void check_Right_Cross()
 
         far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+4;
         far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-5;//偏移是为了防止还在黑线处
-    }else if(circle_type==CIRCLE_RIGHT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
+    }
+    else if(circle_type==CIRCLE_RIGHT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
     {
         if(ipts1_num<8){//右线太少，则固定点
             far_x1=160;
@@ -301,24 +301,8 @@ void check_Right_Cross()
         far_x1=round(ipts1[ipts1_num-5][0]);
         far_y1=round(ipts1[ipts1_num-5][1])-3;//减3向上做一定的偏移
         }
-    }else if(garage_type==GARAGE_FOUND_RIGHT)//进车库
-    {
-        if(Lpt1_found==0)//L角点没找到，固定点寻线
-        {
-            far_x1=160;
-            far_y1=70;
-        }else{//有L角点，一般方法
-        inv_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
-        inv_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
-
-        inv_Back_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
-        inv_Back_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
-
-
-        far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+4;
-        far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-5;//偏移是为了防止还在黑线处
-        }
     }
+
 
     if(far_y1-far_ipts1[0][1]<5)
     {
@@ -366,7 +350,7 @@ void check_Right_Cross()
 
     find_far_L1();
 
-    if(circle_garage_type==0)//防止寻到远线，中线会出问题
+    if(circle_type==0)//防止寻到远线，中线会出问题
      {
      track_rightline(far_rpts1s + far_Lpt1_rpts1s_id, far_rpts1s_num - far_Lpt1_rpts1s_id, far_rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
      far_rptsc1_num = far_rpts1s_num- far_Lpt1_rpts1s_id;

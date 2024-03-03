@@ -16,6 +16,6 @@ enum circle_type_e {
     CIRCLE_LEFT_OUT, CIRCLE_RIGHT_OUT,
     CIRCLE_LEFT_END, CIRCLE_RIGHT_END,
 };
-void check_circle_garage();
+void check_circle();
 extern enum circle_type_e circle_type;
 #endif /* CIRCLE_H_ */

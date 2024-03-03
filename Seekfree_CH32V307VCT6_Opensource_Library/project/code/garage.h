@@ -7,8 +7,8 @@
 /*================================== 枚举=====================================*/
 enum garage_type_e {
     GARAGE_NONE = 0,                        // 非车库模式
-    GARAGE_FOUND_LEFT, GARAGE_FOUND_RIGHT,  // 发现车库，即斑马线+单侧L角点(未使用)
-    GARAGE_OUT_LEFT, GARAGE_OUT_RIGHT,      // 出库，陀螺仪转过45°，即出库完毕
+    GARAGE_FOUND = 1,  // 发现车库，即斑马线
+    GARAGE_OUT =2,      // 出库
 };
 extern enum garage_type_e garage_type;
 void run_garage();

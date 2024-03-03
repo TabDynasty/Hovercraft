@@ -7,14 +7,10 @@
 #include "Motor.h"
 #include "zf_common_headfile.h"
 enum garage_type_e garage_type = GARAGE_NONE;
-void run_garage(){
-    if(garage_type==GARAGE_FOUND_LEFT)
-    {
-        track_type=TRACK_LEFT;
-        Integral_vel_flag=1;
-    }
 
-    if(garage_type==GARAGE_OUT_RIGHT)//出车库固定打角
+void run_garage()
+{
+    if(garage_type==GARAGE_OUT)//出车库
     {
         Integral_vel_flag=1;
         if(total_distance>2500)
@@ -23,18 +19,11 @@ void run_garage(){
             Integral_vel_flag=0;
         }
     }
-    if(garage_type==GARAGE_FOUND_RIGHT)//入右车库，先寻右近线
+    if(garage_type==GARAGE_FOUND)//停车
     {
-        track_type=TRACK_RIGHT;
-        check_Right_Cross();
-        if(Lpt1_found==0)
-        {
-            farline_type=1;
-            check_Left_Cross();
-            Integral_vel_flag=1;
 
+        Integral_vel_flag=1;
 
-        }
     }
 
 }
