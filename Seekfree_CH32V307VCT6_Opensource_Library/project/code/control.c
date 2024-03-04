@@ -54,36 +54,41 @@ void control_Init()
     if(cross_type!=CROSS_NONE)
         run_Cross();
     if(circle_type!=CIRCLE_NONE)
-        {
-            run_Lcircle();
-            run_Rcircle();
-        }
+    {
+        run_Lcircle();
+        run_Rcircle();
+    }
+    if(obstacle_type!=OBSTACLE_NONE)
+    {
+        run_Lobstacle();
+        run_Robstacle();
+    }
     if(cross_type==CROSS_IN)//近十字，切寻远线
-       {
-           if (track_type == TRACK_LEFT){
-               rpts = far_rptsc0;
-               rpts_num = far_rptsc0_num;
-           }
-           else {
-               rpts = far_rptsc1;
-               rpts_num = far_rptsc1_num;
-           }
+    {
+        if (track_type == TRACK_LEFT){
+            rpts = far_rptsc0;
+            rpts_num = far_rptsc0_num;
+        }
+        else {
+            rpts = far_rptsc1;
+            rpts_num = far_rptsc1_num;
+        }
+    }
+    else if ((circle_type==CIRCLE_RIGHT_IN)&&farline_type==1)//入圆环，切特殊远线
+    {
+        rpts = far_rptsc0;
+        rpts_num = far_rptsc0_num;
+    }
+    else{//正常寻左右线,左障碍寻左线，右障碍寻右线
+       if (track_type == TRACK_LEFT){
+           rpts = rptsc0;
+           rpts_num = rptsc0_num;
        }
-       else if ((circle_type==CIRCLE_RIGHT_IN)&&farline_type==1)//入圆环，切特殊远线
-           {
-               rpts = far_rptsc0;
-               rpts_num = far_rptsc0_num;
-           }
-       else{//正常寻左右线
-             if (track_type == TRACK_LEFT){
-                  rpts = rptsc0;
-                  rpts_num = rptsc0_num;
-               }
-              else {
-                  rpts = rptsc1;
-                  rpts_num = rptsc1_num;
-              }
-           }
+       else {
+           rpts = rptsc1;
+           rpts_num = rptsc1_num;
+       }
+    }
 
        float H_zoom = 0.95f;
        float Half_width = MT9V03X_W/2;
@@ -107,8 +112,9 @@ void control_Init()
            //利用中线上最近的点，向两侧检查该点附近是否有斑马线
            bool zebra_L_flag=0;
            bool zebra_R_flag=0;
-           for (int i = 0; i < pixel_per_meter * (ROAD_WIDTH/2 - 0.1); i++)
+           for (int i = 0; i < pixel_per_meter * (ROAD_WIDTH/2 - 0.15); i++)//检查宽度需要考虑避障
            {
+               if(obstacle_type!=OBSTACLE_NONE)break;
                if(AT_IMAGE(&img_raw, (int)(rpts[begin_id][0]-i), (int)(rpts[begin_id][1])) < Ostu_Thres)
                {
                    zebra_L_flag = 1;
@@ -124,7 +130,7 @@ void control_Init()
                }
            }
            if(garage_type!=GARAGE_NONE)
-                   run_garage();
+               run_garage();
 
            // 中线有点，同时最近点不是最后几个点
            if (begin_id >= 0 && rpts_num - begin_id >= 3)//切摄像头

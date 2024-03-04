@@ -5,9 +5,12 @@
 enum obstacle_type_e
 {
     OBSTACLE_NONE,
-    OBSTACLE_BEGIN,
-    OBSTACLE_IN,
-    OBSTACLE_OUT,
+    OBSTACLE_LEFT_BEGIN,
+    OBSTACLE_RIGHT_BEGIN,
+    OBSTACLE_LEFT_IN,
+    OBSTACLE_RIGHT_IN,
+    OBSTACLE_LEFT_OUT,
+    OBSTACLE_RIGHT_OUT,
 };
 /*================================ 全局变量 ==================================*/
 extern enum obstacle_type_e  obstacle_type;

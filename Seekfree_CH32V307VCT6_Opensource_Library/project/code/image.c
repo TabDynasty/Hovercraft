@@ -112,12 +112,13 @@ int dir_backnum0,dir_backnum1;/**<统计左右边线的向下点的个数*/
 int dir_rightnum0,dir_leftnum1;/**<统计左边线的向右点，和右边线向左的个数*/
 
 // L角点
+int Lpt0_num, Lpt1_num;/**边线上角点数量*/
 int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
 int inv_Lpt0_rpts0s_id,inv_Lpt1_rpts1s_id;
 bool Lpt0_found, Lpt1_found;
 
 // 长直道
-bool is_straight0, is_straight1,is_straight_far_0,is_straight_far_1;;
+bool is_straight0, is_straight1,is_straight_far_0,is_straight_far_1;
 uint32 Lconf_Min=60;
 uint32 Lconf_Max=120;/**< 直角阈值 */
 float conf0,conf1,conf0_max,conf1_max;/**< max用来显示在屏幕*/
@@ -819,6 +820,8 @@ void find_corners() {
 
         conf0  = fabs(rpts0a[i]) - (fabs(rpts0a[im0]) + fabs(rpts0a[ip0])) / 2;
         conf0=conf0*180/PI;
+        if(Lconf_Min<conf0&&conf0<Lconf_Max)Lpt0_num++;
+
         if (Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.0/(sample_dist)))
         {
             Lpt0_rpts0s_id = i;
@@ -838,6 +841,7 @@ void find_corners() {
 
         conf1  = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
         conf1=conf1*180/PI;
+        if(Lconf_Min<conf1&&conf1<Lconf_Max)Lpt1_num++;
 
         if (Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&(i<1.0/(sample_dist)))//限距离，限尖峰
         {

@@ -3,13 +3,14 @@
 #include "control.h"
 #include "image.h"
 #include "utils.h"
-#include "garage.h"
+#include "obstacle.h"
 #include "Motor.h"
 #include "zf_common_headfile.h"
 /*================================ 全局变量 ==================================*/
 enum circle_type_e circle_type = CIRCLE_NONE;
 extern image_t img_raw;
 int broadcast_flag=1;
+int circle_obstacle_flag=0;
 
 int none_left_line = 0, none_right_line = 0;
 int have_left_line = 0, have_right_line = 0;
@@ -18,55 +19,59 @@ int have_left_line = 0, have_right_line = 0;
 void check_Left_Circle();
 void check_Right_Circle();
 /******************************************************************************
-* FunctionName   : check_Lcircle_Lgarage()
-* Description    : 判断左圆环,左车库
+* FunctionName   : check_Lcircle_Lobstacle()
+* Description    : 判断左圆环,左障碍
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
-void check_Lcircle()
+void check_Lcircle_Lobstacle()
 {
-    if(circle_type == CIRCLE_NONE &&garage_type==GARAGE_NONE && Lpt0_found && !Lpt1_found && is_straight1&&Lpt0_rpts0s_id<25)//左边长直道，右边近角点
+    if(circle_obstacle_flag == 0 && Lpt0_found && !Lpt1_found && is_straight1 && Lpt0_rpts0s_id<25)//左边长直道，右边近角点
     {
-        circle_type=1;
+        circle_obstacle_flag=1;
     }
-    if(circle_type==1)
+    if(circle_obstacle_flag==1)
     {
-            check_Left_Cross();
-            if(far_conf0_max<20&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过20，但判断太过严格，容易判不到
+          if(Lpt0_num>=4)obstacle_type=OBSTACLE_LEFT_BEGIN;//一侧边线上L角点数量达到4个，判定该侧有障碍物
+          //check_Left_Cross();
+          //if(far_conf0_max<20&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过20，但判断太过严格，容易判不到
+          else
           {
             circle_type = CIRCLE_LEFT_BEGIN;
             aim_distance=380;
             none_right_line = 0;
             have_right_line = 0;
           }
-            circle_type=0;
+            circle_obstacle_flag=0;
     }
 }
 
 /******************************************************************************
-* FunctionName   : check_Rcircle_Rgarage()
-* Description    : 判断右圆环，右车库
+* FunctionName   : check_Rcircle_Robstacle()
+* Description    : 判断右圆环，右障碍
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
-void check_Rcircle()
+void check_Rcircle_Robstacle()
 {
-    if (circle_type == CIRCLE_NONE &&garage_type==GARAGE_NONE&& Lpt1_found && is_straight0&&Lpt1_rpts1s_id<40) //左边长直道，右边近角点
+    if (circle_obstacle_flag == 0 && Lpt1_found && is_straight0 && Lpt1_rpts1s_id<40) //左边长直道，右边近角点
     {
-        circle_type=1;
+        circle_obstacle_flag=1;
 
     }
-    if(circle_type==1)
+    if(circle_obstacle_flag==1)
        {
-            check_Right_Cross();//搜远线
-            if(far_conf1_max<40&&far_conf1_max>0)//圆环标志，远线是弧线，角度最大不超过20，但判断太过严格，容易判不到
+            if(Lpt1_num>=4)obstacle_type=OBSTACLE_RIGHT_BEGIN;//一侧边线上L角点数量达到4个，判定该侧有障碍物
+            //check_Right_Cross();//搜远线
+            //if(far_conf1_max<40&&far_conf1_max>0)//圆环标志，远线是弧线，角度最大不超过20，但判断太过严格，容易判不到
+            else
             {
             circle_type = CIRCLE_RIGHT_BEGIN;
             none_right_line = 0;
             have_right_line = 0;
 
             }
-            circle_garage_type=0;
+            circle_obstacle_flag=0;
 //                        if(c_g_ciecleflag==0)
 //                        {
 //                        circle_type = CIRCLE_RIGHT_BEGIN;
@@ -87,8 +92,8 @@ void check_Rcircle()
 *******************************************************************************/
 void check_circle()
 {
-    check_Lcircle();
-    check_Rcircle();
+    check_Lcircle_Lobstacle();
+    check_Rcircle_Robstacle();
 }
 
 /******************************************************************************
@@ -235,7 +240,7 @@ void run_Rcircle()
                 {
                     aim_distance=440;
                     circle_type = CIRCLE_NONE;
-                    circle_garage_type=1;
+                    //circle_obstacle_type=1;
                     begin_y=96;
                     Integral_vel_flag=0;
                 }
