@@ -6,7 +6,6 @@ enum track_type_e {
     TRACK_RIGHT,
 };
 extern uint32 aimSpeed;/**< 目标速度*/
-extern int AIMSPEED;
 extern int times;
 extern uint32 aim_distance;//除了1000
 extern uint32 AIM_DISTANCE;/**< 直接用于计算*/

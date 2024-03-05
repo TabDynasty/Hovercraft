@@ -174,15 +174,15 @@ void data_show(void)
                     draw_Show();
                     //第1列存放各种标志位
 
-                    tft180_show_int   (1,64,W25QXX_TYPE,5,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 112, angle, 2,1,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
                     //tft180_show_float (35, 64,data,3,3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (35, 80,(int)conf1_max,3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (35,96,opt_flow_speed_x,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35,112,opt_flow_speed_y,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,off_setz,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
-                    //tft180_show_int (70, 64,far_conf0_max,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 64,Ostu_Thres,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 80,(int)data,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 96,mpu6050_acc_y - offset_acc_y,2,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 112,mpu6050_acc_z - offset_acc_z,2,RGB565_RED,RGB565_WHITE);
@@ -352,7 +352,7 @@ void Init_all(void)
         seekfree_assistant_camera_information_config(SEEKFREE_ASSISTANT_MT9V03X, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
 
-    tft180_set_dir(TFT180_CROSSWISE );//屏幕设置方向
+    tft180_set_dir(TFT180_CROSSWISE_180 );//屏幕设置方向
     tft180_init ();                       //屏幕初始化
     Motor_Init();
     Key_Init();

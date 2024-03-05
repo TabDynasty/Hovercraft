@@ -8,10 +8,10 @@
 #ifndef KEY_H_
 #define KEY_H_
 
-#define KEY_UP_PORT     E2
-#define KEY_DOWN_PORT   E4
-#define KEY_LEFT_PORT   E3
-#define KEY_RIGHT_PORT  E5
+#define KEY_UP_PORT     E4
+#define KEY_DOWN_PORT   E2
+#define KEY_LEFT_PORT   E5
+#define KEY_RIGHT_PORT  E3
 #define KEY_MID_PORT    E6
 //#define KEY_GND_PORT
 

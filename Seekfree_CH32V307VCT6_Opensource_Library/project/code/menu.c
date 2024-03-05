@@ -21,11 +21,23 @@ uint32 *Flash_Data[] = {
                         &begin_x,
                         &begin_y,
                         /*==控制==*/
-                        //&AIMSPEED,
+                        &aimSpeed,
                         &aim_distance,
                         /*==PID==*/
-                        //&Angle_vel[0],
-                        //&Angle_vel[2],
+                        &Angle_vel[0],
+                        &Angle_vel[1],
+                        &Angle_vel[2],
+                        &Angle_vel[3],
+
+                        &Angle[0],
+                        &Angle[1],
+                        &Angle[2],
+                        &Angle[3],
+
+                        &Speed[0],
+                        &Speed[1],
+                        &Speed[2],
+                        &Speed[3],
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -76,9 +88,7 @@ MENU_PRMT Ctrl_Prmt;
 MENU_TABLE Ctrl_MenuTable[] =
 {
   {"0.aimSpeed",Menu_Null,&aimSpeed},
-  {"1.aim_distance",Menu_Null,&aim_distance},
-  {"AIMSPEED",Menu_Null,&AIMSPEED},
-  {"times",Menu_Null,&times},
+  {"1.aim_dis",Menu_Null,&aim_distance},
 };
 
 
@@ -87,9 +97,17 @@ MENU_TABLE Ctrl_MenuTable[] =
 MENU_PRMT PID_Prmt;
 MENU_TABLE PID_MenuTable[] =
 {
+  {"Ang_vel_P",Menu_Null,&Angle_vel[0]},
+  {"Ang_vel_D",Menu_Null,&Angle_vel[1]},
+  {"Ang_vel_I",Menu_Null,&Angle_vel[2]},
 
-  {"2.ANGLE_KP",Menu_Null,&Angle_vel[0]},
-  {"3.ANGLE_KD",Menu_Null,&Angle_vel[2]},
+  {"Ang_P",Menu_Null,&Angle[0]},
+  {"Ang_D",Menu_Null,&Angle[1]},
+  {"Ang_I",Menu_Null,&Angle[2]},
+
+  {"Speed_P",Menu_Null,&Speed[0]},
+  {"Speed_D",Menu_Null,&Speed[1]},
+  {"Spedd_I",Menu_Null,&Speed[2]},
 };
 // 二级菜单  选取Flash扇区 写存档
 MENU_PRMT Read_Flash_Prmt;

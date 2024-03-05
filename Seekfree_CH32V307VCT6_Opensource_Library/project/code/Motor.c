@@ -23,9 +23,7 @@ bool Integral_vel_flag = 0;
 bool motorflag=0   ;
 
 int Speed_now = 0;
-int Speed_aim = 0;
 int distance = 0;
-int increment_max = 0;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
 // 参数说明     void
@@ -33,14 +31,16 @@ int increment_max = 0;
 //-------------------------------------------------------------------------------------------------------------------
 void Speed_Set(void)
 {
-    int ang_gain = Stable_posture(angle*2,mpu6050_gyro_z);
-    int vel_gain = Vertical_circle(Speed_aim, Speed_now);
-
+    int ang_gain = Stable_posture(angle,mpu6050_gyro_z);
+    int vel_gain = 0;
+            //Vertical_circle(Speed_aim, Speed_now);
+    debug_show_int("ang", ang_gain, 1);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
     Motor_Set(vel_gain, ang_gain);
     //上下两个风扇,船浮起来
     pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
     pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
+
 }
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     6路无刷电调以及电机各项参数初始化
@@ -50,8 +50,8 @@ void Speed_Set(void)
 void Motor_Init(void)
 {
     //气垫船浮起所需的pwm
-    Motor.PWM_fan_up = 590;
-    Motor.PWM_fan_down = 590;
+    Motor.PWM_fan_up = 580;
+    Motor.PWM_fan_down = 580;
     pwm_init(PWM_UP_PIN,    MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_DOWN_PIN,  MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_1_PIN,     MOTOR_FREQ, INIT_PWM);
@@ -84,6 +84,7 @@ void Motor_Set(int speed, int spin)
         pwm1+=-spin;
         pwm4+=-spin;
     }
+
     pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
     pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
     pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);
@@ -99,6 +100,7 @@ void Motor_Set(int speed, int spin)
 extern float off_setz;
 int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 {
+    int increment_max = 200;
     float data = mpu6050_gyro_transition(imu_angle_vel_data-off_setz);
     data = LowPass_Filter(&imu_dataz,(float)data); //对采集到的imu值进行滤波
 
@@ -123,7 +125,7 @@ int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 //-------------------------------------------------------------------------------------------------------------------
 int Vertical_circle(int aim_vel, int now_vel)
 {
-     int vel_Increment = PID_Realize(&Speed_PID, Speed, now_vel, aim_vel);
+     int vel_Increment = PID_Realize(&Speed_PID, Speed, (float)now_vel, (float)aim_vel);
      return vel_Increment;
 }
 
@@ -135,7 +137,7 @@ int Vertical_circle(int aim_vel, int now_vel)
 //-------------------------------------------------------------------------------------------------------------------
 void pit_speed(void)
 {
-    Speed_now = encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
+    Speed_now = -encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
     encoder_clear_count(TIM3_ENCOEDER);                                        // 清空编码器计数
     //flag置为1时，开始积分
     if(!Integral_vel_flag){
@@ -144,3 +146,4 @@ void pit_speed(void)
         distance += Speed_now;
     }
 }
+

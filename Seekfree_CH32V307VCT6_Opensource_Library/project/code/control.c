@@ -10,9 +10,8 @@
 #include "zf_common_headfile.h"
 
 uint32 aimSpeed=0;/**< 目标速度*/
-int AIMSPEED=640;
 uint32 aim_distance=440;//除了1000
-uint32 AIM_DISTANCE=340;/**< 直接用于计算*/
+uint32 AIM_DISTANCE;/**< 直接用于计算*/
 float angle;
 enum track_type_e track_type;
 extern float rpts0s[LINE_LENTH][2];/**< 左边线等距采样*/
@@ -31,7 +30,7 @@ int aim_idx;
 float error;
 float pure_angle;
 int keepangleflag=0;//圆环定角出flag
-int times =15;
+
 
 #define ABS(x) (((x) > 0) ? (x) : (-(x)))
 int rpts_num;
@@ -146,6 +145,7 @@ void control_Init()
                // 纯跟踪算法
               // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
                pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
+               debug_show_float("pure", error, 1);
                //外环角度环
                angle    = PID_Realize(&Angle_PID, Angle,pure_angle,0);
            }
