@@ -49,3 +49,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+*.lst
+Seekfree_CH32V307VCT6_Opensource_Library/project/mrs/obj/The_Hovercraft1.0.lst
+*.lst

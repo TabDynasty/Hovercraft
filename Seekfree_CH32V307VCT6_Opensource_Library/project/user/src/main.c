@@ -67,7 +67,7 @@ int farline_type=0;//右圆环寻左远线的标志位，左圆环同理
 int Count_ang_Flag=0;//开陀螺仪标志位
 int count_break_obs=0;//对路障，短路计数，用的同一种判别方法
 int total_distance=0;//编码器记的路程
-int circle_garage_type=0;//圆环车库共用的一套标志位
+int circle_obstacle_type=0;//圆环障碍共用的一套标志位
 uint8 if_lost_left_line = 0,if_lost_right_line = 0;//是否丢线
 int tof_flag=0;//tof标志位
 int c_g_ciecleflag=0;

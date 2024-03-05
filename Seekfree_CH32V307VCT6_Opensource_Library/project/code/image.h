@@ -123,6 +123,7 @@ extern uint32 Lconf_Min,Lconf_Max;
 extern int16 delta_y;
 extern int16 delta_x;
 
+extern int Lpt0_num, Lpt1_num;/**边线上角点数量*/
 extern int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
 extern int inv_Lpt0_rpts0s_id,inv_Lpt1_rpts1s_id;
 extern bool Lpt0_found,Lpt1_found;
