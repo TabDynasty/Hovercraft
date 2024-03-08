@@ -71,6 +71,8 @@ float ROAD_WIDTH        =0.45;
 float sample_dist       =0.02;
 float angle_dist        =0.20;
 
+int origin_flag = 0;/**< 初始帧标志*/
+
 int ipts0[LINE_LENTH][2];/**< 原图左边线*/
 int ipts1[LINE_LENTH][2];/**< 原图右边线*/
 int ipts0_num, ipts1_num;
@@ -695,16 +697,35 @@ void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_
 
 void process_image()
 {
-//    /*===============================================提取左边线==================================================*/
-//    int x0 = img_raw.width / 2 - begin_x, y0 =begin_y ;
-//    int X0;
-//    ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
-//    for (; x0 > 0; x0--) if (AT_IMAGE(&img_raw, x0 - 1, y0) < Ostu_Thres) {
-//        break;}
-//     X0=x0;     //从右往左第一个白黑跳变点
-//
-//    if (AT_IMAGE(&img_raw, x0, y0) >= Ostu_Thres)
-//        findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, y0, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
+    /*===============================================提取左边线==================================================*/
+    ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
+    int x0, y0;
+    if(origin_flag==0){
+        //x0 = img_raw.width / 2 - begin_x, y0 = begin_y;//使用原寻点方式时打开
+        for (; x0 > 0; x0--) if (AT_IMAGE(&img_raw, x0 - 1, y0) < Ostu_Thres) {
+            break;}
+    }
+    else {
+        int count0=1;
+        while(x0-count0>=0 || x0+count0<=img_raw.width/2){
+            if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width/2-1),y0) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0-count0+1,1,img_raw.width/2),y0) >= Ostu_Thres){//向左寻找，左黑右白
+                x0=x0-count0+1;
+                break;}
+            if(AT_IMAGE(&img_raw,clip(x0+count0-1,0,img_raw.width/2-1),y0) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0+count0,1,img_raw.width/2),y0) >= Ostu_Thres){//向右寻找，左黑右白
+                x0=x0+count0;
+                break;}
+            count0++;}
+        if(x0-count0<0)x0=1;
+        if(x0+count0>img_raw.width/2)x0=img_raw.width/2;
+    }
+
+     int X0;
+     X0=x0;     //从右往左第一个白黑跳变点
+
+
+    if (AT_IMAGE(&img_raw, x0, y0) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, y0) < Ostu_Thres)
+        findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, y0, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
+    else ipts0_num = 0;//使用原寻点方式时关闭
 //    else        //如果没有找到,则会从左往右找第一个黑白跳变点
 //       {
 //        for(;x0<=X0+40;x0++)
@@ -716,18 +737,38 @@ void process_image()
 //            }
 //          }
 //        if(x0>=X0+40)ipts0_num = 0;//若都没找到, 边线数组请清零
-//       }
-//
-//    /*===============================================提取右边线==================================================*/
-//    int x1 = img_raw.width / 2 + begin_x, y1 = begin_y;
-//    int X1;
-//    ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
-//    for (; x1 < img_raw.width - 1; x1++) if (AT_IMAGE(&img_raw, x1 + 1, y1) < Ostu_Thres) {break;}
-//    X1=x1;          //从左往右第一个白黑跳变点
-//
-//
-//    if (AT_IMAGE(&img_raw, x1, y1) >= Ostu_Thres)
-//        findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, y1, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
+//       }//使用原寻点方式时打开，虽然不太懂为什么要这么写？
+
+    /*===============================================提取右边线==================================================*/
+    ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
+    int x1, y1;
+    if(origin_flag==0){
+        //x1 = img_raw.width / 2 + begin_x, y1 = begin_y;//使用原寻点方式时打开
+        for (; x1 < img_raw.width - 1; x1++) if (AT_IMAGE(&img_raw, x1 + 1, y1) < Ostu_Thres) {
+            break;}
+        origin_flag=1;//使用原寻点方式时关闭
+    }
+    else {
+        int count1=1;
+        while(x1-count1>=0 || x1+count1<=img_raw.width/2){
+            if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width/2-1),y1) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width/2),y1) < Ostu_Thres){//向左寻找，左白右黑
+                x1=x1-count1+1;
+                break;}
+            if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width/2-1),y1) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width/2),y1) < Ostu_Thres){//向右寻找，左白右黑
+                x1=x1+count1;
+                break;}
+            count1++;}
+        if(x1-count1<0)x1=0;
+        if(x1+count1>img_raw.width/2)x1=img_raw.width/2-1;
+    }
+
+    int X1;
+    X1=x1;          //从左往右第一个白黑跳变点
+
+
+    if (AT_IMAGE(&img_raw, x1, y1) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, y1) < Ostu_Thres)
+        findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, y1, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
+    else ipts1_num = 0;//使用原寻点方式时关闭
 //    else //如果没有找到,则会从右往左找第一个黑白跳变点
 //        {
 //         for(;x1>=X1-40;x1--)
@@ -739,101 +780,8 @@ void process_image()
 //            }
 //           }
 //        if(x1<=X1-40)ipts1_num = 0; //若都没找到, 边线数组请清零
-//       }
-    int x0 = img_raw.width / 2 - begin_x, y0 =begin_y ;
-    int X0;
-    ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
-    for (; x0 > 0; x0--) if (AT_IMAGE(&img_raw, x0 - 1, y0) < Ostu_Thres) {
-        break;}
-     X0=x0;
-//    left_bound_x = x0;
-//    int local_thres_left = 0,local_thres_left_num=0;
-//    for (; x0 > adaptive_Block/2; x0--){
-//            for (int dy = -adaptive_Block/2; dy <= adaptive_Block/2; dy++) {
-//                for (int dx = -adaptive_Block/2; dx <= adaptive_Block/2; dx++) {
-//                    local_thres_left += AT_IMAGE(&img_raw, x0 + dx, y0 + dy);
-//                }
-//            }
-//            local_thres_left /= adaptive_Block * adaptive_Block;
-//            local_thres_left -= clip_value;
-//
-//            for(int i=1;i<=4;i++){
-//                if(AT_IMAGE(&img_raw, x0 - i, y0) < local_thres_left)local_thres_left_num++;
-//            }
-//            if(local_thres_left_num>=4) {
-//                local_thres_left_num = 0;
-//                break;
-//            }
-//            else local_thres_left_num = 0;
-//            left_bound_x = x0;
-//
-//
-//        }
-    if (AT_IMAGE(&img_raw, x0, y0) >= Ostu_Thres)
-        //findline_lefthand_adaptive(&img_raw, adaptive_Block, clip_value, x0, y0, ipts0, &ipts0_num);
-       {
-        findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, y0, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
-       }else
-       {
-        for(;x0<=X0+40;x0++)
-          {
-            if(AT_IMAGE(&img_raw, x0 + 1, y0) > Ostu_Thres)
-            {
-                findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0+1, y0, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
-                break;
-            }
-          }
-        if(x0>=X0+40)ipts0_num = 0;
-       }
+//       }//使用原寻点方式时打开，虽然不太懂为什么要这么写？
 
-    int x2 = img_raw.width / 2 + begin_x, y2 = begin_y;
-    int X2;
-    ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
-    for (; x2 < img_raw.width - 1; x2++) if (AT_IMAGE(&img_raw, x2 + 1, y2) < Ostu_Thres) {break;}
-    X2=x2;
-//    right_bound_x = x2;
-
-
-//            int local_thres_right = 0,local_thres_right_num=0;
-//
-//
-//            for(; x2 < img_raw.width - adaptive_Block/2; x2++)
-//            {
-//                for (int dy = -adaptive_Block/2; dy <= adaptive_Block/2; dy++) {
-//                    for (int dx = -adaptive_Block/2; dx <= adaptive_Block/2; dx++) {
-//                        local_thres_right += AT_IMAGE(&img_raw, x2 + dx, y2 + dy);
-//                    }
-//                }
-//                local_thres_right /= adaptive_Block * adaptive_Block;
-//                local_thres_right -= clip_value;
-//
-//                for(int i=1;i<=4;i++){
-//                    if(AT_IMAGE(&img_raw, x2 + i, y2) < local_thres_right)local_thres_right_num++;
-//
-//                }
-//                if(local_thres_right_num>=4) {
-//                    local_thres_right_num = 0;
-//                    break;
-//                }
-//                else local_thres_right_num = 0;
-//                right_bound_x = x2;
-//            }
-
-    if (AT_IMAGE(&img_raw, x2, y2) >= Ostu_Thres)
-    {// findline_righthand_adaptive(&img_raw, adaptive_Block, clip_value, x2, y2, ipts1, &ipts1_num);
-    findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x2, y2, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
-    }
-    else {
-        for(;x2>=X2-40;x2--)
-          {
-            if(AT_IMAGE(&img_raw, x2 - 1, y2) > Ostu_Thres)
-            {
-                findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x2-1, y2, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版                break;
-                break;
-            }
-          }
-        if(x2<=X2-40)ipts1_num = 0;
-       }
     //透视变换
     rot_img_process();
 
