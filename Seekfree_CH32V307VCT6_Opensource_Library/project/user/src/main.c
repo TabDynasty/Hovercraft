@@ -176,13 +176,13 @@ void data_show(void)
                     draw_Show();
                     //第1列存放各种标志位
 
-                    tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (1,64,origin_flag,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,is_straight0,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35, 80,is_straight1,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,count0,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,count1,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点

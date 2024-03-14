@@ -120,6 +120,8 @@ bool Lpt0_found, Lpt1_found;
 bool is_straight0, is_straight1,is_straight_far_0,is_straight_far_1;
 uint32 Lconf_Min=60;
 uint32 Lconf_Max=120;/**< 直角阈值 */
+
+int count0,count1;
 float conf0,conf1,conf0_max,conf1_max;/**< max用来显示在屏幕*/
 extern image_t img_raw ;
 /*================================ 接口函数 ==================================*/
@@ -699,24 +701,24 @@ void process_image()
 {
     /*===============================================提取左边线==================================================*/
     ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
-    int x0, y0;
+    static int x0, y0;
     if(origin_flag==0){
-        //x0 = img_raw.width / 2 - begin_x, y0 = begin_y;//使用原寻点方式时打开
+        x0 = img_raw.width / 2 - begin_x, y0 = begin_y;//使用原寻点方式时打开
         for (; x0 > 0; x0--) if (AT_IMAGE(&img_raw, x0 - 1, y0) < Ostu_Thres) {
             break;}
     }
     else {
-        int count0=1;
-        while(x0-count0>=0 || x0+count0<=img_raw.width/2){
-            if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width/2-1),y0) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0-count0+1,1,img_raw.width/2),y0) >= Ostu_Thres){//向左寻找，左黑右白
+        count0=1;
+        while(x0-count0>0 || x0+count0<img_raw.width){
+            if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width-1),y0) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0-count0+1,1,img_raw.width),y0) >= Ostu_Thres){//向左寻找，左黑右白
                 x0=x0-count0+1;
                 break;}
-            if(AT_IMAGE(&img_raw,clip(x0+count0-1,0,img_raw.width/2-1),y0) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0+count0,1,img_raw.width/2),y0) >= Ostu_Thres){//向右寻找，左黑右白
+            if(AT_IMAGE(&img_raw,clip(x0+count0-1,0,img_raw.width-1),y0) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0+count0,1,img_raw.width),y0) >= Ostu_Thres){//向右寻找，左黑右白
                 x0=x0+count0;
                 break;}
             count0++;}
-        if(x0-count0<0)x0=1;
-        if(x0+count0>img_raw.width/2)x0=img_raw.width/2;
+//        if(x0-count0==0)x0=1;
+//        if(x0+count0==img_raw.width/2)x0=img_raw.width/2;
     }
 
      int X0;
@@ -741,25 +743,25 @@ void process_image()
 
     /*===============================================提取右边线==================================================*/
     ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
-    int x1, y1;
+    static int x1, y1;
     if(origin_flag==0){
-        //x1 = img_raw.width / 2 + begin_x, y1 = begin_y;//使用原寻点方式时打开
+        x1 = img_raw.width / 2 + begin_x, y1 = begin_y;//使用原寻点方式时打开
         for (; x1 < img_raw.width - 1; x1++) if (AT_IMAGE(&img_raw, x1 + 1, y1) < Ostu_Thres) {
             break;}
         origin_flag=1;//使用原寻点方式时关闭
     }
     else {
-        int count1=1;
-        while(x1-count1>=0 || x1+count1<=img_raw.width/2){
-            if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width/2-1),y1) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width/2),y1) < Ostu_Thres){//向左寻找，左白右黑
-                x1=x1-count1+1;
+        count1=1;
+        while(x1-count1>0 || x1+count1<img_raw.width){
+            if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width-1),y1) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width),y1) < Ostu_Thres){//向左寻找，左白右黑
+                x1=x1-count1;
                 break;}
-            if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width/2-1),y1) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width/2),y1) < Ostu_Thres){//向右寻找，左白右黑
+            if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),y1) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),y1) < Ostu_Thres){//向右寻找，左白右黑
                 x1=x1+count1;
                 break;}
             count1++;}
-        if(x1-count1<0)x1=0;
-        if(x1+count1>img_raw.width/2)x1=img_raw.width/2-1;
+//        if(x1-count1==0)x1=0;
+//        if(x1+count1==img_raw.width/2)x1=img_raw.width/2-1;
     }
 
     int X1;
