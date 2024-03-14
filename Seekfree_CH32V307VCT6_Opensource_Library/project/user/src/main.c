@@ -75,12 +75,11 @@ int total_angel_z;
 int start=0;
 int launch_car=1;
 float off_setz =0;    //z轴角速度偏置，去零飘用
+uint16 power_level = 0;
 image_t img_raw = DEF_IMAGE(NULL, MT9V03X_W, MT9V03X_H);
 //按键调参的标志
 int8 show_pagex,show_pagey,key_pos;
 /********此区域debug用*********/
-
-
 
 
 
@@ -94,6 +93,7 @@ void draw_Show();//原图划线
 void change_show_page();//翻页
 void Init_all();
 void data_show();
+void get_offset();
 int key=0;
 int main (void)
 {
@@ -104,6 +104,8 @@ int main (void)
     while(1)
     {
         change_show_page();
+        get_offset();
+        power_level = Sliding_Filter(&Power_level, adc_convert(ADC1_IN9_B1), 0);
         if(mt9v03x_finish_flag)
         {
             img_raw.data = mt9v03x_image[0];
@@ -116,7 +118,7 @@ int main (void)
             data_show();
             /********此区域debug用*********/
 
-            debug_show_float("serr",Angle_vel_PID.SumError*0.1 , 2);
+            // debug_show_float("serr",Angle_PID.SumError*0.1 , 2);
             /********此区域debug用*********/
 
             // 无线图传发送图像
@@ -175,14 +177,16 @@ void data_show(void)
                     //第1列存放各种标志位
 
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
-                    tft180_show_float (1, 112, angle, 2,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    //tft180_show_float (35, 64,data,3,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35, 80,off_setz,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,is_straight0,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,is_straight1,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
-                    tft180_show_int (70, 64,Ostu_Thres,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_float (50, 64,(float)power_level * 0.1578,2,2,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 80,(int)data,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 96,mpu6050_acc_y - offset_acc_y,2,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 112,mpu6050_acc_z - offset_acc_z,2,RGB565_RED,RGB565_WHITE);
@@ -308,9 +312,28 @@ void draw_Show()
 
 
     if((inv_aim_idx[0])/x_Zoom<show_X&&inv_aim_idx[1]/y_Zoom<show_Y)
-    tft180_draw_point(  (int)((inv_aim_idx[0])/x_Zoom) , (int)(inv_aim_idx[1]/y_Zoom) ,     RGB565_YELLOW   );//预瞄点
+    tft180_draw_point((int)((inv_aim_idx[0])/x_Zoom) , (int)(inv_aim_idx[1]/y_Zoom) ,     RGB565_YELLOW   );//预瞄点
     cross_circle_Show();
      //circle_Show();
+}
+
+void get_offset(void)
+{
+
+    if(gpio_get_level(D8)==1){
+        system_delay_ms(5);
+        while(gpio_get_level(D8));
+          //获取陀螺仪偏置
+          for(uint8 i=0;i<100;i++)        //采集100次
+          {
+              mpu6050_get_gyro();//获取陀螺仪角速度
+              off_setz += mpu6050_gyro_z;
+              system_delay_ms(5);   //采样周期
+          }
+
+          off_setz /= 100;
+
+    }
 }
 
 //初始化所有
@@ -358,6 +381,9 @@ void Init_all(void)
     Key_Init();
     mpu6050_init ();
     W25QXX_Init();
+    gpio_init(D8,GPI,0,GPI_FLOATING_IN);
+    adc_init(ADC1_IN9_B1, ADC_8BIT);
+    adc_convert(ADC1_IN9_B1);
     encoder_dir_init(TIM3_ENCOEDER, TIM3_ENCOEDER_MAP3_CH1_C6, TIM3_ENCOEDER_MAP3_CH2_C7);
     /*中断初始化*/
     pit_ms_init(TIM6_PIT,10);
@@ -365,16 +391,6 @@ void Init_all(void)
     /*软件初始化*/
     PID_Init();
     Filters_Init();
-
-  //获取陀螺仪偏置
-    for(uint8 i=0;i<100;i++)        //采集100次
-    {
-        mpu6050_get_gyro();//获取陀螺仪角速度
-        off_setz += mpu6050_gyro_z;
-        system_delay_ms(5);   //采样周期
-    }
-
-    off_setz /= 100;
 
 }
 

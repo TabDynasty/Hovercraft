@@ -3,7 +3,7 @@
 #include "zf_common_headfile.h"
 /*---------------------PID各项系数数组--------------------*/
 
-extern uint32 Angle[4],Angle_vel[4],Speed[4];
+extern int Angle[4],Angle_vel[4],Speed[4];
 
 /*-------------------PID各项误差结构体定义初始化--------------*/
 typedef struct PID

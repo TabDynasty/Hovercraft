@@ -7,7 +7,7 @@
 
 //
 //              @---@                  @---@
-//              | 1 |                  | 2 |
+//              | 3 |                  | 1 |
 //              @---@                  @---@                ^
 //                                                         ^ ^
 //4                                                       ^ | ^
@@ -16,7 +16,7 @@
 //up                                                        |   方     向
 //1                                                         |
 //2             @---@                  @---@                |
-//              | 3 |                  | 4 |                |
+//              | 4 |                  | 2 |                |
 //              @---@                  @---@               /|\
 //                                                         /|\
 //                                                         /|\
@@ -40,11 +40,12 @@ extern SPEED_st Motor;/**< 速度结构体*/
 extern bool motorflag;
 extern bool Integral_vel_flag;
 extern int speed_now;
+extern int centripetal_p_straight,centripetal_p_instraight;
 #endif /* MOTOR_H_ */
 /*================================ 接口函数 ==================================*/
 void Motor_Init(void);
 void Speed_Set(void);
-void Motor_Set(int speed, int spin);
+void Motor_Set(int speed, int spin, float force);
 int Stable_posture(float aim_angle_vel, int imu_anglevel_data);
 int Vertical_circle(int aim_vel, int now_vel);
 void pit_speed(void);

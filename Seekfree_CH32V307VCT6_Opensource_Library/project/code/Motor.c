@@ -6,6 +6,7 @@
 #include "PID.h"
 #include "utils.h"
 #include "filters.h"
+#include "image.h"
 /*=============================  电机引脚定义  ================================*/
 #define PWM_UP_PIN        TIM5_PWM_MAP0_CH1_A0
 #define PWM_DOWN_PIN      TIM5_PWM_MAP0_CH2_A1
@@ -22,6 +23,7 @@ SPEED_st Motor;          /* 电机结构体*/
 bool Integral_vel_flag = 0;
 bool motorflag=0   ;
 
+int centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
 int distance = 0;
 //-------------------------------------------------------------------------------------------------------------------
@@ -32,11 +34,12 @@ int distance = 0;
 void Speed_Set(void)
 {
     int ang_gain = Stable_posture(angle,mpu6050_gyro_z);
-    int vel_gain = 0;
-            //Vertical_circle(Speed_aim, Speed_now);
+    int vel_gain = Vertical_circle(aimSpeed, Speed_now);
+    float centripetal_gain = Speed_now * abs((int)angle)/100;
     debug_show_int("ang", ang_gain, 1);
+    debug_show_int("vel", vel_gain, 3);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
-    Motor_Set(vel_gain, ang_gain);
+    Motor_Set(vel_gain, ang_gain, centripetal_gain);
     //上下两个风扇,船浮起来
     pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
     pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
@@ -50,8 +53,8 @@ void Speed_Set(void)
 void Motor_Init(void)
 {
     //气垫船浮起所需的pwm
-    Motor.PWM_fan_up = 580;
-    Motor.PWM_fan_down = 580;
+    Motor.PWM_fan_up = 590;
+    Motor.PWM_fan_down = 590;
     pwm_init(PWM_UP_PIN,    MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_DOWN_PIN,  MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_1_PIN,     MOTOR_FREQ, INIT_PWM);
@@ -65,7 +68,7 @@ void Motor_Init(void)
 // 参数说明     pwmn 对应引脚的pwm输入值
 // 返回参数     void
 //-------------------------------------------------------------------------------------------------------------------
-void Motor_Set(int speed, int spin)
+void Motor_Set(int speed, int spin ,float force)
 {
     int pwm1=0,pwm2=0,pwm3=0,pwm4=0;
     if(speed>=0)
@@ -78,13 +81,50 @@ void Motor_Set(int speed, int spin)
     }
 
     if(spin>=0){
-        pwm2+=spin;
-        pwm3+=spin;
+        pwm1+=spin;
+        pwm4+=spin;
     }else {
-        pwm1+=-spin;
-        pwm4+=-spin;
+        pwm2+=-spin;
+        pwm3+=-spin;
     }
 
+    if(is_straight0 == 1 && is_straight1 == 1)
+    {
+        if(angle>2){
+            pwm1+=force * centripetal_p_straight;
+            pwm3+=force * centripetal_p_straight;
+        }
+        if(angle<-2){
+            pwm2+=force * centripetal_p_straight;
+            pwm4+=force * centripetal_p_straight;
+        }
+    }else{
+        if(angle>2){
+            pwm1+=force * centripetal_p_instraight;
+            pwm3+=force * centripetal_p_instraight;
+        }
+        if(angle<-2){
+            pwm2+=force * centripetal_p_instraight;
+            pwm4+=force * centripetal_p_instraight;
+        }
+    }
+    if(pwm1 > 200)
+        pwm1 = 200;
+    if(pwm2 > 200)
+        pwm2 = 200;
+    if(pwm3 > 200)
+        pwm3 = 200;
+    if(pwm4 > 200)
+        pwm4 = 200;
+
+    if(pwm1 <= 0)
+        pwm1 = 0;
+    if(pwm2 <=  0)
+        pwm2 =  0;
+    if(pwm3 <= 0)
+        pwm3 = 0;
+    if(pwm4 <= 0)
+        pwm4 = 0;
     pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
     pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
     pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);
@@ -125,7 +165,14 @@ int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 //-------------------------------------------------------------------------------------------------------------------
 int Vertical_circle(int aim_vel, int now_vel)
 {
-     int vel_Increment = PID_Realize(&Speed_PID, Speed, (float)now_vel, (float)aim_vel);
+    int increment_max = 100;
+
+     int vel_Increment = (int)PID_Realize(&Speed_PID, Speed, (float)now_vel, (float)aim_vel);
+     //输出限幅
+     if(vel_Increment > increment_max)
+         vel_Increment = increment_max;
+     if(vel_Increment < -increment_max)
+         vel_Increment = -increment_max;
      return vel_Increment;
 }
 
@@ -137,7 +184,7 @@ int Vertical_circle(int aim_vel, int now_vel)
 //-------------------------------------------------------------------------------------------------------------------
 void pit_speed(void)
 {
-    Speed_now = -encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
+    Speed_now = encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
     encoder_clear_count(TIM3_ENCOEDER);                                        // 清空编码器计数
     //flag置为1时，开始积分
     if(!Integral_vel_flag){

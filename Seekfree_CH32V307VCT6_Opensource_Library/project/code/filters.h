@@ -29,6 +29,7 @@ typedef struct _Sliding_Data//滑行数据
 
 extern LowPassFilter imu_dataz;        //z轴角速度
 extern LowPassFilter imu_acc_x;        //x轴加速度
+extern Sliding_Data Power_level;       //采集电压
 /*================================ 接口函数 ==================================*/
 extern  void Filters_Init(void);
 extern float LowPass_Filter(LowPassFilter *filter, float input);

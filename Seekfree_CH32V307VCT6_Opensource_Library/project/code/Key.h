@@ -1,10 +1,3 @@
-/*
- * Key.h
- *
- *  Created on: 2023年6月2日
- *      Author: 唐纪元
- */
-
 #ifndef KEY_H_
 #define KEY_H_
 

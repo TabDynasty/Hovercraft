@@ -5,9 +5,9 @@
 
 PID Angle_PID,Angle_vel_PID,Speed_PID;         // 角度环， 角速度环，速度环PID误差参数结构体
 //下面的各项参数都除了100，方便flash的读取
-uint32 Angle_vel[4]       = {250, 10, 10 , 150};    // 角速度环PID系数
-uint32 Angle[4]           = {40, 0, 10 , 100};    // 角度环PID系数
-uint32 Speed[4]           = {0, 0, 0 , 10000};    // 速度环PID系数
+int Angle_vel[4]       = {250, 0, 10 , 100};    // 角速度环PID系数
+int Angle[4]           = {40, 0, 10 , 100};    // 角度环PID系数
+int Speed[4]           = {0, 0, 0 ,   100};    // 速度环PID系数
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介    PID各个环初始化
@@ -72,7 +72,6 @@ float PID_Realize(PID *sptr, int *PID, float NowData, float Point)
 
      sptr->LastError = iError;           // 更新上次误差
      sptr->LastData  = NowData;          // 更新上次数据
-
      return Realize; // 返回实际值
 }
 

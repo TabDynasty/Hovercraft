@@ -2,6 +2,7 @@
 #include "menu.h"
 #include "Key.h"
 #include "W25QXX.h"
+#include "Motor.h"
 #include "image.h"
 #include "control.h"
 #include "PID.h"
@@ -23,21 +24,23 @@ uint32 *Flash_Data[] = {
                         /*==控制==*/
                         &aimSpeed,
                         &aim_distance,
+                        &centripetal_p_straight,
+                        &centripetal_p_instraight,
                         /*==PID==*/
                         &Angle_vel[0],
                         &Angle_vel[1],
                         &Angle_vel[2],
-                        &Angle_vel[3],
+//                        &Angle_vel[3],
 
                         &Angle[0],
                         &Angle[1],
                         &Angle[2],
-                        &Angle[3],
-
+                        //&Angle[3],
+//
                         &Speed[0],
                         &Speed[1],
                         &Speed[2],
-                        &Speed[3],
+//                        &Speed[3],
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -89,6 +92,8 @@ MENU_TABLE Ctrl_MenuTable[] =
 {
   {"0.aimSpeed",Menu_Null,&aimSpeed},
   {"1.aim_dis",Menu_Null,&aim_distance},
+  {"2.force_k_stra",Menu_Null,&centripetal_p_straight},
+  {"3.force_k_in",Menu_Null,&centripetal_p_instraight},
 };
 
 
