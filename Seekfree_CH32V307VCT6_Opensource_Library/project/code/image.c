@@ -717,13 +717,7 @@ void process_image()
                 x0=x0+count0;
                 break;}
             count0++;}
-//        if(x0-count0==0)x0=1;
-//        if(x0+count0==img_raw.width/2)x0=img_raw.width/2;
     }
-
-     int X0;
-     X0=x0;     //从右往左第一个白黑跳变点
-
 
     if (AT_IMAGE(&img_raw, x0, y0) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, y0) < Ostu_Thres)
         findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, y0, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
@@ -757,20 +751,14 @@ void process_image()
                 x1=x1-count1;
                 break;}
             if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),y1) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),y1) < Ostu_Thres){//向右寻找，左白右黑
-                x1=x1+count1;
+                x1=x1+count1-1;
                 break;}
             count1++;}
-//        if(x1-count1==0)x1=0;
-//        if(x1+count1==img_raw.width/2)x1=img_raw.width/2-1;
-    }
-
-    int X1;
-    X1=x1;          //从左往右第一个白黑跳变点
-
 
     if (AT_IMAGE(&img_raw, x1, y1) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, y1) < Ostu_Thres)
         findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, y1, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
     else ipts1_num = 0;//使用原寻点方式时关闭
+    }
 //    else //如果没有找到,则会从右往左找第一个黑白跳变点
 //        {
 //         for(;x1>=X1-40;x1--)

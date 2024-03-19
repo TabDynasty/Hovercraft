@@ -41,6 +41,9 @@ uint32 *Flash_Data[] = {
                         &Speed[1],
                         &Speed[2],
 //                        &Speed[3],
+                        &Motor.PWM_fan_up,
+                        &Motor.PWM_fan_down,
+
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -94,6 +97,8 @@ MENU_TABLE Ctrl_MenuTable[] =
   {"1.aim_dis",Menu_Null,&aim_distance},
   {"2.force_k_stra",Menu_Null,&centripetal_p_straight},
   {"3.force_k_in",Menu_Null,&centripetal_p_instraight},
+  {"4.UP",Menu_Null,&Motor.PWM_fan_up},
+  {"5.DOWN",Menu_Null,&Motor.PWM_fan_down},
 };
 
 
@@ -103,16 +108,16 @@ MENU_PRMT PID_Prmt;
 MENU_TABLE PID_MenuTable[] =
 {
   {"Ang_vel_P",Menu_Null,&Angle_vel[0]},
-  {"Ang_vel_D",Menu_Null,&Angle_vel[1]},
-  {"Ang_vel_I",Menu_Null,&Angle_vel[2]},
+  {"Ang_vel_I",Menu_Null,&Angle_vel[1]},
+  {"Ang_vel_D",Menu_Null,&Angle_vel[2]},
 
   {"Ang_P",Menu_Null,&Angle[0]},
-  {"Ang_D",Menu_Null,&Angle[1]},
-  {"Ang_I",Menu_Null,&Angle[2]},
+  {"Ang_I",Menu_Null,&Angle[1]},
+  {"Ang_D",Menu_Null,&Angle[2]},
 
   {"Speed_P",Menu_Null,&Speed[0]},
-  {"Speed_D",Menu_Null,&Speed[1]},
-  {"Spedd_I",Menu_Null,&Speed[2]},
+  {"Speed_I",Menu_Null,&Speed[1]},
+  {"Spedd_D",Menu_Null,&Speed[2]},
 };
 // 二级菜单  选取Flash扇区 写存档
 MENU_PRMT Read_Flash_Prmt;

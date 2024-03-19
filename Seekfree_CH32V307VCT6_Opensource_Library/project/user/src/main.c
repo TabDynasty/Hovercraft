@@ -94,6 +94,7 @@ void change_show_page();//翻页
 void Init_all();
 void data_show();
 void get_offset();
+void show_power();
 int key=0;
 int main (void)
 {
@@ -101,11 +102,10 @@ int main (void)
     Read_Load();    //加载菜单
     MainMenu_Set(); //进入菜单
     My_FlashWrite(1); //读取菜单
+    tft180_clear(RGB565_WHITE);
     while(1)
     {
         change_show_page();
-        get_offset();
-        power_level = Sliding_Filter(&Power_level, adc_convert(ADC1_IN9_B1), 0);
         if(mt9v03x_finish_flag)
         {
             img_raw.data = mt9v03x_image[0];
@@ -170,13 +170,17 @@ void change_show_page()
 //展示各种参数
 void data_show(void)
 {
+
     switch (show_pagey) {
         case 0:
+            //正常显示区域
             if(show_pagex==0){
                     draw_Show();
+                    //测定偏置以及获得电池电量
+                    get_offset();
+                    show_power();
                     //第1列存放各种标志位
-
-                    tft180_show_int   (1,64,origin_flag,5,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
@@ -186,13 +190,15 @@ void data_show(void)
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
-                    tft180_show_float (50, 64,(float)power_level * 0.1578,2,2,RGB565_RED,RGB565_WHITE);
+                    //tft180_show_float (105, 0,(float)power_level * 0.1578,2,2,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 80,(int)data,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 96,mpu6050_acc_y - offset_acc_y,2,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int (70, 112,mpu6050_acc_z - offset_acc_z,2,RGB565_RED,RGB565_WHITE);
                     //第4列上半存放远近角点id
-                    tft180_show_int   (105,0,debug_data_int[0],2,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,16,debug_data_int[1],2,RGB565_RED,RGB565_WHITE);
+
+
+                    //tft180_show_float (105, 0,(float)power_level * 0.1578,2,2,RGB565_RED,RGB565_YELLOW);
+
                     tft180_show_int   (105,32,debug_data_int[2],2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,48,debug_data_int[3],2,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
@@ -220,7 +226,7 @@ void data_show(void)
                     tft180_show_int   (70,96,mpu6050_gyro_z,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int   (70,112,total_angel_z,3,RGB565_RED,RGB565_WHITE);
                     //第四列
-                    tft180_show_int   (105,0,aimSpeed,3,RGB565_RED,RGB565_WHITE);
+                    //tft180_show_int   (105,0,aimSpeed,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int   (105,16,SPD.aimSpeedL,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int   (105,32,SPD.aimSpeedR, 3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int   (105,48,test_D, 3,RGB565_RED,RGB565_WHITE);
@@ -258,6 +264,36 @@ void data_show(void)
     }
 
 }
+
+void show_power()
+{
+    power_level = Sliding_Filter(&Power_level, adc_convert(ADC1_IN9_B1), 0);
+    float percent = ((float)power_level * 0.1578-14.8)/2*45;
+    if(percent > 0){
+        tft180_show_float (105, 16, ((float)power_level * 0.1578-14.8)/2*100, 2,1,RGB565_BLACK,RGB565_WHITE);
+        tft180_show_char (140, 16, '%',RGB565_BLACK,RGB565_WHITE);
+        tft180_draw_line (105, 0, 150, 0, RGB565_BLACK);
+        tft180_draw_line (105, 0, 105, 15, RGB565_BLACK);
+        tft180_draw_line (105, 15, 150, 15, RGB565_BLACK);
+        tft180_draw_line (150, 0, 150, 15, RGB565_BLACK);
+        for(int i = 1; i<percent;i++)
+        {
+            if(percent <= 15)
+            {
+                tft180_draw_line (105+i, 1, 105+i, 15, RGB565_RED);
+            }
+            else if(percent <= 30 && percent >= 15)
+            {
+                tft180_draw_line (105+i, 1, 105+i, 15, RGB565_YELLOW);
+            }else if(percent >= 30)
+            {
+                tft180_draw_line (105+i, 1, 105+i, 15, RGB565_GREEN);
+            }
+        }
+    }
+
+}
+
 //展示圆环，十字
 void cross_circle_Show(void)
 {

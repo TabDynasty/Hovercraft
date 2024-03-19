@@ -117,14 +117,14 @@ void Motor_Set(int speed, int spin ,float force)
     if(pwm4 > 200)
         pwm4 = 200;
 
-    if(pwm1 <= 0)
-        pwm1 = 0;
-    if(pwm2 <=  0)
-        pwm2 =  0;
-    if(pwm3 <= 0)
-        pwm3 = 0;
-    if(pwm4 <= 0)
-        pwm4 = 0;
+    if(pwm1 <= 20)
+        pwm1 = 20;
+    if(pwm2 <=  20)
+        pwm2 =  20;
+    if(pwm3 <= 20)
+        pwm3 = 20;
+    if(pwm4 <= 20)
+        pwm4 = 20;
     pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
     pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
     pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);
