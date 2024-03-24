@@ -59,7 +59,7 @@
 uint16 Ostu_Thres;/**< 大津法后的阈值*/
 /**< Robert阈值*/
 uint32 th_edge=11;
-uint32 sobelThres;//sobel阈值
+uint32 sobelThres=100;//sobel阈值
 float inv_rptsn[MT9V03X_H][2];/**< 变换前中线的位置*/
 float inv_aim_idx[2];
 float ANGLE=0;//实际传入的角度
@@ -178,15 +178,15 @@ void data_show(void)
                     draw_Show();
                     //测定偏置以及获得电池电量
                     get_offset();
-                    show_power();
+                    //show_power();
                     //第1列存放各种标志位
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,count0,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35, 80,count1,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_float (35, 64,sobel0,3,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
@@ -259,6 +259,82 @@ void data_show(void)
                 tft180_show_float (115, i*16,debug_data_float[i],3,3,RGB565_RED,RGB565_WHITE);
             }
             break;
+        case 2:
+            //图像debug区域
+            if(show_pagex==0){
+                //显示原图，画边线
+                draw_Show();
+                //起始点
+                tft180_draw_point(  (int)((ipts0[0][0])/x_Zoom) , (int)(ipts0[0][1]/y_Zoom) , RGB565_YELLOW   );
+                tft180_draw_point(  (int)((ipts1[0][0])/x_Zoom) , (int)(ipts1[0][1]/y_Zoom) , RGB565_YELLOW   );
+
+                //第1列
+                tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1,96,origin_flag,3,RGB565_RED,RGB565_WHITE);
+                //第2列
+                tft180_show_float (35, 64,sobel0,3,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+
+
+            }
+            else if(show_pagex==1)
+            {
+                //全图sobel
+                uint8 show_Img[MT9V03X_H][MT9V03X_W];
+                sobelThreshold(img_raw.data,show_Img,img_raw.width,img_raw.height,sobelThres);
+                tft180_displayimage03x((const uint8 *)show_Img, show_X,show_Y);
+                //边线
+                lcd_Show_Line(ipts0_num,ipts0,RGB565_RED);
+                lcd_Show_Line(ipts1_num,ipts1,RGB565_BLUE);
+                //lcd_Show_inv_Line(rptsn_num,rptsn,RGB565_PURPLE);
+                //起始点
+                tft180_draw_point(  (int)((ipts0[0][0])/x_Zoom) , (int)(ipts0[0][1]/y_Zoom) , RGB565_YELLOW   );
+                tft180_draw_point(  (int)((ipts1[0][0])/x_Zoom) , (int)(ipts1[0][1]/y_Zoom) , RGB565_YELLOW   );
+
+                //第1列
+                tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
+                //第2列
+                tft180_show_float (35, 64,sobel0,3,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+
+            }
+            else if(show_pagex==2)
+            {
+                //大津法二值化
+                uint8 show_Img[MT9V03X_H][MT9V03X_W];
+                for(int i=0;i<MT9V03X_H;i++)
+                    for(int j=0;j<MT9V03X_W;j++)
+                        show_Img[i][j]=mt9v03x_image[i][j] <= Ostu_Thres ? 0 : 0xffff;
+                tft180_displayimage03x((const uint8 *)show_Img, show_X,show_Y);
+                //边线
+                lcd_Show_Line(ipts0_num,ipts0,RGB565_RED);
+                lcd_Show_Line(ipts1_num,ipts1,RGB565_BLUE);
+                //lcd_Show_in1v_Line(rptsn_num,rptsn,RGB565_PURPLE);
+                //起始点
+//                tft180_draw_point(  (int)((ipts0[0][0])/x_Zoom) , (int)(ipts0[0][1]/y_Zoom) , RGB565_YELLOW   );
+//                tft180_draw_point(  (int)((ipts1[0][0])/x_Zoom) , (int)(ipts1[0][1]/y_Zoom) , RGB565_YELLOW   );
+
+
+//                tft180_show_int (1,80,Ostu_Thres,3,RGB565_RED,RGB565_WHITE);
+//                tft180_show_int (1,96,mt9v03x_image[ipts0[0][0]][ipts0[0][1]],3,RGB565_RED,RGB565_WHITE);
+//                tft180_show_int (1,112,mt9v03x_image[ipts1[0][0]][ipts1[0][1]],3,RGB565_RED,RGB565_WHITE);
+                //第1列
+                tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
+                //第2列
+//                tft180_show_float (35, 64,sobel0,3,1,RGB565_RED,RGB565_WHITE);
+//                tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+            }
+
+            break;
         default:
             break;
     }
@@ -313,22 +389,22 @@ void cross_circle_Show(void)
 
 //透视变换展示
 void Pimage_show()
+{
+  int X;
+  int Y;
+    for(int i=0;i<MT9V03X_H;i++){
+        for(int j=0;j<MT9V03X_W;j++)
         {
-          int X;
-          int Y;
-            for(int i=0;i<MT9V03X_H;i++){
-                for(int j=0;j<MT9V03X_W;j++)
-                {
-                     X=round(((i*rot[0][0]+j*rot[0][1]+rot[0][2]))/(i*rot[2][0]+j*rot[2][1]+rot[2][2]));
-                     Y=round((i*rot[1][0]+j*rot[1][1]+rot[1][2])/(i*rot[2][0]+j*rot[2][1]+rot[2][2]));
-                    if(0<=X&&X<MT9V03X_H&&0<=Y&&Y<MT9V03X_W)
-                    {
-                        show_Img[X][Y]=mt9v03x_image[i][j];
-                    }
-                }
+             X=round(((i*rot[0][0]+j*rot[0][1]+rot[0][2]))/(i*rot[2][0]+j*rot[2][1]+rot[2][2]));
+             Y=round((i*rot[1][0]+j*rot[1][1]+rot[1][2])/(i*rot[2][0]+j*rot[2][1]+rot[2][2]));
+            if(0<=X&&X<MT9V03X_H&&0<=Y&&Y<MT9V03X_W)
+            {
+                show_Img[X][Y]=mt9v03x_image[i][j];
             }
-            tft180_displayimage03x((const uint8 *)show_Img, show_X,show_Y);
         }
+    }
+    tft180_displayimage03x((const uint8 *)show_Img, show_X,show_Y);
+}
 //画线
 void draw_Show()
 {
@@ -352,6 +428,7 @@ void draw_Show()
     cross_circle_Show();
      //circle_Show();
 }
+
 
 void get_offset(void)
 {

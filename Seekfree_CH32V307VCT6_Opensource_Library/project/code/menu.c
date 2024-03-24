@@ -43,7 +43,8 @@ uint32 *Flash_Data[] = {
 //                        &Speed[3],
                         &Motor.PWM_fan_up,
                         &Motor.PWM_fan_down,
-
+                        &sobelThres,
+                        &find_type,
                        };
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void beep_On();
@@ -85,6 +86,8 @@ MENU_TABLE Img_MenuTable[] =
   {"0.th_edge",Menu_Null,&th_edge},
   {"1.begin_x",Menu_Null,&begin_x},
   {"2.begin_y",Menu_Null,&begin_y},
+  {"3.sobelThres",Menu_Null,&sobelThres},
+  {"4.find_type",Menu_Null,&find_type},
 };
 
 
@@ -427,7 +430,7 @@ void adjustParam(Site_t site, uint32 *param, uint8 max_param_bit, uint16 Color, 
           default:
           break;
         }
-
+        tft180_show_uint(128,0, (uint32)(add_INTS), max_param_bit, RGB565_WHITE, bkColor);
         if(*param <= 0)  *param = 0;
         if(*param >= 65535) *param = 0;
     }
