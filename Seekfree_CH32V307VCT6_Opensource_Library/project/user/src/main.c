@@ -185,15 +185,15 @@ void data_show(void)
                     tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,count0,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35, 80,count1,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,is_straight0,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,is_straight1,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
-                    //tft180_show_float (105, 0,(float)power_level * 0.1578,2,2,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (70, 80,(int)data,3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (70, 96,mpu6050_acc_y - offset_acc_y,2,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (70, 112,mpu6050_acc_z - offset_acc_z,2,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 64,conf0_max,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 80,conf1_max,2,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 96,max_point0_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 112,max_point1_id,2,RGB565_RED,RGB565_WHITE);
                     //第4列上半存放远近角点id
 
 

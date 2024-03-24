@@ -22,7 +22,7 @@ uint32 *Flash_Data[] = {
                         &begin_x,
                         &begin_y,
                         /*==控制==*/
-                        &aimSpeed,
+                        &Speed_straight,
                         &aim_distance,
                         &centripetal_p_straight,
                         &centripetal_p_instraight,
@@ -43,6 +43,7 @@ uint32 *Flash_Data[] = {
 //                        &Speed[3],
                         &Motor.PWM_fan_up,
                         &Motor.PWM_fan_down,
+                        &Speed_instraight,
 
                        };
 /*================================ 接口函数 ==================================*/
@@ -93,12 +94,13 @@ MENU_TABLE Img_MenuTable[] =
 MENU_PRMT Ctrl_Prmt;
 MENU_TABLE Ctrl_MenuTable[] =
 {
-  {"0.aimSpeed",Menu_Null,&aimSpeed},
-  {"1.aim_dis",Menu_Null,&aim_distance},
-  {"2.force_k_stra",Menu_Null,&centripetal_p_straight},
-  {"3.force_k_in",Menu_Null,&centripetal_p_instraight},
-  {"4.UP",Menu_Null,&Motor.PWM_fan_up},
-  {"5.DOWN",Menu_Null,&Motor.PWM_fan_down},
+  {"0.S_stra",Menu_Null,&Speed_straight},
+  {"1.S_instra",Menu_Null,&Speed_instraight},
+  {"2.aim_dis",Menu_Null,&aim_distance},
+  {"3.force_k_stra",Menu_Null,&centripetal_p_straight},
+  {"4.force_k_in",Menu_Null,&centripetal_p_instraight},
+  {"5.UP",Menu_Null,&Motor.PWM_fan_up},
+  {"6.DOWN",Menu_Null,&Motor.PWM_fan_down},
 };
 
 

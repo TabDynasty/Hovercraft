@@ -129,6 +129,8 @@ extern int inv_Lpt0_rpts0s_id,inv_Lpt1_rpts1s_id;
 extern bool Lpt0_found,Lpt1_found;
 extern bool is_straight0, is_straight1,is_straight_far_0,is_straight_far_1;
 
+extern int max_point0_id,max_point1_id;
+
 extern int count0,count1;
 extern int origin_flag;/**< ³õÊ¼Ö¡±êÖ¾*/
 #endif /* IMAGE_H_ */

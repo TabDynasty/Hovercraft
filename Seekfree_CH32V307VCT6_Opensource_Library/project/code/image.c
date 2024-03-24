@@ -114,6 +114,7 @@ int dir_rightnum0,dir_leftnum1;/**<统计左边线的向右点，和右边线向左的个数*/
 int Lpt0_num, Lpt1_num;/**边线上角点数量*/
 int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
 int inv_Lpt0_rpts0s_id,inv_Lpt1_rpts1s_id;
+int max_point0_id,max_point1_id;
 bool Lpt0_found, Lpt1_found;
 
 // 长直道
@@ -840,7 +841,7 @@ void find_corners() {
     is_straight0 = rpts0s_num > 1.4 / sample_dist;
     is_straight1 = rpts1s_num > 1.4 / sample_dist;
     //计算左线的conf0和判断左线的长直道
-    for (int i = 0; i <rpts0s_num; i++)
+    for (int i = 0; i <rpts0s_num-10; i++)
     {
         if (rpts0an[i] == 0) continue;
         int im0 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts0s_num - 1);//向前取一个点
@@ -849,14 +850,17 @@ void find_corners() {
         conf0  = fabs(rpts0a[i]) - (fabs(rpts0a[im0]) + fabs(rpts0a[ip0])) / 2;
         conf0=conf0*180/PI;
         if(Lconf_Min<conf0&&conf0<Lconf_Max)Lpt0_num++;
-
         if (Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.0/(sample_dist)))
         {
             Lpt0_rpts0s_id = i;
             Lpt0_found = true;
         }
-        if(conf0>conf0_max)conf0_max = conf0;//用于图显
-        if(conf0>15&&i< 1.4/sample_dist) is_straight0 = false; //只要中间有大角度，就不是长直道
+        if(conf0>conf0_max){
+            conf0_max = conf0;//用于图显
+            max_point0_id = i;
+        }
+
+        if(conf0>10&&i< 1.4/sample_dist) is_straight0 = false; //只要中间有大角度，就不是长直道
         if (Lpt0_found==true&&is_straight0==false) break;//只找第一个角点
     }
 
@@ -876,7 +880,10 @@ void find_corners() {
             Lpt1_rpts1s_id = i;
             Lpt1_found = true;
         }
-        if(conf1>conf1_max)conf1_max = conf1;//用于图显
+        if(conf1>conf1_max){
+            conf1_max = conf1;//用于图显
+            max_point1_id = i;
+        }
         if(conf1>15&&i< 1.4/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
         if (Lpt1_found==true&&is_straight1==false) break;//只找第一个角点
     }
