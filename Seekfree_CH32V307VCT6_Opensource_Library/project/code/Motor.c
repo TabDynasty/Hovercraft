@@ -35,7 +35,7 @@ void Speed_Set(void)
 {
     int ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     int vel_gain = Vertical_circle(aimSpeed, Speed_now);
-    float centripetal_gain = Speed_now* Speed_now* abs((int)angle)/1000;
+    float centripetal_gain = Speed_now * abs((int)angle)/100;
     debug_show_int("ang", ang_gain, 1);
     debug_show_int("vel", vel_gain, 3);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
@@ -71,7 +71,6 @@ void Motor_Init(void)
 void Motor_Set(int speed, int spin ,float force)
 {
     int pwm1=0,pwm2=0,pwm3=0,pwm4=0;
-    //给速度pwm
     if(speed>=0)
     {
         pwm3+=speed;
@@ -81,7 +80,6 @@ void Motor_Set(int speed, int spin ,float force)
         pwm2+=speed;
     }
 
-    //给角速度pwm
     if(spin>=0){
         pwm1+=spin;
         pwm4+=spin;
@@ -90,7 +88,6 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3+=-spin;
     }
 
-    //提供向心力pwm
     if(is_straight0 == 1 && is_straight1 == 1)
     {
         if(angle>2){
@@ -111,12 +108,6 @@ void Motor_Set(int speed, int spin ,float force)
             pwm4+=force * centripetal_p_instraight;
         }
     }
-
-    //输出pwm限幅
-//    clip(pwm1, 20, 200);
-//    clip(pwm2, 20, 200);
-//    clip(pwm3, 20, 200);
-//    clip(pwm4, 20, 200);
     if(pwm1 > 200)
         pwm1 = 200;
     if(pwm2 > 200)
@@ -125,6 +116,7 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3 = 200;
     if(pwm4 > 200)
         pwm4 = 200;
+
     if(pwm1 <= 20)
         pwm1 = 20;
     if(pwm2 <=  20)
@@ -190,11 +182,9 @@ int Vertical_circle(int aim_vel, int now_vel)
 // 返回参数     void
 // 使用示例     pit_speed();
 //-------------------------------------------------------------------------------------------------------------------
-
 void pit_speed(void)
 {
     Speed_now = encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
-    debug_show_int("sped", Speed_now, 6);
     encoder_clear_count(TIM3_ENCOEDER);                                        // 清空编码器计数
     //flag置为1时，开始积分
     if(!Integral_vel_flag){
