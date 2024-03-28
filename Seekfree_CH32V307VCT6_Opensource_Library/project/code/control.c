@@ -10,6 +10,7 @@
 #include "zf_common_headfile.h"
 
 uint32 aimSpeed=0;/**< 目标速度*/
+int Speed_straight,Speed_instraight;
 uint32 aim_distance=440;//除了1000
 uint32 AIM_DISTANCE=440;/**< 直接用于计算*/
 float angle;
@@ -89,6 +90,13 @@ void control_Init()
        }
     }
 
+    //速度决策
+    if(is_straight0&&is_straight1)
+    {
+        aimSpeed = Speed_straight;
+    }else{
+        aimSpeed = Speed_instraight;
+    }
        float H_zoom = 0.95f;
        float Half_width = MT9V03X_W/2;
        cx = (rot[1][0]*MT9V03X_H*H_zoom+rot[1][1]*Half_width+rot[1][2])/(rot[2][0]*MT9V03X_H*H_zoom+rot[2][1]*Half_width+rot[2][2]);

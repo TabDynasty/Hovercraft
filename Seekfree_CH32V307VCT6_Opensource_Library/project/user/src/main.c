@@ -178,26 +178,22 @@ void data_show(void)
                     draw_Show();
                     //测定偏置以及获得电池电量
                     get_offset();
-                    //show_power();
+                    show_power();
                     //第1列存放各种标志位
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_float (35, 64,sobel0,3,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,is_straight0,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,is_straight1,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
-                    //tft180_show_float (105, 0,(float)power_level * 0.1578,2,2,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (70, 80,(int)data,3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (70, 96,mpu6050_acc_y - offset_acc_y,2,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int (70, 112,mpu6050_acc_z - offset_acc_z,2,RGB565_RED,RGB565_WHITE);
-                    //第4列上半存放远近角点id
-
-
-                    //tft180_show_float (105, 0,(float)power_level * 0.1578,2,2,RGB565_RED,RGB565_YELLOW);
+                    tft180_show_int (70, 64,conf0_max,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 80,conf1_max,2,RGB565_RED,RGB565_WHITE);
+//                    tft180_show_int (70, 96,max_point0_id,3,RGB565_RED,RGB565_WHITE);
+//                    tft180_show_int (70, 112,max_point1_id,2,RGB565_RED,RGB565_WHITE);
 
                     tft180_show_int   (105,32,debug_data_int[2],2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,48,debug_data_int[3],2,RGB565_RED,RGB565_WHITE);
@@ -345,7 +341,7 @@ void show_power()
 {
     power_level = Sliding_Filter(&Power_level, adc_convert(ADC1_IN9_B1), 0);
     float percent = ((float)power_level * 0.1578-14.8)/2*45;
-    if(percent > 0){
+    if(percent > 1 && percent<45){
         tft180_show_float (105, 16, ((float)power_level * 0.1578-14.8)/2*100, 2,1,RGB565_BLACK,RGB565_WHITE);
         tft180_show_char (140, 16, '%',RGB565_BLACK,RGB565_WHITE);
         tft180_draw_line (105, 0, 150, 0, RGB565_BLACK);
