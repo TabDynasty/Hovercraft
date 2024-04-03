@@ -32,9 +32,9 @@ uint32 *Flash_Data[] = {
                         &Angle_vel[2],
 //                        &Angle_vel[3],
 
-                        &Angle[0],
-                        &Angle[1],
-                        &Angle[2],
+                        &Angle_0[0],
+                        &Angle_0[1],
+                        &Angle_0[2],
                         //&Angle[3],
 //
                         &Speed[0],
@@ -47,6 +47,11 @@ uint32 *Flash_Data[] = {
                         &find_type,
                         &Speed_straight,
                         &Speed_instraight,
+                        &aim_signal,
+
+                        &Angle_1[0],
+                        &Angle_1[1],
+                        &Angle_1[2],
                        };
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void beep_On();
@@ -105,6 +110,7 @@ MENU_TABLE Ctrl_MenuTable[] =
         {"4.force_k_in",Menu_Null,&centripetal_p_instraight},
         {"5.UP",Menu_Null,&Motor.PWM_fan_up},
         {"6.DOWN",Menu_Null,&Motor.PWM_fan_down},
+        {"7.aim_signal",Menu_Null,&aim_signal},
 };
 
 
@@ -117,9 +123,13 @@ MENU_TABLE PID_MenuTable[] =
   {"Ang_vel_I",Menu_Null,&Angle_vel[1]},
   {"Ang_vel_D",Menu_Null,&Angle_vel[2]},
 
-  {"Ang_P",Menu_Null,&Angle[0]},
-  {"Ang_I",Menu_Null,&Angle[1]},
-  {"Ang_D",Menu_Null,&Angle[2]},
+  {"Ang0_P",Menu_Null,&Angle_0[0]},
+  {"Ang0_I",Menu_Null,&Angle_0[1]},
+  {"Ang0_D",Menu_Null,&Angle_0[2]},
+
+  {"Ang1_P",Menu_Null,&Angle_1[0]},
+  {"Ang1_I",Menu_Null,&Angle_1[1]},
+  {"Ang1_D",Menu_Null,&Angle_1[2]},
 
   {"Speed_P",Menu_Null,&Speed[0]},
   {"Speed_I",Menu_Null,&Speed[1]},

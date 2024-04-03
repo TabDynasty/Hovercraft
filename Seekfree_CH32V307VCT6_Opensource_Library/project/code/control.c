@@ -97,6 +97,8 @@ void control_Init()
     }else{
         aimSpeed = Speed_instraight;
     }
+
+
        float H_zoom = 0.95f;
        float Half_width = MT9V03X_W/2;
        cx = (rot[1][0]*MT9V03X_H*H_zoom+rot[1][1]*Half_width+rot[1][2])/(rot[2][0]*MT9V03X_H*H_zoom+rot[2][1]*Half_width+rot[2][2]);
@@ -160,8 +162,13 @@ void control_Init()
               // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
                pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
                //外环角度环
-               angle    = PID_Realize(&Angle_PID, Angle,pure_angle,0);
-               debug_show_float("angl", angle, 3);
+
+               if(is_straight0&&is_straight1)
+               {
+                   angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
+               }else{
+                   angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
+               }
            }
            else  // 中线点过少(出现问题)，此时不转角
            {

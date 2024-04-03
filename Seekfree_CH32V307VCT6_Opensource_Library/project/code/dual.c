@@ -4,7 +4,7 @@
 #include "zf_driver_uart.h"
 
 #define _UART_INDEX        UART_7                                      // 无线串口对应使用的串口号
-#define _UART_BAUDRATE     115200                                      // 无线串口对应使用的串口波特率
+#define _UART_BAUDRATE     9600                                     // 无线串口对应使用的串口波特率
 #define _UART_TX_PIN       UART7_MAP3_TX_E12                           // 无线串口对应模块的 TX 要接到单片机的 RX
 #define _UART_RX_PIN       UART7_MAP3_RX_E13                           // 无线串口对应模块的 RX 要接到单片机的 TX
 

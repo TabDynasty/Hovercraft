@@ -40,6 +40,8 @@
 #include "garage.h"
 #include "utils.h"
 #include "obstacle.h"
+#include "filters.h"
+//串口采集数据用
 
 /*================================ 全局变量 ==================================*/
 void NMI_Handler(void)       __attribute__((interrupt()));
@@ -314,7 +316,6 @@ void TIM4_IRQHandler(void)
     {
        TIM_ClearITPendingBit(TIM4, TIM_IT_Update );
 
-
     }
 }
 
@@ -335,6 +336,9 @@ void TIM6_IRQHandler(void)
        mpu6050_get_gyro ();
        extern void pit_speed(void);
        pit_speed();
+//       char strff[8];
+//       sprintf(strff,"%.2f",imu_dataz.y_prev);
+//       char *newchar =  strncat(strff, "\n",0);
     }
 }
 
@@ -348,13 +352,14 @@ void TIM7_IRQHandler(void)
     }
 }
 
-
+extern frame_vote;
 void TIM8_UP_IRQHandler(void)
 {
     if(TIM_GetITStatus(TIM8, TIM_IT_Update) != RESET)
     {
         TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
-
+        tft180_show_int(105,0,frame_vote,5,RGB565_RED,RGB565_BLUE);
+        frame_vote= 0;
     }
 }
 

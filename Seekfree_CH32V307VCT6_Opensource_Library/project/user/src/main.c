@@ -79,15 +79,17 @@ uint16 power_level = 0;
 image_t img_raw = DEF_IMAGE(NULL, MT9V03X_W, MT9V03X_H);
 //按键调参的标志
 int8 show_pagex,show_pagey,key_pos;
+int frame_vote;
+bool slow_start_flag = true;
 /********此区域debug用*********/
 
 
 
-
 /********此区域debug用*********/
+
 
 /********************************图显函数**************************************/
-void Pimage_show();//显示透视后的图像
+void Pimage_show(void);//显示透视后的图像
 void cross_circle_Show();//在原图上展示十字的各种东西
 void draw_Show();//原图划线
 void change_show_page();//翻页
@@ -96,6 +98,8 @@ void data_show();
 void get_offset();
 void show_power();
 int key=0;
+char strff[8];
+char *newchar;
 int main (void)
 {
     Init_all();     //初始化所有
@@ -105,6 +109,11 @@ int main (void)
     tft180_clear(RGB565_WHITE);
     while(1)
     {
+        frame_vote+=1;//计算帧率用
+//        memset(strff,0,sizeof(strff));
+//        sprintf(strff,"%.2f",imu_dataz.y_prev);
+//        strcat(strff, "\n");
+//        uart_write_string(UART_7, (uint8 *)strff);
         change_show_page();
         if(mt9v03x_finish_flag)
         {
@@ -226,6 +235,7 @@ void data_show(void)
                     //tft180_show_int   (105,16,SPD.aimSpeedL,3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int   (105,32,SPD.aimSpeedR, 3,RGB565_RED,RGB565_WHITE);
                     //tft180_show_int   (105,48,test_D, 3,RGB565_RED,RGB565_WHITE);
+                    //tft180_show_string(105, 0, strff,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,64,is_straight0, 2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,80,is_straight1, 2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,96,pure_angle, 2,RGB565_RED,RGB565_WHITE);
@@ -233,7 +243,15 @@ void data_show(void)
                 }
                 else if(show_pagex==2)
                 {
+                    static bool flag = 0;
                     motorflag=1;
+                    if(flag == 0)
+                    {
+                        system_delay_ms(2000);
+                        flag = 1;
+                        slow_start_flag = false;
+                    }
+
                 }
                 else if(show_pagex==3)
                {
@@ -384,7 +402,7 @@ void cross_circle_Show(void)
 }
 
 //透视变换展示
-void Pimage_show()
+void Pimage_show(void)
 {
   int X;
   int Y;
@@ -452,6 +470,7 @@ void Init_all(void)
     clock_init(SYSTEM_CLOCK_144M);  // 初始化芯片时钟 工作频率为 144MHz
     debug_init();                   // 初始化默认 Debug UART
     mt9v03x_init();
+    dual_com_init();
     /*无线图传初始化*/
     #if (WIFI_SPI_SHOW == 1)
     while(wifi_spi_init(WIFI_SSID_TEST, WIFI_PASSWORD_TEST))
@@ -497,6 +516,7 @@ void Init_all(void)
     /*中断初始化*/
     pit_ms_init(TIM6_PIT,10);
     pit_ms_init(TIM7_PIT,10);
+    pit_ms_init(TIM8_PIT,1000);
     /*软件初始化*/
     PID_Init();
     Filters_Init();

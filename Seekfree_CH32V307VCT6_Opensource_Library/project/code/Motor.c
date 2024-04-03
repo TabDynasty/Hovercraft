@@ -16,7 +16,7 @@
 #define PWM_4_PIN         TIM4_PWM_MAP1_CH4_D15
 
 ///*============================= 4路电机的起转pwm值  ================================*
-#define MOTOR_PWM_START      500
+#define MOTOR_PWM_START      530
 /*================================ 全局变量 ==================================*/
 SPEED_st Motor;          /* 电机结构体*/
 //标志位
@@ -26,6 +26,7 @@ bool motorflag=0   ;
 int centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
 int distance = 0;
+int aim_signal = 0;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
 // 参数说明     void
@@ -43,7 +44,6 @@ void Speed_Set(void)
     //上下两个风扇,船浮起来
     pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
     pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
-
 }
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     6路无刷电调以及电机各项参数初始化
@@ -61,6 +61,7 @@ void Motor_Init(void)
     pwm_init(PWM_2_PIN,     MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_3_PIN,     MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_4_PIN,     MOTOR_FREQ, INIT_PWM);
+
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -68,8 +69,10 @@ void Motor_Init(void)
 // 参数说明     pwmn 对应引脚的pwm输入值
 // 返回参数     void
 //-------------------------------------------------------------------------------------------------------------------
+extern bool slow_start_flag;
 void Motor_Set(int speed, int spin ,float force)
 {
+
     int pwm1=0,pwm2=0,pwm3=0,pwm4=0;
     if(speed>=0)
     {
@@ -117,20 +120,27 @@ void Motor_Set(int speed, int spin ,float force)
     if(pwm4 > 200)
         pwm4 = 200;
 
-    if(pwm1 <= 20)
-        pwm1 = 20;
-    if(pwm2 <=  20)
-        pwm2 =  20;
-    if(pwm3 <= 20)
-        pwm3 = 20;
-    if(pwm4 <= 20)
-        pwm4 = 20;
-    pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
-    pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
-    pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);
-    pwm_set_duty(PWM_4_PIN, MOTOR_PWM_START+pwm4);
-}
+    if(pwm1 <= 0)
+        pwm1 = 0;
+    if(pwm2 <=  0)
+        pwm2 =  0;
+    if(pwm3 <= 0)
+        pwm3 = 0;
+    if(pwm4 <= 0)
+        pwm4 = 0;
+    if(slow_start_flag == true)
+    {
+        pwm1 = 0;
+        pwm2 = 0;
+        pwm3 = 0;
+        pwm4 = 0;
+    }
+        pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
+        pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
+        pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);
+        pwm_set_duty(PWM_4_PIN, MOTOR_PWM_START+pwm4);
 
+}
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     内环角速度环，用于稳定姿态
 // 参数说明     aim_angle_vel      目标角速度
