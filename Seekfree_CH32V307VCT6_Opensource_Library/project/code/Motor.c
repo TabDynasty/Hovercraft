@@ -25,7 +25,7 @@ bool motorflag=0   ;
 
 int centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
-int distance = 0;
+int total_distance = 0;
 int aim_signal = 0;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -198,9 +198,9 @@ void pit_speed(void)
     encoder_clear_count(TIM3_ENCOEDER);                                        // 清空编码器计数
     //flag置为1时，开始积分
     if(!Integral_vel_flag){
-        distance = 0;}
+        total_distance = 0;}
     else{
-        distance += Speed_now;
+        total_distance += Speed_now;
     }
 }
 

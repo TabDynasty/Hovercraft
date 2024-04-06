@@ -66,8 +66,6 @@ float ANGLE=0;//实际传入的角度
 int farline_type=0;//右圆环寻左远线的标志位，左圆环同理
 int Count_ang_Flag=0;//开陀螺仪标志位
 int count_break_obs=0;//对路障，短路计数，用的同一种判别方法
-int total_distance=0;//编码器记的路程
-int circle_obstacle_type=0;//圆环障碍共用的一套标志位
 uint8 if_lost_left_line = 0,if_lost_right_line = 0;//是否丢线
 int tof_flag=0;//tof标志位
 int c_g_ciecleflag=0;
@@ -110,7 +108,7 @@ int main (void)
     while(1)
     {
         frame_vote+=1;//计算帧率用
-//        memset(strff,0,sizeof(strff));
+
 //        sprintf(strff,"%.2f",imu_dataz.y_prev);
 //        strcat(strff, "\n");
 //        uart_write_string(UART_7, (uint8 *)strff);
@@ -191,21 +189,21 @@ void data_show(void)
                     //第1列存放各种标志位
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (1,96,angle,4,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,is_straight0,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35, 80,is_straight1,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,Lpt0_num,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,Lpt1_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
-                    tft180_show_int (70, 64,conf0_max,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (70, 80,conf1_max,2,RGB565_RED,RGB565_WHITE);
-//                    tft180_show_int (70, 96,max_point0_id,3,RGB565_RED,RGB565_WHITE);
-//                    tft180_show_int (70, 112,max_point1_id,2,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 64,circle_type,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 80,total_distance,4,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 96,Lpt0_found,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 112,Lpt1_found,1,RGB565_RED,RGB565_WHITE);
 
-                    tft180_show_int   (105,32,debug_data_int[2],2,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,48,debug_data_int[3],2,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,32,far_Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,48,far_Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
                     tft180_show_int   (105,64,rpts0s_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,80,rpts1s_num,3,RGB565_RED,RGB565_WHITE);
@@ -387,7 +385,7 @@ void show_power()
 //展示圆环，十字
 void cross_circle_Show(void)
 {
-    if(cross_type!=CROSS_NONE||circle_type!=CIRCLE_NONE||garage_type!=GARAGE_NONE)
+    if(cross_type!=CROSS_NONE||circle_type!=CIRCLE_NONE)
     {
                 tft180_draw_point((int)((inv_Lpt0[0])/x_Zoom),(int)(inv_Lpt0[1]/y_Zoom),RGB565_PURPLE   );//左角点
                 tft180_draw_point(  (int)(far_Show_x0/x_Zoom) , (int)(far_Show_y0/y_Zoom) , RGB565_YELLOW   );//左远起始点

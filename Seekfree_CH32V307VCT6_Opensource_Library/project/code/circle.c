@@ -10,8 +10,7 @@
 enum circle_type_e circle_type = CIRCLE_NONE;
 extern image_t img_raw;
 int broadcast_flag=1;
-int circle_obstacle_flag=0;
-
+int circle_obstacle_flag=0;//圆环障碍共用的一套标志位
 int none_left_line = 0, none_right_line = 0;
 int have_left_line = 0, have_right_line = 0;
 
@@ -38,11 +37,10 @@ void check_Lcircle_Lobstacle()
           else
           {
             circle_type = CIRCLE_LEFT_BEGIN;
-            aim_distance=380;
             none_right_line = 0;
             have_right_line = 0;
           }
-            circle_obstacle_flag=0;
+          circle_obstacle_flag=0;
     }
 }
 
@@ -69,19 +67,8 @@ void check_Rcircle_Robstacle()
             circle_type = CIRCLE_RIGHT_BEGIN;
             none_right_line = 0;
             have_right_line = 0;
-
             }
             circle_obstacle_flag=0;
-//                        if(c_g_ciecleflag==0)
-//                        {
-//                        circle_type = CIRCLE_RIGHT_BEGIN;
-//                        c_g_ciecleflag=1;
-//                        }
-//                        if(c_g_ciecleflag==1)
-//                        {
-//                            c_g_ciecleflag=2;
-//                            circle_type = CIRCLE_RIGHT_BEGIN;
-//                        }
        }
 }
 /******************************************************************************
@@ -111,7 +98,7 @@ void run_Lcircle()
                 //先丢左线后识别到左线转换到下一个阶段
                 if (rpts0s_num < 0.2 / sample_dist&&!Lpt0_found) { none_left_line++; have_left_line = 0;}
                 if (rpts0s_num > 0.2 / sample_dist && none_left_line > 2)have_left_line++;
-                if (have_left_line > 1)
+                if (have_left_line > 1 && !Lpt0_found)
                 {
                     circle_type = CIRCLE_LEFT_IN;
                     none_left_line = 0;
@@ -120,50 +107,55 @@ void run_Lcircle()
                 break;
             case CIRCLE_LEFT_IN:
                 track_type = TRACK_LEFT;
-                if(rpts1s_num < 0.2 / sample_dist)none_right_line++;
-                if(none_right_line>3)//调整none_line可以改变响应时间
+                check_Left_Cross();
+                //if(rpts1s_num < 0.2 / sample_dist)none_right_line++;
+                if(far_Lpt0_found&&ipts0_num<20)//调整none_line可以改变响应时间
                 {
                     check_Right_Cross();
+                    Integral_vel_flag=1;
                     farline_type=1;//切寻远线
                 }
-                if(rpts1s_num >15&&none_right_line>2)//右边近处线寻到
+                if(total_distance>2500)
                 {
                     circle_type = CIRCLE_LEFT_RUNNING;
+                    farline_type=0;
                     none_right_line = 0;
+                    Integral_vel_flag=0;
                 }
                 break;
             case CIRCLE_LEFT_RUNNING:
                 track_type = TRACK_RIGHT;
-                if (Lpt1_found) rpts1s_num = rptsc1_num = Lpt1_rpts1s_id;                   //截断
-                //外环拐点(右L点)
+                if (Lpt0_found) rpts0s_num = rptsc0_num = Lpt0_rpts0s_id;                   //截断
                 begin_y=110;//近线起始点拉低，防止丢线
                 if (Lpt1_found && Lpt1_rpts1s_id < 30)//右角点足够靠下
                 {
-                    circle_type = CIRCLE_LEFT_END;
+                    circle_type = CIRCLE_LEFT_OUT;
                     begin_y=96;
                 }
 
                 break;
-//            case CIRCLE_LEFT_OUT:
-//                //check_Right_Circle();
-//                track_type = TRACK_LEFT;
-//                //右线为长直道
-//                if (rpts1s_num<0.2/ sample_dist)
-//                {
-//                    circle_type = CIRCLE_LEFT_END;
-//                }
-//                break;
-
-            case CIRCLE_LEFT_END:
-                //track_type = TRACK_RIGHT;
+            case CIRCLE_LEFT_OUT:
+                //track_type = TRACK_LEFT;
                 Integral_vel_flag=1;
-                if (total_distance>=3800)//编码器running阶段角度出环，需要修改
+                if (total_distance>=1000&&is_straight1)//编码器running阶段角度出环，需要修改
                 {
                     Integral_vel_flag=0;
-                    circle_type = CIRCLE_NONE;
+                    circle_type = CIRCLE_LEFT_END;
                 }
                 break;
 
+            case CIRCLE_LEFT_END:
+                track_type = TRACK_RIGHT;
+                Integral_vel_flag=1;
+                begin_y=110;//近线起始点拉低，防止丢线
+                if (total_distance>=4000)//编码器running阶段角度出环，需要修改
+                {
+                    aim_distance=440;
+                    circle_type = CIRCLE_NONE;
+                    begin_y=96;
+                    Integral_vel_flag=0;
+                }
+                break;
         }
 }
 
@@ -183,7 +175,7 @@ void run_Rcircle()
                 //先丢右线后识别到右线转换到下一个阶段
                 if (rpts1s_num < 0.2 / sample_dist&&!Lpt1_found) { none_right_line++; have_right_line = 0;}
                 if (rpts1s_num > 0.2 / sample_dist && none_right_line > 2) have_right_line++;
-                if (have_right_line > 1)
+                if (have_right_line > 1 && !Lpt1_found)
                {
                    circle_type = CIRCLE_RIGHT_IN;
                    none_right_line = 0;
@@ -214,7 +206,6 @@ void run_Rcircle()
             case CIRCLE_RIGHT_RUNNING:
                 track_type = TRACK_LEFT;
                 if (Lpt1_found) rpts1s_num = rptsc1_num = Lpt1_rpts1s_id; //截断
-                //外环拐点(右L点)
                 begin_y=110;//近线起始点拉低，防止丢线
                 if (Lpt0_found && Lpt0_rpts0s_id < 30)//左角点足够靠下
                 {
@@ -244,8 +235,6 @@ void run_Rcircle()
                     begin_y=96;
                     Integral_vel_flag=0;
                 }
-                break;
-
                 break;
         }
 

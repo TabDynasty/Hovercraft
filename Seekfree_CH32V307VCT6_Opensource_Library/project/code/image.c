@@ -911,6 +911,8 @@ void find_corners() {
     is_straight0 = rpts0s_num > 1.4 / sample_dist;
     is_straight1 = rpts1s_num > 1.4 / sample_dist;
     //计算左线的conf0和判断左线的长直道
+    Lpt0_num=0;
+    Lpt1_num=0;
     for (int i = 0; i <rpts0s_num; i++)
     {
         if (rpts0an[i] == 0) continue;

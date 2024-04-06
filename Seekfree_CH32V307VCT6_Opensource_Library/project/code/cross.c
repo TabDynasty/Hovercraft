@@ -137,9 +137,10 @@ void run_Cross()
 
 //
             //当近处角点全丢的时候进入CROSS_IN
-            if((Lpt0_rpts0s_id<10||Lpt1_rpts1s_id<10)&&
-                    ((rpts0s_num<50&&ipts0_num>2)||(rpts1s_num<50&&ipts1_num>2))
-                &&(far_ipts0_num>15||far_ipts1_num>15))
+            if((Lpt0_rpts0s_id<10&&(rpts0s_num<50&&ipts0_num>2)&&far_ipts0_num>15)||(Lpt1_rpts1s_id<10&&(rpts1s_num<50&&ipts1_num>2)&&far_ipts1_num>15))
+//            if((Lpt0_rpts0s_id<10||Lpt1_rpts1s_id<10)&&
+//                    ((rpts0s_num<50&&ipts0_num>2)||(rpts1s_num<50&&ipts1_num>2))
+//                &&(far_ipts0_num>15||far_ipts1_num>15))
             {
                 cross_type=CROSS_IN;
             }
@@ -155,6 +156,7 @@ void run_Cross()
             {
                 cross_type = CROSS_NONE;
                 not_have_line=0;
+//                memset(strff,0,sizeof(strff));
             }
             if (far_Lpt1_found) { track_type = TRACK_RIGHT; }
             else if (far_Lpt0_found) { track_type = TRACK_LEFT; }
@@ -259,17 +261,10 @@ void check_Left_Cross()
     far_rpts0an_num = far_rpts0a_num;
     find_far_L0();
     if(circle_type==0)
-        {
-        if(cross_type!=CROSS_NONE)
-        {
-        track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
-        far_rptsc0_num = far_rpts0s_num- far_Lpt0_rpts0s_id;
-        }
-        else{
-            track_leftline(far_rpts0s, far_rpts0s_num, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
-            far_rptsc0_num = far_rpts0s_num;
-        }
-        }
+    {
+    track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
+    far_rptsc0_num = far_rpts0s_num- far_Lpt0_rpts0s_id;
+    }
 }
 
 /******************************************************************************
