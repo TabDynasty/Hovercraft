@@ -66,13 +66,13 @@ float PID_Realize(PID *sptr, int *PID, float NowData, float Point)
          sptr->SumError = -PID[KT]/ki_t;
      }
 
-
      Realize = kp_t * iError
              + ki_t * sptr->SumError
              + kd_t * (iError - sptr->LastError);
 
      sptr->LastError = iError;           // 更新上次误差
      sptr->LastData  = NowData;          // 更新上次数据
+
      return Realize; // 返回实际值
 }
 

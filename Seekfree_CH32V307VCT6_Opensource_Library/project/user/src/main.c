@@ -191,18 +191,18 @@ void data_show(void)
                     //第1列存放各种标志位
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (1,96,angle,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_float   (1,96,angle,3,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_float (1,112,(inv_aim_idx[0]+inv_aim_idx[1])/2,3,1,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
                     tft180_show_int (35, 64,is_straight0,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35, 80,is_straight1,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35,96,x0,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35,112,x1,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
                     tft180_show_int (70, 64,conf0_max,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (70, 80,conf1_max,2,RGB565_RED,RGB565_WHITE);
-//                    tft180_show_int (70, 96,max_point0_id,3,RGB565_RED,RGB565_WHITE);
-//                    tft180_show_int (70, 112,max_point1_id,2,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 96,dir_rightnum0,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 112,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);
 
                     tft180_show_int   (105,32,debug_data_int[2],2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,48,debug_data_int[3],2,RGB565_RED,RGB565_WHITE);
@@ -269,7 +269,7 @@ void data_show(void)
 
             for(int i = 0; i <= 7; i++)
             {
-                tft180_show_string(80, i*16, data_name_float[i],RGB565_BLUE,RGB565_WHITE);
+               // tft180_show_string(80, i*16, data_name_float[i],RGB565_BLUE,RGB565_WHITE);
                 tft180_show_float (115, i*16,debug_data_float[i],3,3,RGB565_RED,RGB565_WHITE);
             }
             break;

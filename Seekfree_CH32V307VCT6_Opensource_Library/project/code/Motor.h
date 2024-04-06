@@ -42,6 +42,7 @@ extern bool Integral_vel_flag;
 extern int speed_now;
 extern int centripetal_p_straight,centripetal_p_instraight;
 extern int aim_signal ;
+extern int Speed_now ;
 #endif /* MOTOR_H_ */
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void Motor_Init(void);
