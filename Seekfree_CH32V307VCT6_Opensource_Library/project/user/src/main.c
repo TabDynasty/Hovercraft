@@ -267,7 +267,7 @@ void data_show(void)
 
             for(int i = 0; i <= 7; i++)
             {
-                tft180_show_string(80, i*16, data_name_float[i],RGB565_BLUE,RGB565_WHITE);
+               // tft180_show_string(80, i*16, data_name_float[i],RGB565_BLUE,RGB565_WHITE);
                 tft180_show_float (115, i*16,debug_data_float[i],3,3,RGB565_RED,RGB565_WHITE);
             }
             break;

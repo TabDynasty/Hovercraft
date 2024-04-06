@@ -117,6 +117,7 @@ extern float conf0;
 extern float conf1;
 extern float conf0_max;
 extern float conf1_max;
+extern int x0,x1;
 
 extern uint32 Lconf_Min,Lconf_Max;
 

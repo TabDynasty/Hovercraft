@@ -118,26 +118,26 @@ void control_Init()
                }
            }
 
-           //利用中线上最近的点，向两侧检查该点附近是否有斑马线
-           bool zebra_L_flag=0;
-           bool zebra_R_flag=0;
-           for (int i = 0; i < pixel_per_meter * (ROAD_WIDTH/2 - 0.15); i++)//检查宽度需要考虑避障
-           {
-               if(obstacle_type!=OBSTACLE_NONE)break;
-               if(AT_IMAGE(&img_raw, (int)(rpts[begin_id][0]-i), (int)(rpts[begin_id][1])) < Ostu_Thres)
-               {
-                   zebra_L_flag = 1;
-               }
-               if(AT_IMAGE(&img_raw, (int)(rpts[begin_id][0]+i), (int)(rpts[begin_id][1])) < Ostu_Thres)
-               {
-                   zebra_R_flag = 1;
-               }
-               if(zebra_L_flag && zebra_R_flag)
-               {
-                   garage_type=GARAGE_FOUND;
-                   break;
-               }
-           }
+//           //利用中线上最近的点，向两侧检查该点附近是否有斑马线
+//           bool zebra_L_flag=0;
+//           bool zebra_R_flag=0;
+//           for (int i = 0; i < pixel_per_meter * (ROAD_WIDTH/2 - 0.15); i++)//检查宽度需要考虑避障
+//           {
+//               if(obstacle_type!=OBSTACLE_NONE)break;
+//               if(AT_IMAGE(&img_raw, (int)(rpts[begin_id][0]-i), (int)(rpts[begin_id][1])) < Ostu_Thres)
+//               {
+//                   zebra_L_flag = 1;
+//               }
+//               if(AT_IMAGE(&img_raw, (int)(rpts[begin_id][0]+i), (int)(rpts[begin_id][1])) < Ostu_Thres)
+//               {
+//                   zebra_R_flag = 1;
+//               }
+//               if(zebra_L_flag && zebra_R_flag)
+//               {
+//                   garage_type=GARAGE_FOUND;
+//                   break;
+//               }
+//           }
            if(garage_type!=GARAGE_NONE)
                run_garage();
 
@@ -157,6 +157,7 @@ void control_Init()
                float dy    = cy - rptsn[aim_idx][1];
                float dn    = sqrt(dx * dx + dy * dy);
 
+
                error=atan2f(dx,-dy)*180.0/PI;
                // 纯跟踪算法
               // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
@@ -166,9 +167,11 @@ void control_Init()
                if(is_straight0&&is_straight1)
                {
                    angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
-               }else{
+               }
+               else{
                    angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
                }
+               //angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
            }
            else  // 中线点过少(出现问题)，此时不转角
            {

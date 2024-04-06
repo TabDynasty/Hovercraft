@@ -122,7 +122,7 @@ uint32 Lconf_Max=120;/**< 直角阈值 */
 float sobel0=0,sobel1=0;
 float conf0,conf1,conf0_max,conf1_max;/**< max用来显示在屏幕*/
 extern image_t img_raw ;
-static int x0,x1;
+int x0,x1;
 int find_type=0;//0表示使用大津法寻找起始点，1表示使用sobel寻找起始点
 /*================================ 接口函数 ==================================*/
 //Sobel函数
@@ -405,17 +405,17 @@ void findline_lefthand_adaptive01(image_t *img, int block_size, int clip_value, 
             pts[step][0] = x;
             pts[step][1] = y;
             dir_[step]=dir;
-            if(dir==2){
+            if(dir==2 && step <=80){
                     back_num++;//dir==2判断向下生长
             }
-            if(dir==1){
+            if(dir==1 && step <=80){
                     right_num++;//dir==1判断向右生长
                        }
             step++;
             turn = 0;
         } else {
             dir_[step]=dir;
-            if(dir==2){
+            if(dir==2 && step <=80){
                      back_num++;//dir==2判断向下生长
             }
             x += dir_frontleft[dir][0];
@@ -542,37 +542,38 @@ void findline_righthand_adaptive01(image_t *img, int block_size, int clip_value,
         //int current_value = AT(img, x, y);
         int front_value = AT(img, x + dir_front[dir][0], y + dir_front[dir][1]);
         int frontright_value = AT(img, x + dir_frontright[dir][0], y + dir_frontright[dir][1]);
-        if (front_value < local_thres) {
-            dir = (dir + 3) % 4;
-            turn++;//此处为转向，生长方向还没有固定
-        } else if (frontright_value < local_thres) {
-            x += dir_front[dir][0];
-            y += dir_front[dir][1];
-            pts[step][0] = x;
-            pts[step][1] = y;
-            dir_[step]=dir;
-            if(dir==2){
-            back_num++;//dir==2判断向下生长
-            }
-            if(dir==3){
-            left_num++;//dir==3判断向左生长
-            }
-            step++;
-            turn = 0;
-        } else {
-            dir_[step]=dir;
-            if(dir==2){
-            back_num++;//dir==2判断向下生长
-            }
-            x += dir_frontright[dir][0];
-            y += dir_frontright[dir][1];
-            dir = (dir + 1) % 4;
-            pts[step][0] = x;
-            pts[step][1] = y;
+            if (front_value < local_thres) {
+                dir = (dir + 3) % 4;
+                turn++;//此处为转向，生长方向还没有固定
+            } else if (frontright_value < local_thres) {
+                x += dir_front[dir][0];
+                y += dir_front[dir][1];
+                pts[step][0] = x;
+                pts[step][1] = y;
+                dir_[step]=dir;
+                if(dir==2 && step <=80){
+                back_num++;//dir==2判断向下生长
+                }
+                if(dir==3 && step <=80){
+                left_num++;//dir==3判断向左生长
+                }
+                step++;
+                turn = 0;
+            } else {
+                dir_[step]=dir;
+                if(dir==2 && step <=80){
+                back_num++;//dir==2判断向下生长
+                }
+                x += dir_frontright[dir][0];
+                y += dir_frontright[dir][1];
+                dir = (dir + 1) % 4;
+                pts[step][0] = x;
+                pts[step][1] = y;
 
-            step++;
-            turn = 0;
-        }
+                step++;
+                turn = 0;
+            }
+
     }
 
     *num = step;

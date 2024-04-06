@@ -22,7 +22,7 @@ typedef struct _LowPassFilter// 一阶低通滤波器结构体
 
 typedef struct _Sliding_Data//滑行数据
 {
-    unsigned short int filter_arry[16];//滤波器阵列
+    unsigned short int filter_arry[10];//滤波器阵列
     unsigned char      count;
 } Sliding_Data;
 #endif /* FILTERS_H_ */

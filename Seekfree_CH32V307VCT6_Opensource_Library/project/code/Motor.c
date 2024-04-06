@@ -36,7 +36,7 @@ void Speed_Set(void)
 {
     int ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     int vel_gain = Vertical_circle(aimSpeed, Speed_now);
-    float centripetal_gain = Speed_now * abs((int)angle)/100;
+    float centripetal_gain = (float)Speed_now * abs((int)angle)/1000;
     debug_show_int("ang", ang_gain, 1);
     debug_show_int("vel", vel_gain, 3);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
@@ -93,20 +93,31 @@ void Motor_Set(int speed, int spin ,float force)
 
     if(is_straight0 == 1 && is_straight1 == 1)
     {
-        if(angle>2){
+        if(pure_angle>2){
             pwm1+=force * centripetal_p_straight;
             pwm3+=force * centripetal_p_straight;
         }
-        if(angle<-2){
+        if(pure_angle<-2){
             pwm2+=force * centripetal_p_straight;
             pwm4+=force * centripetal_p_straight;
         }
+        if(x0 >60)
+        {
+            pwm2+=40;
+            pwm4+=40;
+
+        }
+        if(x1 <120)
+        {
+            pwm1+=40;
+            pwm3+=40;
+        }
     }else{
-        if(angle>2){
+        if(pure_angle>2){
             pwm1+=force * centripetal_p_instraight;
             pwm3+=force * centripetal_p_instraight;
         }
-        if(angle<-2){
+        if(pure_angle<-2){
             pwm2+=force * centripetal_p_instraight;
             pwm4+=force * centripetal_p_instraight;
         }
