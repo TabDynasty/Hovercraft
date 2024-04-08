@@ -93,31 +93,31 @@ void Motor_Set(int speed, int spin ,float force)
 
     if(is_straight0 == 1 && is_straight1 == 1)
     {
-        if(pure_angle>2){
+        if(angle>2){
             pwm1+=force * centripetal_p_straight;
             pwm3+=force * centripetal_p_straight;
         }
-        if(pure_angle<-2){
+        if(angle<-2){
             pwm2+=force * centripetal_p_straight;
             pwm4+=force * centripetal_p_straight;
         }
-        if(x0 >60)
-        {
-            pwm2+=40;
-            pwm4+=40;
-
-        }
-        if(x1 <120)
-        {
-            pwm1+=40;
-            pwm3+=40;
-        }
+//        if(x0 >60)
+//        {
+//            pwm2+=40;
+//            pwm4+=40;
+//
+//        }
+//        if(x1 <120)
+//        {
+//            pwm1+=40;
+//            pwm3+=40;
+//        }
     }else{
-        if(pure_angle>2){
+        if(angle>2){
             pwm1+=force * centripetal_p_instraight;
             pwm3+=force * centripetal_p_instraight;
         }
-        if(pure_angle<-2){
+        if(angle<-2){
             pwm2+=force * centripetal_p_instraight;
             pwm4+=force * centripetal_p_instraight;
         }

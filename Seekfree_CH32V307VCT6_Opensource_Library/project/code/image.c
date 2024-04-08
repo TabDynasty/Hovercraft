@@ -67,7 +67,7 @@ extern uint16 Ostu_Thres;
 int pixel_per_meter     =100;
 float ROAD_WIDTH        =0.45;
 float sample_dist       =0.02;
-float angle_dist        =0.20;
+float angle_dist        =0.10;
 
 int origin_flag = 0;/**< 初始帧标志*/
 
@@ -109,7 +109,6 @@ int dir_backnum0,dir_backnum1;/**<统计左右边线的向下点的个数*/
 int dir_rightnum0,dir_leftnum1;/**<统计左边线的向右点，和右边线向左的个数*/
 
 // L角点
-int Lpt0_num, Lpt1_num;/**边线上角点数量*/
 int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
 int inv_Lpt0_rpts0s_id,inv_Lpt1_rpts1s_id;
 bool Lpt0_found, Lpt1_found;
@@ -820,10 +819,14 @@ void process_image()
         ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
         ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
         if (AT_IMAGE(&img_raw, x0, begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres)
-            findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, begin_y, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
+            if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)<=abs(x1-img_raw.width/2)))
+                findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, begin_y, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
+            else ipts0_num = 0;
         else ipts0_num = 0;
         if (AT_IMAGE(&img_raw, x1, begin_y) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres)
-            findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
+            if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)>abs(x1-img_raw.width/2)))
+                findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
+            else ipts1_num = 0;
         else ipts1_num = 0;
         break;
     case 1:
@@ -912,8 +915,6 @@ void find_corners() {
     is_straight0 = rpts0s_num > 1.4 / sample_dist;
     is_straight1 = rpts1s_num > 1.4 / sample_dist;
     //计算左线的conf0和判断左线的长直道
-    Lpt0_num=0;
-    Lpt1_num=0;
     for (int i = 0; i <rpts0s_num; i++)
     {
         if (rpts0an[i] == 0) continue;
@@ -922,8 +923,6 @@ void find_corners() {
 
         conf0  = fabs(rpts0a[i]) - (fabs(rpts0a[im0]) + fabs(rpts0a[ip0])) / 2;
         conf0=conf0*180/PI;
-        if(Lconf_Min<conf0&&conf0<Lconf_Max)Lpt0_num++;
-
         if (Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.0/(sample_dist)))
         {
             Lpt0_rpts0s_id = i;
@@ -943,8 +942,6 @@ void find_corners() {
 
         conf1  = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
         conf1=conf1*180/PI;
-        if(Lconf_Min<conf1&&conf1<Lconf_Max)Lpt1_num++;
-
         if (Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&(i<1.0/(sample_dist)))//限距离，限尖峰
         {
             Lpt1_rpts1s_id = i;

@@ -74,10 +74,25 @@ void control_Init()
             rpts_num = far_rptsc1_num;
         }
     }
+    else if ((circle_type==CIRCLE_LEFT_IN)&&farline_type==1)//入圆环，切特殊远线
+    {
+        rpts = far_rptsc1;
+        rpts_num = far_rptsc1_num;
+    }
+    else if ((circle_type==CIRCLE_LEFT_RUNNING)&&Lpt1_found)//出圆环，截取角点以前的近线
+    {
+        rpts = rptsc1;
+        rpts_num = rptsc1_num = rpts1s_num= Lpt1_rpts1s_id;
+    }
     else if ((circle_type==CIRCLE_RIGHT_IN)&&farline_type==1)//入圆环，切特殊远线
     {
         rpts = far_rptsc0;
         rpts_num = far_rptsc0_num;
+    }
+    else if ((circle_type==CIRCLE_RIGHT_RUNNING)&&Lpt0_found)//出圆环，截取角点以前的近线
+    {
+        rpts = rptsc0;
+        rpts_num = rptsc0_num = rpts0s_num= Lpt0_rpts0s_id;
     }
     else{//正常寻左右线,左障碍寻左线，右障碍寻右线
        if (track_type == TRACK_LEFT){
@@ -154,6 +169,9 @@ void control_Init()
                aim_idx = (int)clip(round(AIM_DISTANCE/1000.0/sample_dist), 0, rptsn_num - 1);
                // 计算远锚点偏差值
                float dx    = rptsn[aim_idx][0] - cx;
+               if(obstacle_type==OBSTACLE_LEFT_BEGIN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=10;
+               else if(obstacle_type==OBSTACLE_RIGHT_BEGIN||obstacle_type==OBSTACLE_RIGHT_OUT)dx-=10;
+
                float dy    = cy - rptsn[aim_idx][1];
                float dn    = sqrt(dx * dx + dy * dy);
 
@@ -162,6 +180,8 @@ void control_Init()
                // 纯跟踪算法
               // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
                pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
+               if(circle_type==CIRCLE_LEFT_OUT)pure_angle=-45;
+               else if(circle_type==CIRCLE_RIGHT_OUT)pure_angle=45;
                //外环角度环
 
                if(is_straight0&&is_straight1)
