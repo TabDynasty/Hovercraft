@@ -215,3 +215,18 @@ void pit_speed(void)
     }
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     停车关闭所有电机，在中断调用
+// 参数说明     void
+// 返回参数     void
+// 使用示例     stop_set();
+//-------------------------------------------------------------------------------------------------------------------
+void Stop_Set(void)
+{
+    pwm_set_duty(PWM_UP_PIN,   INIT_PWM);
+    pwm_set_duty(PWM_DOWN_PIN, INIT_PWM);
+    pwm_set_duty(PWM_1_PIN, INIT_PWM);
+    pwm_set_duty(PWM_2_PIN, INIT_PWM);
+    pwm_set_duty(PWM_3_PIN, INIT_PWM);
+    pwm_set_duty(PWM_4_PIN, INIT_PWM);
+}

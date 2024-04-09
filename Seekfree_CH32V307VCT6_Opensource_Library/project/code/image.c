@@ -843,7 +843,8 @@ void process_image()
     default:
         break;
     }
-
+//    debug_show_int('x0', x0 , 5);
+//    debug_show_int('x1', x1 , 6);
 
 
 

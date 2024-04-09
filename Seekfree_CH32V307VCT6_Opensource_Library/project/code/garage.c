@@ -6,14 +6,57 @@
 #include "cross.h"
 #include "Motor.h"
 #include "zf_common_headfile.h"
-enum garage_type_e garage_type = GARAGE_NONE;
+enum garage_type_e garage_type = GARAGE_OUT;
+extern image_t img_raw ;
+int zebra_L_flag=0;
+int zebra_R_flag=0;
+int zebraL_x=0;
+int zebraR_x=0;
+
+void check_garage()
+{
+    //利用左右边线上比起始点更远一点的点，检查赛道中间是否有斑马线
+//    int zebra_L_flag=0;
+//    int zebra_R_flag=0;
+//    int zebraL_x=0;
+//    int zebraR_x=0;
+    zebra_L_flag=0;
+    zebra_R_flag=0;
+    zebraL_x=0;
+    zebraR_x=0;
+    for (int i = 1; i < pixel_per_meter * ROAD_WIDTH/2; i++)
+    {
+       if(zebra_L_flag==0 && AT_IMAGE(&img_raw, (int)(ipts0[1][0]+i), (int)(ipts0[1][1])) < Ostu_Thres)//等距采样后左边线上的第二个点，向右寻找黑色像素点
+       {
+           zebra_L_flag = 1;
+           zebraL_x=ipts0[1][0]+i;
+       }
+       if(zebra_R_flag==0 && AT_IMAGE(&img_raw, (int)(ipts1[1][0]-i), (int)(ipts1[1][1])) < Ostu_Thres)//等距采样后右边线上的第二个点，向左寻找黑色像素点
+       {
+           zebra_R_flag = 1;
+           zebraR_x=ipts1[1][0]-i;
+       }
+       if(zebra_L_flag && zebra_R_flag && zebraR_x-zebraL_x>20)//检测到赛道中间有黑色像素点，且两像素点间隔一定距离
+       {
+           garage_type=GARAGE_FOUND;
+           break;
+       }
+       if((ipts1[1][0]-i)-(ipts0[1][0]+i)<5)//当检测点在x轴上距离足够近时结束循环
+           break;
+    }
+//    debug_show_int('Lfl', zebra_L_flag , 1);
+//    debug_show_int('Rfl', zebra_R_flag , 2);
+//    debug_show_int('Lx', zebraL_x , 3);
+//    debug_show_int('Rx', zebraR_x , 4);
+
+}
 
 void run_garage()
 {
     if(garage_type==GARAGE_OUT)//出车库
     {
         Integral_vel_flag=1;
-        if(total_distance>2500)
+        if(total_distance>1500)
         {
             garage_type=GARAGE_NONE;
             Integral_vel_flag=0;
@@ -21,9 +64,12 @@ void run_garage()
     }
     if(garage_type==GARAGE_FOUND)//停车
     {
-
         Integral_vel_flag=1;
-
+        if(total_distance>1500)
+        {
+            garage_type=GARAGE_STOP;
+            Integral_vel_flag=0;
+        }
     }
 
 }

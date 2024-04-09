@@ -14,5 +14,6 @@ enum obstacle_type_e
 };
 /*================================ 全局变量 ==================================*/
 extern enum obstacle_type_e  obstacle_type;
-
+void run_Lobstacle();
+void run_Robstacle();
 #endif /* OBSTACLE_H_ */

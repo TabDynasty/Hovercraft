@@ -63,6 +63,8 @@ void control_Init()
         run_Lobstacle();
         run_Robstacle();
     }
+    if(garage_type!=GARAGE_NONE)
+        run_garage();
     if(cross_type==CROSS_IN)//近十字，切寻远线
     {
         if (track_type == TRACK_LEFT){
@@ -114,96 +116,75 @@ void control_Init()
     }
 
 
-       float H_zoom = 0.95f;
-       float Half_width = MT9V03X_W/2;
-       cx = (rot[1][0]*MT9V03X_H*H_zoom+rot[1][1]*Half_width+rot[1][2])/(rot[2][0]*MT9V03X_H*H_zoom+rot[2][1]*Half_width+rot[2][2]);
-       cy = (rot[0][0]*MT9V03X_H*H_zoom+rot[0][1]*Half_width+rot[0][2])/(rot[2][0]*MT9V03X_H*H_zoom+rot[2][1]*Half_width+rot[2][2]);
+   float H_zoom = 0.95f;
+   float Half_width = MT9V03X_W/2;
+   cx = (rot[1][0]*MT9V03X_H*H_zoom+rot[1][1]*Half_width+rot[1][2])/(rot[2][0]*MT9V03X_H*H_zoom+rot[2][1]*Half_width+rot[2][2]);
+   cy = (rot[0][0]*MT9V03X_H*H_zoom+rot[0][1]*Half_width+rot[0][2])/(rot[2][0]*MT9V03X_H*H_zoom+rot[2][1]*Half_width+rot[2][2]);
 
-       float min_dist = 100000;
-       int begin_id = 0;
-       //在中线上找与车轮起始点最近的点
-           for (int i = 0; i < rpts_num; i++) {
+   float min_dist = 100000;
+   int begin_id = 0;
+   //在中线上找与车轮起始点最近的点
+   for (int i = 0; i < rpts_num; i++) {
 
-               float dx = rpts[i][0] - cx;//中线点与车轮点距离
-               float dy = rpts[i][1] - cy;
-               float dist = sqrt(dx * dx + dy * dy);
-               if (dist < min_dist) {
-                   min_dist = dist;
-                   begin_id = i;
-               }
-           }
-
-//           //利用中线上最近的点，向两侧检查该点附近是否有斑马线
-//           bool zebra_L_flag=0;
-//           bool zebra_R_flag=0;
-//           for (int i = 0; i < pixel_per_meter * (ROAD_WIDTH/2 - 0.15); i++)//检查宽度需要考虑避障
-//           {
-//               if(obstacle_type!=OBSTACLE_NONE)break;
-//               if(AT_IMAGE(&img_raw, (int)(rpts[begin_id][0]-i), (int)(rpts[begin_id][1])) < Ostu_Thres)
-//               {
-//                   zebra_L_flag = 1;
-//               }
-//               if(AT_IMAGE(&img_raw, (int)(rpts[begin_id][0]+i), (int)(rpts[begin_id][1])) < Ostu_Thres)
-//               {
-//                   zebra_R_flag = 1;
-//               }
-//               if(zebra_L_flag && zebra_R_flag)
-//               {
-//                   garage_type=GARAGE_FOUND;
-//                   break;
-//               }
-//           }
-           if(garage_type!=GARAGE_NONE)
-               run_garage();
-
-           // 中线有点，同时最近点不是最后几个点
-           if (begin_id >= 0 && rpts_num - begin_id >= 3)//切摄像头
-           {
-               rpts[begin_id][0] = cx;
-               rpts[begin_id][1] = cy;
-               rptsn_num = sizeof(rptsn) / sizeof(rptsn[0]);
-               resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
-               AIM_DISTANCE=aim_distance;
+       float dx = rpts[i][0] - cx;//中线点与车轮点距离
+       float dy = rpts[i][1] - cy;
+       float dist = sqrt(dx * dx + dy * dy);
+       if (dist < min_dist) {
+           min_dist = dist;
+           begin_id = i;
+       }
+   }
 
 
-               aim_idx = (int)clip(round(AIM_DISTANCE/1000.0/sample_dist), 0, rptsn_num - 1);
-               // 计算远锚点偏差值
-               float dx    = rptsn[aim_idx][0] - cx;
-               if(obstacle_type==OBSTACLE_LEFT_BEGIN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=10;
-               else if(obstacle_type==OBSTACLE_RIGHT_BEGIN||obstacle_type==OBSTACLE_RIGHT_OUT)dx-=10;
+   // 中线有点，同时最近点不是最后几个点
+   if (begin_id >= 0 && rpts_num - begin_id >= 3)//切摄像头
+   {
+       rpts[begin_id][0] = cx;
+       rpts[begin_id][1] = cy;
+       rptsn_num = sizeof(rptsn) / sizeof(rptsn[0]);
+       resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
+       AIM_DISTANCE=aim_distance;
 
-               float dy    = cy - rptsn[aim_idx][1];
-               float dn    = sqrt(dx * dx + dy * dy);
+
+       aim_idx = (int)clip(round(AIM_DISTANCE/1000.0/sample_dist), 0, rptsn_num - 1);
+       // 计算远锚点偏差值
+       float dx    = rptsn[aim_idx][0] - cx;
+       if(obstacle_type==OBSTACLE_LEFT_BEGIN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=10;
+       else if(obstacle_type==OBSTACLE_RIGHT_BEGIN||obstacle_type==OBSTACLE_RIGHT_OUT)dx-=10;
+
+       float dy    = cy - rptsn[aim_idx][1];
+       float dn    = sqrt(dx * dx + dy * dy);
 
 
-               error=atan2f(dx,-dy)*180.0/PI;
-               // 纯跟踪算法
-              // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
-               pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
-               if(circle_type==CIRCLE_LEFT_OUT)pure_angle=-45;
-               else if(circle_type==CIRCLE_RIGHT_OUT)pure_angle=45;
-               //外环角度环
+       error=atan2f(dx,-dy)*180.0/PI;
+       // 纯跟踪算法
+      // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
+       pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
+       if(circle_type==CIRCLE_LEFT_OUT)pure_angle=-45;
+       else if(circle_type==CIRCLE_RIGHT_OUT)pure_angle=45;
+       //外环角度环
 
-               if(is_straight0&&is_straight1)
-               {
-                   angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
-               }
-               else{
-                   angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
-               }
-               //angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
-           }
-           else  // 中线点过少(出现问题)，此时不转角
-           {
-               rptsn_num = 0;
-           }
+       if(is_straight0&&is_straight1)
+       {
+           angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
+       }
+       else{
+           angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
+       }
+       //angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
+   }
+   else  // 中线点过少(出现问题)，此时不转角
+   {
+       rptsn_num = 0;
+   }
 }
 void check_all()
 {
-    //斑马线检查位于control_Init()中
+
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
     check_circle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE)
     check_Cross();
-
+    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
+    check_garage();
 }

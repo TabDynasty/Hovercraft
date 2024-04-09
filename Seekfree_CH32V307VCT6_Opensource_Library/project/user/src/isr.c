@@ -349,6 +349,8 @@ void TIM7_IRQHandler(void)
        TIM_ClearITPendingBit(TIM7, TIM_IT_Update );
        if(motorflag==1)
            Speed_Set();
+       else
+           Stop_Set();
     }
 }
 

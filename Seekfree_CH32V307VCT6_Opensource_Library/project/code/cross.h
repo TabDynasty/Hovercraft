@@ -60,4 +60,5 @@ void check_Left_Cross();
 void check_Right_Cross();
 void find_far_L0();
 void find_far_L1();
+void run_Cross();
 #endif /* CROSS_H_ */

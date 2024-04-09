@@ -115,6 +115,7 @@ int main (void)
         change_show_page();
         if(mt9v03x_finish_flag)
         {
+            //tft180_clear(RGB565_BLUE);
             img_raw.data = mt9v03x_image[0];
             Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,MT9V03X_H);
             process_image();
@@ -193,7 +194,7 @@ void data_show(void)
                     tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
                     tft180_show_int (35, 64,obstacle_type,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35, 80,cross_type,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,garage_type,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
@@ -205,10 +206,10 @@ void data_show(void)
                     tft180_show_int   (105,32,far_Lpt0_found,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,48,far_Lpt1_found,3,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
-                    tft180_show_int   (105,64,dir_rightnum0,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,80,dir_leftnum1,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,96,Lpt0_rpts0s_id, 3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,112,Lpt1_rpts1s_id, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,64,zebra_L_flag,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,80,zebra_R_flag,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,96,zebraL_x, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,112,zebraR_x, 3,RGB565_RED,RGB565_WHITE);
                 }
                 else if(show_pagex==1)
                 {
@@ -242,13 +243,15 @@ void data_show(void)
                 else if(show_pagex==2)
                 {
                     static bool flag = 0;
-                    motorflag=1;
+                    if(garage_type==GARAGE_STOP)motorflag=0;
+                    else motorflag=1;
                     if(flag == 0)
                     {
                         system_delay_ms(2000);
                         flag = 1;
                         slow_start_flag = false;
                     }
+
 
                 }
                 else if(show_pagex==3)
