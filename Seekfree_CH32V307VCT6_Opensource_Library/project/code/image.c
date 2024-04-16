@@ -67,7 +67,7 @@ extern uint16 Ostu_Thres;
 int pixel_per_meter     =100;
 float ROAD_WIDTH        =0.45;
 float sample_dist       =0.02;
-float angle_dist        =0.10;
+float angle_dist        =0.14;
 
 int origin_flag = 0;/**< ³õÊ¼Ö¡±êÖ¾*/
 

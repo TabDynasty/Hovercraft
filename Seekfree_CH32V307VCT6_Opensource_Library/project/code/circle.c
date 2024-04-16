@@ -10,7 +10,7 @@
 enum circle_type_e circle_type = CIRCLE_NONE;
 extern image_t img_raw;
 int broadcast_flag=1;
-int circle_obstacle_flag=0;//圆环障碍共用的一套标志位
+bool circle_obstacle_flag=0;//圆环障碍共用的一套标志位
 int none_left_line = 0, none_right_line = 0;
 int have_left_line = 0, have_right_line = 0;
 
@@ -108,16 +108,16 @@ void run_Lcircle()
                 }
                 break;
             case CIRCLE_LEFT_IN:
-                track_type = TRACK_LEFT;
+                track_type = TRACK_RIGHT;
                 check_Left_Cross();
                 //if(rpts1s_num < 0.2 / sample_dist)none_right_line++;
-                if(far_Lpt0_found&&ipts0_num<40)//调整none_line可以改变响应时间
+                if(far_Lpt0_found&&ipts0_num<60)//调整none_line可以改变响应时间
                 {
                     check_Right_Cross();
                     Integral_vel_flag=1;
                     farline_type=1;//切寻远线
                 }
-                if(total_distance>2500)
+                if(total_distance>3000)
                 {
                     circle_type = CIRCLE_LEFT_RUNNING;
                     farline_type=0;
@@ -137,9 +137,9 @@ void run_Lcircle()
 
                 break;
             case CIRCLE_LEFT_OUT:
-                //track_type = TRACK_LEFT;
+                track_type = TRACK_LEFT;
                 Integral_vel_flag=1;
-                if (total_distance>=1000&&is_straight1)//编码器running阶段角度出环，需要修改
+                if (is_straight1)//编码器running阶段角度出环，需要修改
                 {
                     Integral_vel_flag=0;
                     circle_type = CIRCLE_LEFT_END;
@@ -186,18 +186,17 @@ void run_Rcircle()
                 break;
                 //寻右线，左线丢线后有线
             case CIRCLE_RIGHT_IN:
-                track_type = TRACK_RIGHT;
+                track_type = TRACK_LEFT;
                 check_Right_Cross();
 
-                //if(rpts0s_num < 0.2 / sample_dist) none_left_line++;
-
-                if(far_Lpt1_found&&ipts1_num<40)//调整none_line可以改变响应时间
+                //if(far_Lpt1_found)//调整none_line可以改变响应时间
+                if(far_Lpt1_found&&ipts1_num<60)//调整none_line可以改变响应时间
                 {
                     check_Left_Cross();
                     Integral_vel_flag=1;
                     farline_type=1;//切寻远线
                 }
-                if(total_distance>2500)//左边近处线寻到
+                if(total_distance>3000)//左边近处线寻到
                 {
                     circle_type = CIRCLE_RIGHT_RUNNING;
                     farline_type=0;
@@ -217,9 +216,10 @@ void run_Rcircle()
                 break;
 
             case CIRCLE_RIGHT_OUT:
-                //track_type = TRACK_LEFT;
+                track_type = TRACK_RIGHT;
                  Integral_vel_flag=1;
-                if (total_distance>=1000&&is_straight0)//编码器running阶段角度出环，需要修改
+                if (is_straight0)
+                //if (total_distance>=1000&&is_straight0)//编码器running阶段角度出环，需要修改
                 {
                     Integral_vel_flag=0;
                     circle_type = CIRCLE_RIGHT_END;
@@ -233,7 +233,6 @@ void run_Rcircle()
                 {
                     aim_distance=440;
                     circle_type = CIRCLE_NONE;
-                    //circle_obstacle_type=1;
                     begin_y=96;
                     Integral_vel_flag=0;
                 }

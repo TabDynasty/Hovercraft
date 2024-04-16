@@ -193,8 +193,8 @@ void data_show(void)
                     tft180_show_int   (1,96,angle,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,obstacle_type,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (35, 80,garage_type,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,obstacle_type,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 80,cross_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
@@ -206,10 +206,10 @@ void data_show(void)
                     tft180_show_int   (105,32,far_Lpt0_found,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,48,far_Lpt1_found,3,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
-                    tft180_show_int   (105,64,zebra_L_flag,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,80,zebra_R_flag,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,96,zebraL_x, 3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,112,zebraR_x, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,64,Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,80,Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,96,far_Lpt0_rpts0s_id, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,112,far_Lpt1_rpts1s_id, 3,RGB565_RED,RGB565_WHITE);
                 }
                 else if(show_pagex==1)
                 {

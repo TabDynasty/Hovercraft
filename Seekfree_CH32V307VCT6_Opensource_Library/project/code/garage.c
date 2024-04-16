@@ -6,7 +6,7 @@
 #include "cross.h"
 #include "Motor.h"
 #include "zf_common_headfile.h"
-enum garage_type_e garage_type = GARAGE_OUT;
+enum garage_type_e garage_type = GARAGE_NONE;
 extern image_t img_raw ;
 int zebra_L_flag=0;
 int zebra_R_flag=0;
@@ -26,12 +26,12 @@ void check_garage()
     zebraR_x=0;
     for (int i = 1; i < pixel_per_meter * ROAD_WIDTH/2; i++)
     {
-       if(zebra_L_flag==0 && AT_IMAGE(&img_raw, (int)(ipts0[1][0]+i), (int)(ipts0[1][1])) < Ostu_Thres)//等距采样后左边线上的第二个点，向右寻找黑色像素点
+       if(zebra_L_flag==0 && AT_IMAGE(&img_raw, (int)(ipts0[1][0]+i), (int)(ipts0[1][1])) < Ostu_Thres)//左边线上的第二个点，向右寻找黑色像素点
        {
            zebra_L_flag = 1;
            zebraL_x=ipts0[1][0]+i;
        }
-       if(zebra_R_flag==0 && AT_IMAGE(&img_raw, (int)(ipts1[1][0]-i), (int)(ipts1[1][1])) < Ostu_Thres)//等距采样后右边线上的第二个点，向左寻找黑色像素点
+       if(zebra_R_flag==0 && AT_IMAGE(&img_raw, (int)(ipts1[1][0]-i), (int)(ipts1[1][1])) < Ostu_Thres)//右边线上的第二个点，向左寻找黑色像素点
        {
            zebra_R_flag = 1;
            zebraR_x=ipts1[1][0]-i;
@@ -44,11 +44,6 @@ void check_garage()
        if((ipts1[1][0]-i)-(ipts0[1][0]+i)<5)//当检测点在x轴上距离足够近时结束循环
            break;
     }
-//    debug_show_int('Lfl', zebra_L_flag , 1);
-//    debug_show_int('Rfl', zebra_R_flag , 2);
-//    debug_show_int('Lx', zebraL_x , 3);
-//    debug_show_int('Rx', zebraR_x , 4);
-
 }
 
 void run_garage()

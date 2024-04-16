@@ -160,8 +160,7 @@ void control_Init()
        // 纯跟踪算法
       // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
        pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
-       if(circle_type==CIRCLE_LEFT_OUT)pure_angle=-45;
-       else if(circle_type==CIRCLE_RIGHT_OUT)pure_angle=45;
+
        //外环角度环
 
        if(is_straight0&&is_straight1)
@@ -185,6 +184,6 @@ void check_all()
     check_circle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE)
     check_Cross();
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
-    check_garage();
+    //if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
+    //check_garage();
 }
