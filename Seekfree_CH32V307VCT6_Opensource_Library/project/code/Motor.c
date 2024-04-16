@@ -8,15 +8,15 @@
 #include "filters.h"
 #include "image.h"
 /*=============================  电机引脚定义  ================================*/
-#define PWM_UP_PIN        TIM5_PWM_MAP0_CH1_A0
-#define PWM_DOWN_PIN      TIM5_PWM_MAP0_CH2_A1
-#define PWM_1_PIN         TIM4_PWM_MAP1_CH1_D12
-#define PWM_2_PIN         TIM4_PWM_MAP1_CH2_D13
-#define PWM_3_PIN         TIM4_PWM_MAP1_CH3_D14
-#define PWM_4_PIN         TIM4_PWM_MAP1_CH4_D15
+#define PWM_UP_PIN         TIM4_PWM_MAP1_CH4_D15
+#define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH1_D12
+#define PWM_1_PIN           TIM5_PWM_MAP0_CH2_A1
+#define PWM_2_PIN          TIM4_PWM_MAP1_CH2_D13
+#define PWM_3_PIN          TIM4_PWM_MAP1_CH3_D14
+#define PWM_4_PIN          TIM5_PWM_MAP0_CH1_A0
 
 ///*============================= 4路电机的起转pwm值  ================================*
-#define MOTOR_PWM_START      530
+#define MOTOR_PWM_START      540
 /*================================ 全局变量 ==================================*/
 SPEED_st Motor;          /* 电机结构体*/
 //标志位
@@ -45,7 +45,7 @@ void Speed_Set(void)
     pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
     pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
 }
-//-------------------------------------------------------------------------------------------------------------------
+ //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     6路无刷电调以及电机各项参数初始化
 // 参数说明     void
 // 返回参数     void
@@ -103,14 +103,13 @@ void Motor_Set(int speed, int spin ,float force)
         }
 //        if(x0 >60)
 //        {
-//            pwm2+=40;
-//            pwm4+=40;
-//
+//            pwm2+=force * centripetal_p_straight;
+//            pwm4+=force * centripetal_p_straight;
 //        }
 //        if(x1 <120)
 //        {
-//            pwm1+=40;
-//            pwm3+=40;
+//            pwm1+=force * centripetal_p_straight;
+//            pwm3+=force * centripetal_p_straight;
 //        }
     }else{
         if(angle>2){
