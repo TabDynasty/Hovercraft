@@ -69,7 +69,7 @@ float ROAD_WIDTH        =0.45;
 float sample_dist       =0.02;
 float angle_dist        =0.14;
 
-int origin_flag = 0;/**< 初始帧标志*/
+bool origin_flag = 0;/**< 初始帧标志*/
 
 int ipts0[LINE_LENTH][2];/**< 原图左边线*/
 int ipts1[LINE_LENTH][2];/**< 原图右边线*/

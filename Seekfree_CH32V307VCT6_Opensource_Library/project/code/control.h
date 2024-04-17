@@ -1,10 +1,18 @@
 #ifndef CONTROL_H_
 #define CONTROL_H_
 #include "zf_common_headfile.h"
+
+/*================================ 接口函数 ==================================*/
+void control_Init();
+void check_all();
+
+/*============================= 结构体联合体定义 =============================*/
 enum track_type_e {
     TRACK_LEFT,
     TRACK_RIGHT,
 };
+
+/*================================ 全局变量 ==================================*/
 extern uint32 aimSpeed;/**< 目标速度*/
 extern int Speed_straight,Speed_instraight;
 extern int times;
@@ -25,4 +33,5 @@ extern float (*rpts)[2];/**< 中线*/
 extern int rpts_num;
 extern float rptsn[MT9V03X_W][2];/**< 归一化中线*/
 extern int rptsn_num;
+
 #endif /* CONTROL_H_ */

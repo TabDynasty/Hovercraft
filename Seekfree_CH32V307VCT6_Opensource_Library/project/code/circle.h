@@ -1,12 +1,6 @@
-/*
- * circle.h
- *
- *  Created on: 2023年5月30日
- *      Author: 唐纪元
- */
-
 #ifndef CIRCLE_H_
 #define CIRCLE_H_
+
 
 enum circle_type_e {
     CIRCLE_NONE = 0,
@@ -16,9 +10,14 @@ enum circle_type_e {
     CIRCLE_LEFT_OUT, CIRCLE_RIGHT_OUT,
     CIRCLE_LEFT_END, CIRCLE_RIGHT_END,
 };
+
+/*================================ 接口函数 ==================================*/
 void check_circle();
 void run_Lcircle();
 void run_Rcircle();
+
+/*================================ 全局变量 ==================================*/
 extern enum circle_type_e circle_type;
 extern bool circle_obstacle_flag;
+
 #endif /* CIRCLE_H_ */

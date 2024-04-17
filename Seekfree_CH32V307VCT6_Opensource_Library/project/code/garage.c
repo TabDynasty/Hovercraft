@@ -8,18 +8,12 @@
 #include "zf_common_headfile.h"
 enum garage_type_e garage_type = GARAGE_NONE;
 extern image_t img_raw ;
-int zebra_L_flag=0;
-int zebra_R_flag=0;
-int zebraL_x=0;
-int zebraR_x=0;
+bool zebra_L_flag,zebra_R_flag;
+int zebraL_x,zebraR_x;
 
 void check_garage()
 {
     //利用左右边线上比起始点更远一点的点，检查赛道中间是否有斑马线
-//    int zebra_L_flag=0;
-//    int zebra_R_flag=0;
-//    int zebraL_x=0;
-//    int zebraR_x=0;
     zebra_L_flag=0;
     zebra_R_flag=0;
     zebraL_x=0;

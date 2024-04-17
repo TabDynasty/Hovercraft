@@ -1,15 +1,16 @@
 #ifndef CROSS_H_
 #define CROSS_H_
 #include "zf_common_headfile.h"
-/*================================ 全局变量 ==================================*/
 
+/*============================= 结构体联合体定义 =============================*/
 enum cross_type_e {
     CROSS_NONE = 0,     // 非十字模式
     CROSS_BEGIN,        // 找到上下两个L角点
     CROSS_IN,           // 近处L角点全丢了，固定搜线
 };
-extern enum cross_type_e cross_type;
 
+/*================================ 全局变量 ==================================*/
+extern enum cross_type_e cross_type;
 
 extern float inv_Lpt0[2],inv_Lpt1[2];/**< 左右L角点对应原图的点*/
 extern float inv_Back_Lpt0[2],inv_Back_Lpt1[2];/**< 左右L角点后的一个点*/
@@ -53,12 +54,13 @@ extern uint32 far_begin_y;/**< 远线搜寻的起始点*/
 
 extern float far_conf0_max;/**< 用于图显*/
 extern float far_conf1_max;/**< 用于图显*/
-/*================================ 接口函数 ==================================*/
 
+/*================================ 接口函数 ==================================*/
 void check_Cross();
 void check_Left_Cross();
 void check_Right_Cross();
 void find_far_L0();
 void find_far_L1();
 void run_Cross();
+
 #endif /* CROSS_H_ */

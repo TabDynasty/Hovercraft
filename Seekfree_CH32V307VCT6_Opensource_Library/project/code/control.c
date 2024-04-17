@@ -30,8 +30,6 @@ float cx,cy;/**< 纯跟踪起始点*/
 int aim_idx;
 float error;
 float pure_angle;
-int keepangleflag=0;//圆环定角出flag
-
 
 #define ABS(x) (((x) > 0) ? (x) : (-(x)))
 int rpts_num;
@@ -184,6 +182,6 @@ void check_all()
     check_circle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE)
     check_Cross();
-    //if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
-    //check_garage();
+    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
+    check_garage();
 }

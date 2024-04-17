@@ -65,8 +65,6 @@ int not_have_line=0;
 void check_Cross();
 void check_Left_Cross();
 void check_Right_Cross();
-void find_far_L0();
-void find_far_L1();
 void run_Cross();
 /******************************************************************************
 * FunctionName   : check_Cross1()
@@ -114,12 +112,6 @@ void check_Cross()
 *******************************************************************************/
 void run_Cross()
 {
-    if(cross_type!=CROSS_NONE)
-    {
-        begin_x=0;
-    }else{
-        begin_x=15;
-    }
     switch (cross_type)
     {
         //对边线进行截断处理
@@ -135,12 +127,8 @@ void run_Cross()
                 rptsc1_num = rpts0s_num =Lpt1_rpts1s_id-10;//用于后面的近线控制
             }
 
-//
-            //当近处角点全丢的时候进入CROSS_IN
+            //两近处角点靠下
             if((Lpt0_rpts0s_id<25&&(rpts0s_num<50&&ipts0_num>2)&&far_ipts0_num>15)||(Lpt1_rpts1s_id<25&&(rpts1s_num<50&&ipts1_num>2)&&far_ipts1_num>15))
-//            if((Lpt0_rpts0s_id<10||Lpt1_rpts1s_id<10)&&
-//                    ((rpts0s_num<50&&ipts0_num>2)||(rpts1s_num<50&&ipts1_num>2))
-//                &&(far_ipts0_num>15||far_ipts1_num>15))
             {
                 cross_type=CROSS_IN;
             }
@@ -156,7 +144,7 @@ void run_Cross()
             {
                 cross_type = CROSS_NONE;
                 not_have_line=0;
-//                memset(strff,0,sizeof(strff));
+
             }
             if (far_Lpt1_found) { track_type = TRACK_RIGHT; }
             else if (far_Lpt0_found) { track_type = TRACK_LEFT; }
@@ -213,21 +201,6 @@ void check_Left_Cross()
     }
 
 
-//    if(Lpt0_found)
-//    {
-
-//    }
-//    else
-//    {
-//        far_x0=MT9V03X_W/2-far_begin_x;
-//        far_y0=far_begin_y;
-//
-//        if(far_y0-far_ipts0[0][1]<10)
-//        {
-//            far_y0=far_ipts0[0][1]+10;
-//        }
-//
-//    }
     if(far_y0-far_ipts0[0][1]<5)
     {
         far_y0=far_ipts0[0][1]+5;
@@ -243,7 +216,6 @@ void check_Left_Cross()
     }
     if (AT_IMAGE(&img_raw, far_x0, far_y0) >= Ostu_Thres)
            findline_lefthand_adaptive(&img_raw, adaptive_Block, clip_value, far_x0, far_y0, far_ipts0, &far_ipts0_num);
-           //findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, far_x0, far_y0, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
        else far_ipts0_num = 0;
 
     // 去畸变+透视变换
@@ -274,11 +246,11 @@ void check_Left_Cross()
      {
         if(cross_type!=CROSS_NONE)
         {
-        track_rightline(far_rpts1s + far_Lpt1_rpts1s_id, far_rpts1s_num - far_Lpt1_rpts1s_id, far_rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
-        far_rptsc1_num = far_rpts1s_num- far_Lpt1_rpts1s_id;
+        track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+        far_rptsc0_num = far_rpts0s_num- far_Lpt0_rpts0s_id;
         }
         else{
-            track_rightline(far_rpts1s, far_rpts1s_num, far_rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
+            track_rightline(far_rpts1s, far_rpts1s_num, far_rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
             far_rptsc1_num = far_rpts1s_num;
         }
      }
@@ -346,7 +318,6 @@ void check_Right_Cross()
 
     if (AT_IMAGE(&img_raw, far_x1, far_y1) >= Ostu_Thres)
            findline_righthand_adaptive(&img_raw, adaptive_Block, clip_value, far_x1, far_y1, far_ipts1, &far_ipts1_num);
-          //findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, far_x1, far_y1, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
        else far_ipts1_num = 0;
 
     // 去畸变+透视变换
@@ -379,11 +350,11 @@ void check_Right_Cross()
      {
         if(cross_type!=CROSS_NONE)
         {
-        track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
-        far_rptsc0_num = far_rpts0s_num- far_Lpt0_rpts0s_id;
+        track_rightline(far_rpts1s + far_Lpt1_rpts1s_id, far_rpts1s_num - far_Lpt1_rpts1s_id, far_rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+        far_rptsc1_num = far_rpts1s_num- far_Lpt1_rpts1s_id;
         }
         else{
-            track_leftline(far_rpts0s, far_rpts0s_num, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
+            track_leftline(far_rpts0s, far_rpts0s_num, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
             far_rptsc0_num = far_rpts0s_num;
         }
      }

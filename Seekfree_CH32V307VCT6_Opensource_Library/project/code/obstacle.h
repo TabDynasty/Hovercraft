@@ -1,7 +1,8 @@
 #ifndef OBSTACLE_H_
 #define OBSTACLE_H_
-/*=============================== 头文件包含 =================================*/
 #include "zf_common_headfile.h"
+
+/*============================= 结构体联合体定义 =============================*/
 enum obstacle_type_e
 {
     OBSTACLE_NONE,
@@ -12,8 +13,13 @@ enum obstacle_type_e
     OBSTACLE_LEFT_OUT,
     OBSTACLE_RIGHT_OUT,
 };
+
 /*================================ 全局变量 ==================================*/
 extern enum obstacle_type_e  obstacle_type;
+
+/*================================ 接口函数 ==================================*/
+
 void run_Lobstacle();
 void run_Robstacle();
+
 #endif /* OBSTACLE_H_ */

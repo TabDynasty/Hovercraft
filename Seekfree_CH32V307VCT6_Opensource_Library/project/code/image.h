@@ -20,13 +20,6 @@ typedef struct image {
 #define DEF_IMAGE(ptr, w, h)         {.data=ptr, .width=w, .height=h, .step=w}
 #define ROI_IMAGE(img, x1, y1, w, h) {.data=&AT_IMAGE(img, x1, y1), .width=w, .height=h, .step=img.width}
 
-
-/*================================ 全局变量 ==================================*/
-
-
-extern float rot[3][3];/**< 透视矩阵*/
-extern float inv_rot[3][3];/**< 透视矩阵的逆矩阵*/
-
 /*================================ 接口函数 ==================================*/
 void sobelThreshold(uint8* img_data, uint8* output_data ,int width, int height,int Threshold);
 uint8 otsuThreshold(uint8 *image, uint16 width, uint16 height);
@@ -52,9 +45,10 @@ void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
 void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
 void process_image();
 void find_corners();
-//void Image_Process();
 
 /*================================ 全局变量 ==================================*/
+extern float rot[3][3];/**< 透视矩阵*/
+extern float inv_rot[3][3];/**< 透视矩阵的逆矩阵*/
 extern uint32 adaptive_Block;
 extern uint32 clip_value;
 extern float rot[3][3];/**< 透视矩阵*/
@@ -105,13 +99,6 @@ extern int dir_rightnum0,dir_leftnum1;/**<统计左边线的向右点，和右边线向左的个数
 
 extern uint32 begin_x;
 extern uint32 begin_y;
-extern uint32 BEGIN_Y;
-
-extern uint32 start_x;/**< 用于找边线的起始点*/
-extern uint32 start_y;/**< 用于找边线的起始点*/
-extern uint32 end_x;/**< 用于找边线的起始点*/
-extern uint32 end_y;/**< 用于找边线的起始点*/
-
 
 extern float conf0;
 extern float conf1;
@@ -121,15 +108,12 @@ extern int x0,x1;
 
 extern uint32 Lconf_Min,Lconf_Max;
 
-extern int16 delta_y;
-extern int16 delta_x;
-
 extern int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
 extern int inv_Lpt0_rpts0s_id,inv_Lpt1_rpts1s_id;
 extern bool Lpt0_found,Lpt1_found;
 extern bool is_straight0, is_straight1,is_straight_far_0,is_straight_far_1;
 
 extern float sobel0,sobel1;
-extern int origin_flag;/**< 初始帧标志*/
+extern bool origin_flag;/**< 初始帧标志*/
 extern int find_type;
 #endif /* IMAGE_H_ */
