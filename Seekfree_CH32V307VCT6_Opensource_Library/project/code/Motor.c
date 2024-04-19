@@ -16,7 +16,7 @@
 #define PWM_4_PIN          TIM5_PWM_MAP0_CH1_A0
 
 ///*============================= 4路电机的起转pwm值  ================================*
-#define MOTOR_PWM_START      5400
+#define MOTOR_PWM_START      540
 /*================================ 全局变量 ==================================*/
 SPEED_st Motor;          /* 电机结构体*/
 //标志位
@@ -53,8 +53,8 @@ void Speed_Set(void)
 void Motor_Init(void)
 {
     //气垫船浮起所需的pwm
-    Motor.PWM_fan_up = 5900     ;
-    Motor.PWM_fan_down = 5900;
+    Motor.PWM_fan_up = 590     ;
+    Motor.PWM_fan_down = 590;
     pwm_init(PWM_UP_PIN,    MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_DOWN_PIN,  MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_1_PIN,     MOTOR_FREQ, INIT_PWM);
@@ -145,11 +145,6 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3 = 0;
         pwm4 = 0;
     }
-    pwm1*=10;
-    pwm2*=10;
-    pwm3*=10;
-    pwm4*=10;
-
         pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
         pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
         pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);

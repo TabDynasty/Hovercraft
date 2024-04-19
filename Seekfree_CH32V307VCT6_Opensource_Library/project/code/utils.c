@@ -134,3 +134,44 @@ void debug_show_float(char data_name[], float debug_data , int index)
         data_name_float[index][j]  = data_name[j];
     }
 }
+
+void section_Off(void)
+{
+    gpio_set_level(E12, 0);//1
+    gpio_set_level(C1, 0);//2
+    gpio_set_level(E13, 0);//3
+    gpio_set_level(C0, 0);//4
+}
+
+void section_On_1(void)
+{
+    gpio_set_level(E12, 1);//1
+    gpio_set_level(C1, 0);//2
+    gpio_set_level(E13, 0);//3
+    gpio_set_level(C0, 0);//4
+}
+
+void section_On_2(void)
+{
+    gpio_set_level(E12, 1);//1
+    gpio_set_level(C1, 1);//2
+    gpio_set_level(E13, 0);//3
+    gpio_set_level(C0, 0);//4
+}
+
+void section_On_3(void)
+{
+    gpio_set_level(E12, 1);//1
+    gpio_set_level(C1, 1);//2
+    gpio_set_level(E13, 1);//3
+    gpio_set_level(C0, 0)
+    ;//4
+}
+
+void section_On_4(void)
+{
+    gpio_set_level(E12, 1);//1
+    gpio_set_level(C1, 1);//2
+    gpio_set_level(E13, 1);//3
+    gpio_set_level(C0, 1);//4
+}

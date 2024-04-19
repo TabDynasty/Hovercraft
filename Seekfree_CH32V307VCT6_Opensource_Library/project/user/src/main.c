@@ -381,7 +381,6 @@ void show_power()
             }
         }
     }
-
 }
 
 //展示圆环，十字
@@ -459,7 +458,6 @@ void get_offset(void)
           }
 
           off_setz /= 100;
-
     }
 }
 void select_section()
@@ -540,12 +538,20 @@ void Init_all(void)
     tft180_init ();                       //屏幕初始化
     Motor_Init();
     Key_Init();
-    //mpu6050_init ();
+    mpu6050_init ();
     W25QXX_Init();
     gpio_init(D8,GPI,0,GPI_FLOATING_IN);
+
+    gpio_init(C0,GPO,0,GPO_PUSH_PULL);
+    gpio_init(C1,GPO,0,GPO_PUSH_PULL);
+    gpio_init(E12,GPO,0,GPO_PUSH_PULL);
+    gpio_init(E13,GPO,0,GPO_PUSH_PULL);
+
     adc_init(ADC1_IN9_B1, ADC_8BIT);
     adc_convert(ADC1_IN9_B1);
     encoder_dir_init(TIM3_ENCOEDER, TIM3_ENCOEDER_MAP3_CH1_C6, TIM3_ENCOEDER_MAP3_CH2_C7);
+
+    section_On_4();
     /*中断初始化*/
     pit_ms_init(TIM6_PIT,10);
     pit_ms_init(TIM7_PIT,10);
