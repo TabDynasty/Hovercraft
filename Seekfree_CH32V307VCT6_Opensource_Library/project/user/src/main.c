@@ -79,6 +79,7 @@ image_t img_raw = DEF_IMAGE(NULL, MT9V03X_W, MT9V03X_H);
 int8 show_pagex,show_pagey,key_pos;
 int frame_vote;
 bool slow_start_flag = true;
+extern int8 flash_num;
 /********此区域debug用*********/
 
 
@@ -92,6 +93,7 @@ void cross_circle_Show();//在原图上展示十字的各种东西
 void draw_Show();//原图划线
 void change_show_page();//翻页
 void Init_all();
+void select_section();
 void data_show();
 void get_offset();
 void show_power();
@@ -101,17 +103,14 @@ char *newchar;
 int main (void)
 {
     Init_all();     //初始化所有
+    select_section();
     Read_Load();    //加载菜单
     MainMenu_Set(); //进入菜单
-    My_FlashWrite(1); //读取菜单
+    My_FlashWrite(flash_num); //读取菜单
     tft180_clear(RGB565_WHITE);
     while(1)
     {
         frame_vote+=1;//计算帧率用
-
-//        sprintf(strff,"%.2f",imu_dataz.y_prev);
-//        strcat(strff, "\n");
-//        uart_write_string(UART_7, (uint8 *)strff);
         change_show_page();
         if(mt9v03x_finish_flag)
         {
@@ -214,7 +213,7 @@ void data_show(void)
                 else if(show_pagex==1)
                 {
                     //tft180_show_int (1, 0,gain,4,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1, 16,ANGLE,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1, 16,Speed_now,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 32,dl1a_distance_mm,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 48,far_y1,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 64,(int)inv_far_Lpt1[0],3,RGB565_RED,RGB565_WHITE);
@@ -448,9 +447,9 @@ void draw_Show()
 void get_offset(void)
 {
 
-    if(gpio_get_level(D8)==1){
+    if(gpio_get_level(D9)==1){
         system_delay_ms(5);
-        while(gpio_get_level(D8));
+        while(gpio_get_level(D9));
           //获取陀螺仪偏置
           for(uint8 i=0;i<100;i++)        //采集100次
           {
@@ -463,7 +462,40 @@ void get_offset(void)
 
     }
 }
+void select_section()
+{
+    while(1){
+        key=Key_Scan();
+        tft180_show_string(0, 0, "The current version ",RGB565_RED,RGB565_WHITE);
+        switch (flash_num) {
+            case 0:
+                tft180_show_string(65,70 , "slow",RGB565_BLUE,RGB565_WHITE);
+                  break;
+            case 1:
+                tft180_show_string(65,70 , "fast",RGB565_BLUE,RGB565_WHITE);
+                  break;
+            default:
+                tft180_show_string(0,70 , "error,switch back",RGB565_RED,RGB565_WHITE);
+                break;
+        }
 
+        if(key == KEY_RIGHT)
+        {
+            flash_num++;
+            tft180_clear(RGB565_WHITE);
+        }
+        if(key == KEY_LEFT)
+        {
+            flash_num--;
+            tft180_clear(RGB565_WHITE);
+
+        }
+        if(key == KEY_MID)
+        {
+            break;
+        }
+    }
+}
 //初始化所有
 void Init_all(void)
 {
@@ -508,7 +540,7 @@ void Init_all(void)
     tft180_init ();                       //屏幕初始化
     Motor_Init();
     Key_Init();
-    mpu6050_init ();
+    //mpu6050_init ();
     W25QXX_Init();
     gpio_init(D8,GPI,0,GPI_FLOATING_IN);
     adc_init(ADC1_IN9_B1, ADC_8BIT);

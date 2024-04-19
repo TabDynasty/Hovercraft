@@ -618,7 +618,7 @@ void My_FlashWrite(int16 Boot)
 
     for(int i=0;i<FLASHDATANUM;i++)
     {
-        W25QXX_write_uint32(*Flash_Data[i],399,i);
+        W25QXX_write_uint32(*Flash_Data[i],Boot*200,i);
     }
     tft180_clear(RGB565_BLACK);
     tft180_show_string(0,56,"LoadOK!",RGB565_RED,RGB565_WHITE);
@@ -631,7 +631,7 @@ void My_FlashRead(int16 Boot)
 {
     for(int i=0;i<FLASHDATANUM;i++)
     {
-        *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = (FLASH_WRITE_TYPE)W25QXX_read_uint32(399,i);
+        *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = (FLASH_WRITE_TYPE)W25QXX_read_uint32(Boot*200,i);
     }
 }
 

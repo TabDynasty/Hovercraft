@@ -12,7 +12,7 @@
 /*================================ 全局变量 ==================================*/
 uint8 ExitMenu_flag = 0;  /**< 菜单退出标志位*/
 uint16  FLASHDATANUM;
-int8 flash_num = 0;     /**< 扇区选择参数，选择不同扇区对应不同方案，0为临时存档 */
+int8 flash_num = 0;     /**< 扇区选择参数，选择不同扇区对应不同方案,每个扇区最多存50个数 */
 uint32 mode_Flag=0;
 
 uint32 *Flash_Data[] = {
@@ -347,6 +347,7 @@ uint8 Menu_Move(MENU_PRMT *prmt, int key)
               prmt->PageNo = prmt->MaxPage-1;    // 最后页
           }
       }
+      tft180_clear(RGB565_BLACK);
       break;
     }
 
@@ -368,6 +369,7 @@ uint8 Menu_Move(MENU_PRMT *prmt, int key)
                 prmt->PageNo = 0;
           }
       }
+      tft180_clear(RGB565_BLACK);
       break;
     }
 
@@ -375,7 +377,6 @@ uint8 Menu_Move(MENU_PRMT *prmt, int key)
     {
             prmt->Index = prmt->Cursor + prmt->PageNo;   //计算执行项的索引
             rValue = 0;
-
             break;
     }
 
@@ -384,7 +385,6 @@ uint8 Menu_Move(MENU_PRMT *prmt, int key)
             //prmt->Cursor = 0;
             //prmt->PageNo = 0;
             prmt->ExitMark = 1;
-
             break;
     }
 
@@ -392,12 +392,13 @@ uint8 Menu_Move(MENU_PRMT *prmt, int key)
     {
             prmt->Cursor = prmt->DispNum-1;             // 光标到底
             prmt->PageNo = prmt->MaxPage-1;             // 最后页
-
+            tft180_clear(RGB565_BLACK);
                     break;
     }
 
     default:break;
   }
+
   return rValue;                    // 返回执行索引
 }
 
@@ -472,13 +473,7 @@ void Read_Load()
 {
   //开机直接加载临时存档
   FLASHDATANUM =sizeof(Flash_Data)/sizeof(Flash_Data[0]); //计算Flash参数个数
-  flash_num = 2;
   My_FlashRead(flash_num);
-
-  tft180_clear(RGB565_BLACK);
-  tft180_show_string(0,56,"LoadOK!",RGB565_RED,RGB565_WHITE);
-  tft180_show_int(0, 0, FLASHDATANUM, 5,RGB565_RED , RGB565_WHITE);
-  system_delay_ms(1000);
 }
 
 void Menu_Read_Flash(void)
