@@ -35,6 +35,7 @@ void findline_righthand_adaptive(image_t *img, int block_size, int clip_value, i
 void findline_righthand_sobel(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num);
 void findline_righthand_adaptive01(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num,int dir_[],int *num0,int *num1);
 
+void distort_img_process(int pts_in[][2], int num, int pts_out[][2]);
 void local_angle_points(float pts_in[][2], int num, float angle_out[], int dist);
 void nms_angle(float angle_in[], int num, float angle_out[], int kernel);
 void track_leftline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist);
@@ -47,6 +48,8 @@ void process_image();
 void find_corners();
 
 /*================================ 全局变量 ==================================*/
+extern float distort[3][3];/**< 去畸变矩阵*/
+extern float k1,k2;/**< 径向畸变系数*/
 extern float rot[3][3];/**< 透视矩阵*/
 extern float inv_rot[3][3];/**< 透视矩阵的逆矩阵*/
 extern uint32 adaptive_Block;
@@ -63,6 +66,10 @@ extern float angle_dist;/**< 角度采样距离*/
 extern int ipts0[LINE_LENTH][2];/**< 原图左边线 0x1y*/
 extern int ipts1[LINE_LENTH][2];/**< 原图右边线 0x1y*/
 extern int ipts0_num, ipts1_num;
+
+extern int dipts0[LINE_LENTH][2];/**< 去畸变左边线 0x1y*/
+extern int dipts1[LINE_LENTH][2];/**< 去畸变右边线 0x1y*/
+extern int dipts0_num, dipts1_num;
 
 extern float rpts0[LINE_LENTH][2];/**< 透视变换后左边线 0x1y*/
 extern float rpts1[LINE_LENTH][2];/**< 透视变换后右边线 0x1y*/

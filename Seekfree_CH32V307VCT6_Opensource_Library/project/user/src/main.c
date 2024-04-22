@@ -94,6 +94,7 @@ void draw_Show();//原图划线
 void change_show_page();//翻页
 void Init_all();
 void select_section();
+void distort_show(uint8*);
 void data_show();
 void get_offset();
 void show_power();
@@ -121,6 +122,9 @@ int main (void)
             find_corners();
             check_all();
             control_Init();//中线处理
+
+            if(far_Lpt0_found||far_Lpt1_found)section_On_1();
+            else section_Off();
             //屏显
             data_show();
             /********此区域debug用*********/
@@ -202,13 +206,13 @@ void data_show(void)
                     tft180_show_int (70, 96,Lpt0_found,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (70, 112,Lpt1_found,1,RGB565_RED,RGB565_WHITE);
 
-                    tft180_show_int   (105,32,far_Lpt0_found,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,48,far_Lpt1_found,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,32,conf0_max,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,48,conf1_max,3,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
-                    tft180_show_int   (105,64,Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,80,Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,96,far_Lpt0_rpts0s_id, 3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,112,far_Lpt1_rpts1s_id, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,64,far_conf0_max,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,80,far_conf1_max,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
                 }
                 else if(show_pagex==1)
                 {
@@ -281,16 +285,20 @@ void data_show(void)
                 //起始点
                 tft180_draw_point(  (int)((ipts0[0][0])/x_Zoom) , (int)(ipts0[0][1]/y_Zoom) , RGB565_YELLOW   );
                 tft180_draw_point(  (int)((ipts1[0][0])/x_Zoom) , (int)(ipts1[0][1]/y_Zoom) , RGB565_YELLOW   );
+                //去畸变边线
+                lcd_Show_Line(dipts0_num,dipts0,RGB565_WHITE);
+                lcd_Show_Line(dipts1_num,dipts1,RGB565_WHITE);
 
                 //第1列
                 tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (1,96,origin_flag,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 96,dipts0[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 112,dipts1[0][0],3,RGB565_RED,RGB565_WHITE);
                 //第2列
-                tft180_show_float (35, 64,sobel0,3,1,RGB565_RED,RGB565_WHITE);
-                tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35, 64,ipts0_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35, 80,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,96,dipts0_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,112,dipts1_num,3,RGB565_RED,RGB565_WHITE);
 
 
             }
@@ -348,6 +356,7 @@ void data_show(void)
                 tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
             }
 
+
             break;
         default:
             break;
@@ -397,6 +406,29 @@ void cross_circle_Show(void)
                 tft180_draw_point(  (int)(far_Show_x1/x_Zoom) , (int)(far_Show_y1/y_Zoom) , RGB565_YELLOW   );//右远起始点
                 tft180_draw_point((int)((inv_far_Lpt1[0])/x_Zoom),(int)(inv_far_Lpt1[1]/y_Zoom),RGB565_GREEN   );//右远角点
                 lcd_Show_Line(far_ipts1_num,far_ipts1,RGB565_BLUE);//右远线
+    }
+}
+
+//去畸变展示
+void distort_show(uint8* output_data)
+{
+
+    float fx=distort[0][0],fy=distort[1][1],cx=distort[0][2],cy=distort[1][2];
+    for (int v = 0; v < MT9V03X_H; v++){
+        for (int u = 0; u < MT9V03X_W; u++){
+            //根据公式计算去畸变图像上点(u, v)对应在畸变图像的坐标(u_distorted, v_distorted)，建立对应关系
+            double x = (u - cx) / fx;
+            double y = (v - cy) / fx;
+            double r = sqrt(x * x + y * y);
+            double x_distorted = x*(1+k1*r*r+k2*r*r*r*r);
+            double y_distorted = y*(1+k1*r*r+k2*r*r*r*r);
+            double u_distorted = fx * x_distorted + cx;
+            double v_distorted = fy * y_distorted + cy;
+
+            //将畸变图像上点的坐标，赋值到去畸变图像中（最近邻插值）
+            if (u_distorted >= 0 && v_distorted >=0 && v_distorted < MT9V03X_H && u_distorted < MT9V03X_W)
+                output_data[u+v*MT9V03X_W]=mt9v03x_image[(int)v_distorted][(int)u_distorted];
+        }
     }
 }
 

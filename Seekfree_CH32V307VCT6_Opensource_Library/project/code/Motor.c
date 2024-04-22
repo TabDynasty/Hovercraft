@@ -27,6 +27,7 @@ int centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
 int total_distance = 0;
 int aim_signal = 0;
+extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
 // 参数说明     void
@@ -42,8 +43,14 @@ void Speed_Set(void)
     //控制方向的4个风扇， 分别进行速度和角度的闭环
     Motor_Set(vel_gain, ang_gain, centripetal_gain);
     //上下两个风扇,船浮起来
-    pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
-    pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
+    if(slow_start_flag == true)
+       {
+        pwm_set_duty(PWM_UP_PIN,   610);
+        pwm_set_duty(PWM_DOWN_PIN, 610);
+       }else{
+        pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
+        pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
+       }
 }
  //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     6路无刷电调以及电机各项参数初始化
@@ -53,6 +60,7 @@ void Speed_Set(void)
 void Motor_Init(void)
 {
     //气垫船浮起所需的pwm
+
     Motor.PWM_fan_up = 590     ;
     Motor.PWM_fan_down = 590;
     pwm_init(PWM_UP_PIN,    MOTOR_FREQ, INIT_PWM);
@@ -69,7 +77,6 @@ void Motor_Init(void)
 // 参数说明     pwmn 对应引脚的pwm输入值
 // 返回参数     void
 //-------------------------------------------------------------------------------------------------------------------
-extern bool slow_start_flag;
 void Motor_Set(int speed, int spin ,float force)
 {
 

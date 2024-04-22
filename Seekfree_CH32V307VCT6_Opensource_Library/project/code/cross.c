@@ -22,9 +22,13 @@ int far_x0,far_y0,far_x1,far_y1;/**< 远处搜线起始点*/
 int far_Show_x0,far_Show_y0,far_Show_x1,far_Show_y1;/**< 图显远处搜线起始点*/
 
 // 以下定义为十字寻远线设定，均为远处的线
-int far_ipts0[MT9V03X_H][2];/**< 原图左边线*/
+int far_ipts0[MT9V03X_H][2];/**< 远处左边线*/
 int far_ipts1[MT9V03X_H][2];/**< 远处右边线*/
 int far_ipts0_num, far_ipts1_num;
+
+int far_dipts0[MT9V03X_H][2];/**< 去畸变左边线*/
+int far_dipts1[MT9V03X_H][2];/**< 去畸变右边线*/
+int far_dipts0_num, far_dipts1_num;
 
 float far_rpts0[MT9V03X_H][2];/**< 透视变换后左边线*/
 float far_rpts1[MT9V03X_H][2];/**< 透视变换后右边线*/
@@ -151,6 +155,7 @@ void run_Cross()
             else if(far_rpts0s_num > far_rpts1s_num)track_type = TRACK_LEFT;
             else if(far_rpts1s_num >= far_rpts0s_num)track_type = TRACK_RIGHT;
             break;
+
     }
 
 }
@@ -176,6 +181,7 @@ void check_Left_Cross()
          far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))-5;//偏移是为了防止还在黑线处
 
     }
+
     else if(circle_type==CIRCLE_RIGHT_IN)
     {
         if(far_Lpt1_found){
@@ -219,12 +225,13 @@ void check_Left_Cross()
        else far_ipts0_num = 0;
 
     // 去畸变+透视变换
+    distort_img_process(far_ipts0, far_ipts0_num, far_dipts0);
     for(int i=0;i<far_ipts0_num;i++)
     {
-        far_rpts0[i][0]=Cal_rot_x(far_ipts0[i][0],far_ipts0[i][1]);
-        far_rpts0[i][1]=Cal_rot_y(far_ipts0[i][0],far_ipts0[i][1]);
+        far_rpts0[i][0]=Cal_rot_x(far_dipts0[i][0],far_dipts0[i][1]);
+        far_rpts0[i][1]=Cal_rot_y(far_dipts0[i][0],far_dipts0[i][1]);
     }
-    far_rpts0_num = far_ipts0_num;
+    far_dipts0_num = far_rpts0_num = far_ipts0_num;
 
     // 边线滤波
     blur_points(far_rpts0, far_rpts0_num, far_rpts0b, (int) round(line_blur_kernel));
@@ -235,11 +242,11 @@ void check_Left_Cross()
     resample_points(far_rpts0b, far_rpts0b_num, far_rpts0s, &far_rpts0s_num, sample_dist * pixel_per_meter);
 
     // 边线局部角度变化率
-    local_angle_points(far_rpts0s, far_rpts0s_num, far_rpts0a, (int) round(angle_dist / sample_dist));
+    local_angle_points(far_rpts0s, far_rpts0s_num, far_rpts0a, (int) round(0.2 / sample_dist));
     far_rpts0a_num = far_rpts0s_num;
 
     // 角度变化率非极大抑制
-    nms_angle(far_rpts0a, far_rpts0a_num, far_rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);
+    nms_angle(far_rpts0a, far_rpts0a_num, far_rpts0an, (int) round(0.2 / sample_dist) * 2 + 1);
     far_rpts0an_num = far_rpts0a_num;
     find_far_L0();
     if(circle_obstacle_flag==0)//防止寻到远线，中线会出问题
@@ -247,7 +254,7 @@ void check_Left_Cross()
         if(cross_type!=CROSS_NONE)
         {
         track_leftline(far_rpts0s + far_Lpt0_rpts0s_id, far_rpts0s_num - far_Lpt0_rpts0s_id, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
-        far_rptsc0_num = far_rpts0s_num- far_Lpt0_rpts0s_id;
+        far_rptsc0_num = far_rpts0s_num - far_Lpt0_rpts0s_id;
         }
         else{
             track_rightline(far_rpts1s, far_rpts1s_num, far_rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
@@ -321,12 +328,13 @@ void check_Right_Cross()
        else far_ipts1_num = 0;
 
     // 去畸变+透视变换
+    distort_img_process(far_ipts1, far_ipts1_num, far_dipts1);
     for(int i=0;i<far_ipts1_num;i++)
     {
-        far_rpts1[i][0]=Cal_rot_x(far_ipts1[i][0],far_ipts1[i][1]);
-        far_rpts1[i][1]=Cal_rot_y(far_ipts1[i][0],far_ipts1[i][1]);
+        far_rpts1[i][0]=Cal_rot_x(far_dipts1[i][0],far_dipts1[i][1]);
+        far_rpts1[i][1]=Cal_rot_y(far_dipts1[i][0],far_dipts1[i][1]);
     }
-    far_rpts1_num = far_ipts1_num;
+    far_dipts1_num = far_rpts1_num = far_ipts1_num;
 
     // 边线滤波
     blur_points(far_rpts1, far_rpts1_num, far_rpts1b, (int) round(line_blur_kernel));
@@ -351,14 +359,13 @@ void check_Right_Cross()
         if(cross_type!=CROSS_NONE)
         {
         track_rightline(far_rpts1s + far_Lpt1_rpts1s_id, far_rpts1s_num - far_Lpt1_rpts1s_id, far_rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
-        far_rptsc1_num = far_rpts1s_num- far_Lpt1_rpts1s_id;
+        far_rptsc1_num = far_rpts1s_num - far_Lpt1_rpts1s_id;
         }
         else{
             track_leftline(far_rpts0s, far_rpts0s_num, far_rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
             far_rptsc0_num = far_rpts0s_num;
         }
      }
-
 }
 
 /******************************************************************************
@@ -376,8 +383,8 @@ void find_far_L0()
     for (int i = 0; i < MIN(far_rpts0s_num, 90); i++)//限制搜线个数为90
     {
         if (far_rpts0an[i] == 0) continue;
-        int im0 = clip(i - (int) round(angle_dist / sample_dist), 0, far_rpts0s_num - 1);//向前取一个点
-        int ip0 = clip(i + (int) round(angle_dist / sample_dist), 0, far_rpts0s_num - 1);//向后取一个点
+        int im0 = clip(i - (int) round(0.3 / sample_dist), 0, far_rpts0s_num - 1);//向前取一个点
+        int ip0 = clip(i + (int) round(0.3 / sample_dist), 0, far_rpts0s_num - 1);//向后取一个点
         far_conf0 = fabs(far_rpts0a[i]) - (fabs(far_rpts0a[im0]) + fabs(far_rpts0a[ip0])) / 2;
         far_conf0=far_conf0*180/PI;
         if(far_conf0>far_conf0_max)far_conf0_max=far_conf0;
@@ -404,8 +411,8 @@ void find_far_L1()
     for (int i = 0; i <MIN(far_rpts1s_num, 90); i++)//限制搜线个数为90
     {
         if (far_rpts1an[i] == 0) continue;
-        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, far_rpts1s_num - 1);//向前取一个点
-        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, far_rpts1s_num - 1);//向后取一个点
+        int im1 = clip(i - (int) round(0.3 / sample_dist), 0, far_rpts1s_num - 1);//向前取一个点
+        int ip1 = clip(i + (int) round(0.3 / sample_dist), 0, far_rpts1s_num - 1);//向后取一个点
         far_conf1 = fabs(far_rpts1a[i]) - (fabs(far_rpts1a[im1]) + fabs(far_rpts1a[ip1])) / 2;
         far_conf1=far_conf1*180/PI;
         if(far_conf1>far_conf1_max)far_conf1_max=far_conf1;

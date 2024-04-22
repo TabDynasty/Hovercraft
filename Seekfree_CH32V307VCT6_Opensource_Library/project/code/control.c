@@ -147,8 +147,8 @@ void control_Init()
        aim_idx = (int)clip(round(AIM_DISTANCE/1000.0/sample_dist), 0, rptsn_num - 1);
        // ¼ÆËãÔ¶ÃªµãÆ«²îÖµ
        float dx    = rptsn[aim_idx][0] - cx;
-       if(obstacle_type==OBSTACLE_LEFT_BEGIN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=10;
-       else if(obstacle_type==OBSTACLE_RIGHT_BEGIN||obstacle_type==OBSTACLE_RIGHT_OUT)dx-=10;
+       if(obstacle_type==OBSTACLE_LEFT_BEGIN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=20;
+       else if(obstacle_type==OBSTACLE_RIGHT_BEGIN||obstacle_type==OBSTACLE_RIGHT_OUT)dx-=20;
 
        float dy    = cy - rptsn[aim_idx][1];
        float dn    = sqrt(dx * dx + dy * dy);

@@ -36,12 +36,19 @@ const int dir_frontright[4][2] = {{1,  -1},
                                   {-1, 1},
                                   {-1, -1}};
 
+float distort[3][3] = //去畸变矩阵
+{{63.620673740948250 , 0, 92.509352427546370},
+{0 , 63.589641618875400 , 56.622635035447324},
+{0 , 0 , 1}};
+
+float k1=-0.005011653958470,k2=-0.017472367034198;//径向畸变系数，切向畸变p1、p2为0
+
 float rot[3][3] =
 {{5.66080000000000  ,  -0.0666000000000000, -89.1297000000000},
 {3.09110000000000  ,  1.45190000000000 ,   -97.7337000000000},
 {0.0356000000000000 , -0.00180000000000000 ,   0.484200000000000}};
 
-float inv_rot[3][3]=
+float inv_rot[3][3] =
 {{0.0630000000000000,  0.0225000000000000,  16.1326000000000},
 {-0.590500000000000,  0.701800000000000 ,  32.9692000000000},
 {-0.00680000000000000 ,   0.000900000000000000,    1}};
@@ -67,13 +74,17 @@ extern uint16 Ostu_Thres;
 int pixel_per_meter     =100;
 float ROAD_WIDTH        =0.45;
 float sample_dist       =0.02;
-float angle_dist        =0.14;
+float angle_dist        =0.16;
 
 bool origin_flag = 0;/**< 初始帧标志*/
 
 int ipts0[LINE_LENTH][2];/**< 原图左边线*/
 int ipts1[LINE_LENTH][2];/**< 原图右边线*/
 int ipts0_num, ipts1_num;
+
+int dipts0[LINE_LENTH][2];/**< 去畸变左边线*/
+int dipts1[LINE_LENTH][2];/**< 去畸变右边线*/
+int dipts0_num, dipts1_num;
 
 float rpts0[LINE_LENTH][2];/**< 透视变换后左边线*/
 float rpts1[LINE_LENTH][2];/**< 透视变换后右边线*/
@@ -696,21 +707,47 @@ void findpoint_sobel()
     sobel1=Sobel_G(img_raw.data,begin_y,clip(x1,1,img_raw.width-1),img_raw.width);
 }
 
+void distort_img_process(int pts_in[][2], int num, int pts_out[][2])
+{
+    float fx=distort[0][0],fy=distort[1][1],cx=distort[0][2],cy=distort[1][2];
+    for (int i = 0; i < num; i++){
+        //根据公式计算去畸变图像上点(ipts0[i][0],ipts0[i][1])对应在畸变图像的坐标(distorted_0,distorted_1)，建立对应关系
+        double x = (pts_in[i][0] - cx) / fx;
+        double y = (pts_in[i][1] - cy) / fx;
+        double r = sqrt(x * x + y * y);
+        //double x_distorted = x*(1+k1*r*r+k2*r*r*r*r)+2*p1*x*y+p2*(r*r+2*x*x);
+        //double y_distorted = y*(1+k1*r*r+k2*r*r*r*r)+2*p2*x*y+p1*(r*r+2*y*y);
+        double x_distorted = x*(1+k1*r*r+k2*r*r*r*r);//p1、p2为0，将上式的p1p2省略
+        double y_distorted = y*(1+k1*r*r+k2*r*r*r*r);
+        double distorted_0 = fx * x_distorted + cx;
+        double distorted_1 = fy * y_distorted + cy;
+
+        //将畸变图像上点的坐标，赋值到去畸变图像中（最近邻插值）
+        if (distorted_0 >= 0 && distorted_1 >=0 && distorted_1 < img_raw.height && distorted_0 < img_raw.width){
+            pts_out[i][0] = (int)distorted_0;
+            pts_out[i][1] = (int)distorted_1;
+        }else{
+            pts_out[i][0] = 0;
+            pts_out[i][1] = 0;
+        }
+    }
+
+}
+
 void rot_img_process()
 {
-    for(int i=0;i<ipts0_num;i++)
+    for(int i=0;i<dipts0_num;i++)
     {
-        rpts0[i][0] = (rot[1][0]*ipts0[i][1]+rot[1][1]*ipts0[i][0]+rot[1][2])/(rot[2][0]*ipts0[i][1]+rot[2][1]*ipts0[i][0]+rot[2][2]);
-        rpts0[i][1] = (rot[0][0]*ipts0[i][1]+rot[0][1]*ipts0[i][0]+rot[0][2])/(rot[2][0]*ipts0[i][1]+rot[2][1]*ipts0[i][0]+rot[2][2]);
+        rpts0[i][0] = (rot[1][0]*dipts0[i][1]+rot[1][1]*dipts0[i][0]+rot[1][2])/(rot[2][0]*dipts0[i][1]+rot[2][1]*dipts0[i][0]+rot[2][2]);
+        rpts0[i][1] = (rot[0][0]*dipts0[i][1]+rot[0][1]*dipts0[i][0]+rot[0][2])/(rot[2][0]*dipts0[i][1]+rot[2][1]*dipts0[i][0]+rot[2][2]);
     }
-    for(int i=0;i<ipts1_num;i++)
+    for(int i=0;i<dipts1_num;i++)
     {
-        rpts1[i][0] = (rot[1][0]*ipts1[i][1]+rot[1][1]*ipts1[i][0]+rot[1][2])/(rot[2][0]*ipts1[i][1]+rot[2][1]*ipts1[i][0]+rot[2][2]);
-        rpts1[i][1] = (rot[0][0]*ipts1[i][1]+rot[0][1]*ipts1[i][0]+rot[0][2])/(rot[2][0]*ipts1[i][1]+rot[2][1]*ipts1[i][0]+rot[2][2]);
+        rpts1[i][0] = (rot[1][0]*dipts1[i][1]+rot[1][1]*dipts1[i][0]+rot[1][2])/(rot[2][0]*dipts1[i][1]+rot[2][1]*dipts1[i][0]+rot[2][2]);
+        rpts1[i][1] = (rot[0][0]*dipts1[i][1]+rot[0][1]*dipts1[i][0]+rot[0][2])/(rot[2][0]*dipts1[i][1]+rot[2][1]*dipts1[i][0]+rot[2][2]);
     }
-    rpts0_num = ipts0_num;
-    rpts1_num = ipts1_num;
-
+    rpts0_num = dipts0_num;
+    rpts1_num = dipts1_num;
 }
 
 void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel){
@@ -843,10 +880,12 @@ void process_image()
     default:
         break;
     }
-//    debug_show_int('x0', x0 , 5);
-//    debug_show_int('x1', x1 , 6);
 
-
+    //去畸变
+    distort_img_process(ipts0, ipts0_num, dipts0);
+    dipts0_num = ipts0_num;
+    distort_img_process(ipts1, ipts1_num, dipts1);
+    dipts1_num = ipts1_num;
 
     //透视变换
     rot_img_process();
@@ -924,7 +963,7 @@ void find_corners() {
 
         conf0  = fabs(rpts0a[i]) - (fabs(rpts0a[im0]) + fabs(rpts0a[ip0])) / 2;
         conf0=conf0*180/PI;
-        if (Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.0/(sample_dist)))
+        if (Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.5/(sample_dist)))
         {
             Lpt0_rpts0s_id = i;
             Lpt0_found = true;
@@ -943,7 +982,7 @@ void find_corners() {
 
         conf1  = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
         conf1=conf1*180/PI;
-        if (Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&(i<1.0/(sample_dist)))//限距离，限尖峰
+        if (Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
         {
             Lpt1_rpts1s_id = i;
             Lpt1_found = true;
