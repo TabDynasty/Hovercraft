@@ -37,7 +37,7 @@ void Speed_Set(void)
 {
     int ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     int vel_gain = Vertical_circle(aimSpeed, Speed_now);
-    float centripetal_gain = (float)Speed_now * abs((int)angle)/1000;
+    float centripetal_gain = (float)Speed_now * abs((int)pure_angle)/1000;
     debug_show_int("ang", ang_gain, 1);
     debug_show_int("vel", vel_gain, 3);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
