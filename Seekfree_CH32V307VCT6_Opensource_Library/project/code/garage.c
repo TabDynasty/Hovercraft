@@ -20,17 +20,19 @@ void check_garage()
     zebraR_x=0;
     for (int i = 1; i < pixel_per_meter * ROAD_WIDTH/2; i++)
     {
-       if(zebra_L_flag==0 && AT_IMAGE(&img_raw, (int)(ipts0[1][0]+i), (int)(ipts0[1][1])) < Ostu_Thres)//左边线上的第二个点，向右寻找黑色像素点
+       if(zebra_L_flag==0 && AT_IMAGE(&img_raw, (int)(ipts0[1][0]+i), (int)(ipts0[1][1])) < Ostu_Thres//左边线上的第二个点，向右寻找黑色像素点
+           && AT_IMAGE(&img_raw, (int)(ipts0[10][0]+i), (int)(ipts0[10][1])) < Ostu_Thres)
        {
            zebra_L_flag = 1;
            zebraL_x=ipts0[1][0]+i;
        }
-       if(zebra_R_flag==0 && AT_IMAGE(&img_raw, (int)(ipts1[1][0]-i), (int)(ipts1[1][1])) < Ostu_Thres)//右边线上的第二个点，向左寻找黑色像素点
+       if(zebra_R_flag==0 && AT_IMAGE(&img_raw, (int)(ipts1[1][0]-i), (int)(ipts1[1][1])) < Ostu_Thres//右边线上的第二个点，向左寻找黑色像素点
+           && AT_IMAGE(&img_raw, (int)(ipts1[10][0]-i), (int)(ipts1[10][1])) < Ostu_Thres)
        {
            zebra_R_flag = 1;
            zebraR_x=ipts1[1][0]-i;
        }
-       if(zebra_L_flag && zebra_R_flag && zebraR_x-zebraL_x>20)//检测到赛道中间有黑色像素点，且两像素点间隔一定距离
+       if(zebra_L_flag && zebra_R_flag && zebraR_x-zebraL_x>40)//检测到赛道中间有黑色像素点，且两像素点间隔一定距离
        {
            garage_type=GARAGE_FOUND;
            break;

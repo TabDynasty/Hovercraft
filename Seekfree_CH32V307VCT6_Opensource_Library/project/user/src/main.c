@@ -123,6 +123,7 @@ int main (void)
             check_all();
             control_Init();//中线处理
 
+//            if(circle_type == CIRCLE_RIGHT_IN)section_On_1();
             if(far_Lpt0_found||far_Lpt1_found)section_On_1();
             else section_Off();
             //屏显
@@ -213,6 +214,9 @@ void data_show(void)
                     tft180_show_int   (105,80,far_conf1_max,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
+
+                    tft180_show_int (140, 96,is_straight0,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 112,is_straight1,1,RGB565_RED,RGB565_WHITE);
                 }
                 else if(show_pagex==1)
                 {

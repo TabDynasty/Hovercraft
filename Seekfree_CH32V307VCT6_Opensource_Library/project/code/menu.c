@@ -52,6 +52,9 @@ uint32 *Flash_Data[] = {
                         &Angle_1[0],
                         &Angle_1[1],
                         &Angle_1[2],
+
+                        &Speed_circle,
+                        &angle_thred,
                        };
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void beep_On();
@@ -105,12 +108,14 @@ MENU_TABLE Ctrl_MenuTable[] =
 {
         {"0.S_stra",Menu_Null,&Speed_straight},
         {"1.S_instra",Menu_Null,&Speed_instraight},
-        {"2.aim_dis",Menu_Null,&aim_distance},
-        {"3.force_k_stra",Menu_Null,&centripetal_p_straight},
-        {"4.force_k_in",Menu_Null,&centripetal_p_instraight},
-        {"5.UP",Menu_Null,&Motor.PWM_fan_up},
-        {"6.DOWN",Menu_Null,&Motor.PWM_fan_down},
-        {"7.aim_signal",Menu_Null,&aim_signal},
+        {"2.S_circle",Menu_Null,&Speed_circle},
+        {"3.aim_dis",Menu_Null,&aim_distance},
+        {"4.force_k_stra",Menu_Null,&centripetal_p_straight},
+        {"5.force_k_in",Menu_Null,&centripetal_p_instraight},
+        {"6.UP",Menu_Null,&Motor.PWM_fan_up},
+        {"7.DOWN",Menu_Null,&Motor.PWM_fan_down},
+        {"8.aim_signal",Menu_Null,&aim_signal},
+        {"9.angle_thred",Menu_Null,&angle_thred},
 };
 
 

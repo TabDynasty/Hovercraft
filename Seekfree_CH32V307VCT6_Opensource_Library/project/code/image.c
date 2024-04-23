@@ -75,7 +75,6 @@ int pixel_per_meter     =100;
 float ROAD_WIDTH        =0.45;
 float sample_dist       =0.02;
 float angle_dist        =0.16;
-
 bool origin_flag = 0;/**< 初始帧标志*/
 
 int ipts0[LINE_LENTH][2];/**< 原图左边线*/
@@ -969,7 +968,7 @@ void find_corners() {
             Lpt0_found = true;
         }
         if(conf0>conf0_max)conf0_max = conf0;//用于图显
-        if(conf0>15&&i< 1.4/sample_dist) is_straight0 = false; //只要中间有大角度，就不是长直道
+        if(conf0>15&&i< 1.8/sample_dist) is_straight0 = false; //只要中间有大角度，就不是长直道
         if (Lpt0_found==true&&is_straight0==false) break;//只找第一个角点
     }
 
@@ -988,7 +987,7 @@ void find_corners() {
             Lpt1_found = true;
         }
         if(conf1>conf1_max)conf1_max = conf1;//用于图显
-        if(conf1>15&&i< 1.4/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
+        if(conf1>15&&i< 1.8/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
         if (Lpt1_found==true&&is_straight1==false) break;//只找第一个角点
     }
 

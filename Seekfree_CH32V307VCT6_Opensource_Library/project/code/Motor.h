@@ -43,6 +43,7 @@ extern int speed_now;
 extern int centripetal_p_straight,centripetal_p_instraight;
 extern int total_distance;
 extern int aim_signal ;
+extern int angle_thred;
 extern int Speed_now ;
 #endif /* MOTOR_H_ */
 /*================================ ½Ó¿Úº¯Êý ==================================*/

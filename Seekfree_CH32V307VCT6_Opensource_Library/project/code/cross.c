@@ -302,9 +302,9 @@ void check_Right_Cross()
             far_x1=160;
             far_y1=90;
         }else{
-        far_x1=round(ipts1[ipts1_num-5][0]);
-        far_y1=round(ipts1[ipts1_num-5][1])-3;//减3向上做一定的偏移
-        }
+            far_x1=round(ipts1[ipts1_num-5][0]);
+            far_y1=round(ipts1[ipts1_num-5][1])-3;//减3向上做一定的偏移
+            }
     }
 
 

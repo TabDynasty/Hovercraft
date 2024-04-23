@@ -27,6 +27,7 @@ int centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
 int total_distance = 0;
 int aim_signal = 0;
+int angle_thred;
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -45,13 +46,14 @@ void Speed_Set(void)
     //上下两个风扇,船浮起来
     if(slow_start_flag == true)
        {
-        pwm_set_duty(PWM_UP_PIN,   610);
-        pwm_set_duty(PWM_DOWN_PIN, 610);
+        pwm_set_duty(PWM_UP_PIN,   620);
+        pwm_set_duty(PWM_DOWN_PIN, 620);
        }else{
         pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
         pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
        }
 }
+
  //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     6路无刷电调以及电机各项参数初始化
 // 参数说明     void
@@ -61,7 +63,7 @@ void Motor_Init(void)
 {
     //气垫船浮起所需的pwm
 
-    Motor.PWM_fan_up = 590     ;
+    Motor.PWM_fan_up = 590;
     Motor.PWM_fan_down = 590;
     pwm_init(PWM_UP_PIN,    MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_DOWN_PIN,  MOTOR_FREQ, INIT_PWM);
@@ -69,7 +71,6 @@ void Motor_Init(void)
     pwm_init(PWM_2_PIN,     MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_3_PIN,     MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_4_PIN,     MOTOR_FREQ, INIT_PWM);
-
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -100,11 +101,13 @@ void Motor_Set(int speed, int spin ,float force)
 
     if(is_straight0 == 1 && is_straight1 == 1)
     {
-        if(angle>2){
+        if(angle> angle_thred){
             pwm1+=force * centripetal_p_straight;
             pwm3+=force * centripetal_p_straight;
+            //pwm3 -= force * centripetal_p_straight * 0.5;
+            //pwm4 -= force * centripetal_p_straight * 0.5;
         }
-        if(angle<-2){
+        if(angle<angle_thred * (-1)){
             pwm2+=force * centripetal_p_straight;
             pwm4+=force * centripetal_p_straight;
         }
@@ -119,11 +122,13 @@ void Motor_Set(int speed, int spin ,float force)
 //            pwm3+=force * centripetal_p_straight;
 //        }
     }else{
-        if(angle>2){
+        if(angle> angle_thred){
             pwm1+=force * centripetal_p_instraight;
             pwm3+=force * centripetal_p_instraight;
+            //pwm3 -= force * centripetal_p_straight * 0.5;
+            //pwm4 -= force * centripetal_p_straight * 0.5;
         }
-        if(angle<-2){
+        if(angle<angle_thred * (-1)){
             pwm2+=force * centripetal_p_instraight;
             pwm4+=force * centripetal_p_instraight;
         }

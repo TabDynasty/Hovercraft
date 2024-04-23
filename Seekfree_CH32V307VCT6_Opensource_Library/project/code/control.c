@@ -10,7 +10,7 @@
 #include "zf_common_headfile.h"
 
 uint32 aimSpeed=0;/**< 目标速度*/
-int Speed_straight,Speed_instraight;
+int Speed_straight,Speed_instraight,Speed_circle;
 uint32 aim_distance=440;//除了1000
 uint32 AIM_DISTANCE=440;/**< 直接用于计算*/
 float angle;
@@ -113,6 +113,9 @@ void control_Init()
         aimSpeed = Speed_instraight;
     }
 
+    if(circle_type == CIRCLE_LEFT_BEGIN||circle_type == CIRCLE_LEFT_IN
+       || circle_type == CIRCLE_RIGHT_BEGIN||circle_type == CIRCLE_RIGHT_IN)
+        aimSpeed = Speed_circle;
 
    float H_zoom = 0.95f;
    float Half_width = MT9V03X_W/2;
@@ -182,6 +185,6 @@ void check_all()
     check_circle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE)
     check_Cross();
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
-    check_garage();
+//    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
+//    check_garage();
 }
