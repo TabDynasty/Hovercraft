@@ -126,8 +126,12 @@ int main (void)
 
 
 //            if(circle_type == CIRCLE_RIGHT_IN)section_On_1();
-            if(far_Lpt0_found||far_Lpt1_found)section_On_1();
-            else section_Off();
+            if(far_Lpt0_found||far_Lpt1_found)gpio_set_level(E12, 1);//1;
+            else gpio_set_level(E12, 0);//1
+            gpio_set_level(C1, 0);//2
+            gpio_set_level(E13, 0);//3
+            if(cross_type)gpio_set_level(C0, 1);//4;
+            else gpio_set_level(C0, 0);//4
             //∆¡œ‘
             data_show();
             /********¥À«¯”Údebug”√*********/

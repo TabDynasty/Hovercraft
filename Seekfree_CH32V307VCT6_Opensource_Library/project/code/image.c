@@ -127,6 +127,7 @@ bool Lpt0_found, Lpt1_found;
 bool is_straight0, is_straight1,is_straight_far_0,is_straight_far_1;
 uint32 Lconf_Min=60;
 uint32 Lconf_Max=120;/**< 直角阈值 */
+bool bend_flag=false;
 
 float sobel0=0,sobel1=0;
 float conf0,conf1,conf0_max,conf1_max;/**< max用来显示在屏幕*/
@@ -956,39 +957,49 @@ void find_corners() {
     //计算左线的conf0和判断左线的长直道
     for (int i = 0; i <rpts0s_num; i++)
     {
-        if (rpts0an[i] == 0) continue;
+        //if (rpts0an[i] == 0) continue;
         int im0 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts0s_num - 1);//向前取一个点
         int ip0 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts0s_num - 1);//向后取一个点
+        if(bend_flag)
+            im0 = clip(i - (int) round(0.2 / sample_dist), 0, rpts0s_num - 1);//向前取一个点
+            ip0 = clip(i + (int) round(0.2 / sample_dist), 0, rpts0s_num - 1);//向后取一个点
 
         conf0  = fabs(rpts0a[i]) - (fabs(rpts0a[im0]) + fabs(rpts0a[ip0])) / 2;
         conf0=conf0*180/PI;
-        if (Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.5/(sample_dist)))
+        if (rpts0an[i]!=0&&Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.5/(sample_dist)))
         {
             Lpt0_rpts0s_id = i;
             Lpt0_found = true;
         }
         if(conf0>conf0_max)conf0_max = conf0;//用于图显
-        if(conf0>15&&i< 1.8/sample_dist) is_straight0 = false; //只要中间有大角度，就不是长直道
+        if(conf0>10&&bend_flag) is_straight0 = false; //只要中间有大角度，就不是长直道
+        if(conf0>15&&i< 1.8/sample_dist&&!bend_flag) is_straight0 = false; //只要中间有大角度，就不是长直道
         if (Lpt0_found==true&&is_straight0==false) break;//只找第一个角点
     }
 
     //计算右线的conf0和判断右线的长直道
     for (int i = 0; i <rpts1s_num; i++)
     {
-        if (rpts1an[i] == 0) continue;
+        //if (rpts1an[i] == 0) continue;
         int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts1s_num - 1);//向前取一个点
         int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts1s_num - 1);//向后取一个点
+        if(bend_flag)
+            im1 = clip(i - (int) round(0.2 / sample_dist), 0, rpts1s_num - 1);//向前取一个点
+            ip1 = clip(i + (int) round(0.2 / sample_dist), 0, rpts1s_num - 1);//向后取一个点
 
         conf1  = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
         conf1=conf1*180/PI;
-        if (Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
+        if (rpts1an[i]!=0&&Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
         {
             Lpt1_rpts1s_id = i;
             Lpt1_found = true;
         }
         if(conf1>conf1_max)conf1_max = conf1;//用于图显
-        if(conf1>15&&i< 1.8/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
+        if(conf1>10&&bend_flag) is_straight1 = false; //只要中间有大角度，就不是长直道
+        if(conf1>15&&i< 1.8/sample_dist&&!bend_flag) is_straight1 = false; //只要中间有大角度，就不是长直道
         if (Lpt1_found==true&&is_straight1==false) break;//只找第一个角点
     }
 
+    if(!is_straight0 || !is_straight1)bend_flag = true;
+    else bend_flag = false;
 }
