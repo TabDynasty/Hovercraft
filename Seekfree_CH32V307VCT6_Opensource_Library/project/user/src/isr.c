@@ -355,6 +355,8 @@ void TIM7_IRQHandler(void)
 }
 
 extern frame_vote;
+extern bool reset_flag;
+extern int speed_counter;
 void TIM8_UP_IRQHandler(void)
 {
     if(TIM_GetITStatus(TIM8, TIM_IT_Update) != RESET)
@@ -362,6 +364,14 @@ void TIM8_UP_IRQHandler(void)
         TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
         //tft180_show_int(105,0,frame_vote,5,RGB565_RED,RGB565_BLUE);
         frame_vote= 0;
+        if(reset_flag == true)
+            {
+                speed_counter++;
+                if(speed_counter>10)
+                {
+                    reset_flag = false;
+                }
+            }
     }
 }
 

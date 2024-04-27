@@ -27,6 +27,7 @@ extern PID  Angle_PID,Angle_vel_PID,Speed_PID;
 void PID_Init(void);
 void PID_Parameter_Init(PID *sptr);
 float PID_Realize(PID *sptr, int *PID, float NowData, float Point);
+float PID_Realize_Inner(PID *sptr, int *PID, float NowData, float Point);
 int32 PID_Increase(PID *sptr, float *PID, int32 NowData, int32 Point);
 int32 PID_Increase_Quick(PID_Quick *sptr, int32 *PID, int32 NowData, int32 Point);
 int32 PID_Realize_Quick(PID_Quick *sptr, int32 *PID_Val, int32 NowData, int32 Point);

@@ -1,4 +1,5 @@
 #include "PID.h"
+#include "control.h"
 #include "utils.h"
 #include "zf_common_headfile.h"
 
@@ -70,6 +71,55 @@ float PID_Realize(PID *sptr, int *PID, float NowData, float Point)
              + ki_t * sptr->SumError
              + kd_t * (iError - sptr->LastError);
 
+     sptr->LastError = iError;           // 更新上次误差
+     sptr->LastData  = NowData;          // 更新上次数据
+
+     return Realize; // 返回实际值
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介    位置式PID
+// 参数说明    *sptr      PID各项误差的结构体
+// 参数说明    *PID       PID各项系数的数组
+// 参数说明      NowData    当前值
+// 参数说明      Point      目标值
+// 返回参数      Realize    反馈输出值
+//-------------------------------------------------------------------------------------------------------------------
+extern int angle_thred;
+float PID_Realize_Inner(PID *sptr, int *PID, float NowData, float Point)
+{
+
+     float iError,   // 当前误差
+          Realize;   // 最后得出的实际输出
+     float kp_t,ki_t,kd_t;
+     iError = Point - NowData;   // 计算当前误差
+
+
+     kp_t=(float)(PID[KP]/100.0);
+     kd_t=(float)(PID[KD]/100.0);
+     ki_t=(float)(PID[KI]/100.0);
+
+     //积分限幅
+     if (sptr->SumError*ki_t >= PID[KT])
+     {
+         sptr->SumError = PID[KT]/ki_t;
+     }
+     else if (sptr->SumError*ki_t <= -PID[KT])
+     {
+         sptr->SumError = -PID[KT]/ki_t;
+     }
+     //积分分离
+     if(fabs(pure_angle)> abs(angle_thred))
+     {
+     sptr->SumError +=  iError; // 误差积分
+     Realize = kp_t * iError
+             + ki_t * sptr->SumError
+             + kd_t * (iError - sptr->LastError);
+     }else {
+     Realize = kp_t * iError
+              //+ ki_t * sptr->SumError
+              + kd_t * (iError - sptr->LastError);
+    }
      sptr->LastError = iError;           // 更新上次误差
      sptr->LastData  = NowData;          // 更新上次数据
 

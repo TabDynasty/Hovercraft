@@ -1,6 +1,6 @@
 ################################################################################
-# MRS Version: {"version":"1.8.4","date":"2023/02/015"}
-# 自动生成的文件。不要编辑！
+# MRS Version: 1.9.1
+# Automatically-generated file. Do not edit!
 ################################################################################
 
 -include ../makefile.init
@@ -52,12 +52,12 @@ SECONDARY_SIZE += \
 The_Hovercraft1.0.siz \
 
 
-# 所有目标
+# All Target
 all: The_Hovercraft1.0.elf secondary-outputs
 
-# 工具调用
+# Tool invocations
 The_Hovercraft1.0.elf: $(OBJS) $(USER_OBJS)
-	@	@	riscv-none-embed-gcc -march=rv32imafc -mabi=ilp32f -msmall-data-limit=8 -mno-save-restore -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -pedantic -Wunused -Wuninitialized -Wall  -g -T "E:\the boat\The_hovercraft\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Ld\Link.ld" -nostartfiles -Xlinker --gc-sections -L"../" -L"E:\the boat\The_hovercraft\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_device" -Wl,-Map,"The_Hovercraft1.0.map" --specs=nano.specs -u _printf_float --specs=nosys.specs -Wl,--print-memory-usage -o "The_Hovercraft1.0.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	@	@	riscv-none-embed-gcc -march=rv32imafc -mabi=ilp32f -msmall-data-limit=8 -mno-save-restore -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -pedantic -Wunused -Wuninitialized -Wall  -g -T "E:\The Boat\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Ld\Link.ld" -nostartfiles -Xlinker --gc-sections -L"../" -L"E:\The Boat\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_device" -Wl,-Map,"The_Hovercraft1.0.map" --specs=nano.specs -u _printf_float --specs=nosys.specs -Wl,--print-memory-usage -o "The_Hovercraft1.0.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@	@
 The_Hovercraft1.0.hex: The_Hovercraft1.0.elf
 	@	riscv-none-embed-objcopy -O ihex "The_Hovercraft1.0.elf"  "The_Hovercraft1.0.hex"
@@ -68,7 +68,7 @@ The_Hovercraft1.0.lst: The_Hovercraft1.0.elf
 The_Hovercraft1.0.siz: The_Hovercraft1.0.elf
 	@	riscv-none-embed-size --format=berkeley "The_Hovercraft1.0.elf"
 	@	@
-# 其他目标
+# Other Targets
 clean:
 	-$(RM) $(ASM_UPPER_DEPS)$(OBJS)$(SECONDARY_FLASH)$(SECONDARY_LIST)$(SECONDARY_SIZE)$(ASM_DEPS)$(S_DEPS)$(S_UPPER_DEPS)$(C_DEPS) The_Hovercraft1.0.elf
 	-@

@@ -55,6 +55,7 @@ uint32 *Flash_Data[] = {
 
                         &Speed_circle,
                         &angle_thred,
+                        &anti_coefficient,
                        };
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void beep_On();
@@ -116,6 +117,7 @@ MENU_TABLE Ctrl_MenuTable[] =
         {"7.DOWN",Menu_Null,&Motor.PWM_fan_down},
         {"8.aim_signal",Menu_Null,&aim_signal},
         {"9.angle_thred",Menu_Null,&angle_thred},
+        {"10.anti_coef",Menu_Null,&anti_coefficient},
 };
 
 

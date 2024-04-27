@@ -53,9 +53,9 @@
 #define WIFI_SSID_TEST          "qwe"
 #define WIFI_PASSWORD_TEST      "qqqwwweee" // 如果需要连接的WIFI 没有密码则需要将 这里 替换为 NULL
 #define WIFI_SPI_SHOW            (0)        // 如果要启用无线图传,则置为1
-//uint8 image_copy[MT9V03X_H][MT9V03X_W];     // 图像备份数组，在发送前将图像备份再进行发送，这样可以避免图像出现撕裂的问题
+uint8 image_copy[MT9V03X_H][MT9V03X_W];     // 图像备份数组，在发送前将图像备份再进行发送，这样可以避免图像出现撕裂的问题
 /*================================ 全局变量 ==================================*/
-//uint8 show_Img[MT9V03X_H][MT9V03X_W];/**< 用来展示图片*/
+uint8 show_Img[MT9V03X_H][MT9V03X_W];/**< 用来展示图片*/
 uint16 Ostu_Thres;/**< 大津法后的阈值*/
 /**< Robert阈值*/
 uint32 th_edge=11;
@@ -121,7 +121,9 @@ int main (void)
             process_image();
             find_corners();
             check_all();
+
             control_Init();//中线处理
+
 
 //            if(circle_type == CIRCLE_RIGHT_IN)section_On_1();
             if(far_Lpt0_found||far_Lpt1_found)section_On_1();
@@ -258,8 +260,6 @@ void data_show(void)
                         flag = 1;
                         slow_start_flag = false;
                     }
-
-
                 }
                 else if(show_pagex==3)
                {
@@ -591,7 +591,7 @@ void Init_all(void)
     /*中断初始化*/
     pit_ms_init(TIM6_PIT,10);
     pit_ms_init(TIM7_PIT,10);
-    pit_ms_init(TIM8_PIT,1000);
+    pit_ms_init(TIM8_PIT,100);
     /*软件初始化*/
     PID_Init();
     Filters_Init();

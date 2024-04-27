@@ -28,6 +28,7 @@ int Speed_now = 0;
 int total_distance = 0;
 int aim_signal = 0;
 int angle_thred;
+int anti_coefficient;
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -104,12 +105,14 @@ void Motor_Set(int speed, int spin ,float force)
         if(angle> angle_thred){
             pwm1+=force * centripetal_p_straight;
             pwm3+=force * centripetal_p_straight;
-            //pwm3 -= force * centripetal_p_straight * 0.5;
+            //pwm3 -= force * centripetal_p_straight * 0.6;
             //pwm4 -= force * centripetal_p_straight * 0.5;
         }
         if(angle<angle_thred * (-1)){
             pwm2+=force * centripetal_p_straight;
             pwm4+=force * centripetal_p_straight;
+            //pwm3 -= force * centripetal_p_straight * 0.5;
+            //pwm4 -= force * centripetal_p_straight * 0.6;
         }
 //        if(x0 >60)
 //        {
@@ -124,13 +127,12 @@ void Motor_Set(int speed, int spin ,float force)
     }else{
         if(angle> angle_thred){
             pwm1+=force * centripetal_p_instraight;
-            pwm3+=force * centripetal_p_instraight;
-            //pwm3 -= force * centripetal_p_straight * 0.5;
-            //pwm4 -= force * centripetal_p_straight * 0.5;
+            pwm3+=force * centripetal_p_instraight*anti_coefficient/100;
+
         }
         if(angle<angle_thred * (-1)){
             pwm2+=force * centripetal_p_instraight;
-            pwm4+=force * centripetal_p_instraight;
+            pwm4+=force * centripetal_p_instraight*anti_coefficient/100;
         }
     }
     if(pwm1 > 200)
@@ -178,7 +180,7 @@ int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 
     debug_show_float("imuz",data,0);
 
-    int spin_Increment =(int)PID_Realize(&Angle_vel_PID, Angle_vel, data,aim_angle_vel);   //pid内环
+    int spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel, data,aim_angle_vel);   //pid内环
 
     //输出限幅
     if(spin_Increment > increment_max)

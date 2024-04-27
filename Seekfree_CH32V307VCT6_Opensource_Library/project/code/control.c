@@ -36,6 +36,8 @@ int rpts_num;
 
 float rptsn[MT9V03X_W][2];/**< 归一化中线*/
 int rptsn_num;
+int speed_counter=0; //速度决策，防止频繁切换速度标志
+bool reset_flag = false;
 void control_Init()
 {
     //根据边线长度切换循线方式
@@ -105,13 +107,18 @@ void control_Init()
        }
     }
 
-    //速度决策
-    if(is_straight0&&is_straight1)
-    {
-        aimSpeed = Speed_straight;
-    }else{
-        aimSpeed = Speed_instraight;
-    }
+    //速度决策,缓变化
+//    if(reset_flag == false)
+//    {
+        if(is_straight0&&is_straight1)
+        {
+            aimSpeed = Speed_straight;
+        }else{
+            aimSpeed = Speed_instraight;
+        }
+//        reset_flag = true;
+//        speed_counter =0;
+//    }
 
     if(circle_type == CIRCLE_LEFT_BEGIN||circle_type == CIRCLE_LEFT_IN
        || circle_type == CIRCLE_RIGHT_BEGIN||circle_type == CIRCLE_RIGHT_IN)
