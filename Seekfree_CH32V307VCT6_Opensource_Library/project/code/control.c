@@ -110,7 +110,7 @@ void control_Init()
     //速度决策,缓变化
 //    if(reset_flag == false)
 //    {
-        if(is_straight0&&is_straight1&&fabs(pure_angle)<10)
+        if(!bend_flag)
         {
             aimSpeed = Speed_straight;
         }else{

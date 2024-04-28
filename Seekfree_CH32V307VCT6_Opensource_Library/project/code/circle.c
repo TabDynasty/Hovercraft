@@ -34,11 +34,15 @@ void check_Lcircle_Lobstacle()
           if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
           else
           {
-            circle_type = CIRCLE_LEFT_BEGIN;
-            none_right_line = 0;
-            have_right_line = 0;
-          }
+              check_Left_Cross();
+              if(far_conf0_max<30&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+              {
+                  circle_type = CIRCLE_LEFT_BEGIN;
+                  none_left_line = 0;
+                  have_left_line = 0;
+              }
           circle_obstacle_flag=0;
+          }
     }
 }
 
@@ -60,9 +64,14 @@ void check_Rcircle_Robstacle()
             if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
             else
             {
-            circle_type = CIRCLE_RIGHT_BEGIN;
-            none_right_line = 0;
-            have_right_line = 0;
+                check_Right_Cross();
+                if(far_conf1_max<30&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+                {
+                    circle_type = CIRCLE_RIGHT_BEGIN;
+                    none_right_line = 0;
+                    have_right_line = 0;
+                }
+
             }
             circle_obstacle_flag=0;
        }
@@ -94,7 +103,7 @@ void run_Lcircle()
                 //先丢左线后识别到左线转换到下一个阶段
                 if (rpts0s_num < 0.2 / sample_dist&&!Lpt0_found) { none_left_line++; have_left_line = 0;}
                 if (rpts0s_num > 0.2 / sample_dist && none_left_line > 2)have_left_line++;
-                if (have_left_line > 1 && !Lpt0_found)
+                if (have_left_line >= 1 && !Lpt0_found)
                 {
                     circle_type = CIRCLE_LEFT_IN;
                     none_left_line = 0;
@@ -104,9 +113,9 @@ void run_Lcircle()
             case CIRCLE_LEFT_IN:
                 track_type = TRACK_RIGHT;
                 check_Left_Cross();
-                if(far_Lpt0_found&&ipts0_num<110)
+                if(far_Lpt0_found&&ipts0_num<120)
                 {
-                    check_Right_Cross();
+                    //check_Right_Cross();
                     Integral_vel_flag=1;
                     farline_type=1;//切寻远线
                 }
@@ -120,9 +129,9 @@ void run_Lcircle()
                 break;
             case CIRCLE_LEFT_RUNNING:
                 track_type = TRACK_RIGHT;
-                if (Lpt0_found) rpts0s_num = rptsc0_num = Lpt0_rpts0s_id;//截断
+                if (Lpt0_found) rpts0s_num = rptsc0_num = Lpt0_rpts0s_id-10;//截断
                 begin_y=110;//近线起始点拉低，防止丢线
-                if (Lpt1_found && Lpt1_rpts1s_id < 40)//右角点足够靠下
+                if (Lpt1_found && Lpt1_rpts1s_id < 50)//右角点足够靠下
                 {
                     circle_type = CIRCLE_LEFT_OUT;
                     begin_y=96;
@@ -139,7 +148,7 @@ void run_Lcircle()
                 track_type = TRACK_RIGHT;
                 Integral_vel_flag=1;
                 begin_y=110;//近线起始点拉低，防止丢线
-                if (total_distance>=4000)
+                if (total_distance>=3000)
                 {
                     aim_distance=440;
                     circle_type = CIRCLE_NONE;
@@ -177,9 +186,9 @@ void run_Rcircle()
                 track_type = TRACK_LEFT;
                 check_Right_Cross();
 
-                if(far_Lpt1_found&&ipts1_num<110)
+                if(far_Lpt1_found&&ipts1_num<120)
                 {
-                    check_Left_Cross();
+                    //check_Left_Cross();
                     Integral_vel_flag=1;
                     farline_type=1;//切寻远线
                 }
@@ -193,9 +202,9 @@ void run_Rcircle()
                 break;
             case CIRCLE_RIGHT_RUNNING:
                 track_type = TRACK_LEFT;
-                if (Lpt1_found) rpts1s_num = rptsc1_num = Lpt1_rpts1s_id; //截断
+                if (Lpt1_found) rpts1s_num = rptsc1_num = Lpt1_rpts1s_id-10; //截断
                 begin_y=110;//近线起始点拉低，防止丢线
-                if (Lpt0_found && Lpt0_rpts0s_id < 40)//左角点足够靠下
+                if (Lpt0_found && Lpt0_rpts0s_id < 50)//左角点足够靠下
                 {
                     circle_type = CIRCLE_RIGHT_OUT;
                     begin_y=96;
@@ -211,7 +220,7 @@ void run_Rcircle()
                 track_type = TRACK_LEFT;
                 Integral_vel_flag=1;
                 begin_y=110;//近线起始点拉低，防止丢线
-                if (total_distance>4000)
+                if (total_distance>3000)
                 {
                     aim_distance=440;
                     circle_type = CIRCLE_NONE;

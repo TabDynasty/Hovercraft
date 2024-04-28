@@ -128,8 +128,10 @@ int main (void)
 //            if(circle_type == CIRCLE_RIGHT_IN)section_On_1();
             if(far_Lpt0_found||far_Lpt1_found)gpio_set_level(E12, 1);//1;
             else gpio_set_level(E12, 0);//1
-            gpio_set_level(C1, 0);//2
-            gpio_set_level(E13, 0);//3
+            if(!bend_flag)gpio_set_level(C1, 1);//2
+            else gpio_set_level(C1, 0);//2
+            if(circle_type)gpio_set_level(E13, 1);//3;
+            else gpio_set_level(E13, 0);//3
             if(cross_type)gpio_set_level(C0, 1);//4;
             else gpio_set_level(C0, 0);//4
             //屏显
@@ -221,6 +223,9 @@ void data_show(void)
                     tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
 
+                    tft180_show_int (140, 48,bend_flag,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 64,is_longstraight0,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 80,is_longstraight1,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 96,is_straight0,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 112,is_straight1,1,RGB565_RED,RGB565_WHITE);
                 }
@@ -595,7 +600,7 @@ void Init_all(void)
     /*中断初始化*/
     pit_ms_init(TIM6_PIT,10);
     pit_ms_init(TIM7_PIT,10);
-    pit_ms_init(TIM8_PIT,100);
+    pit_ms_init(TIM8_PIT,1000);
     /*软件初始化*/
     PID_Init();
     Filters_Init();

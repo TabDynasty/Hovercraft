@@ -90,7 +90,7 @@ void check_Cross1()
 void check_Cross()
 {
     //找到上下两个角点即进入CROSS_BEGIN
-    if(Lpt0_found&&cross_type==CROSS_NONE&&!is_straight1)
+    if(Lpt0_found&&cross_type==CROSS_NONE&&!is_straight1&&rpts1s_num>5)
         {
             check_Left_Cross ();
             if(far_Lpt0_found&&!is_straight1)
@@ -98,7 +98,7 @@ void check_Cross()
                 cross_type=CROSS_BEGIN;
             }
         }
-    if(Lpt1_found&&cross_type==CROSS_NONE&&!is_straight0)
+    if(Lpt1_found&&cross_type==CROSS_NONE&&!is_straight0&&rpts0s_num>5)
         {
             check_Right_Cross();
             if(far_Lpt1_found&&!is_straight0)
@@ -144,7 +144,7 @@ void run_Cross()
             check_Right_Cross();
 
             if (rpts1s_num < 5 && rpts0s_num < 5) { not_have_line++; }
-            if(not_have_line>2 && (rpts1s_num > 20 || rpts0s_num > 20))
+            if(not_have_line>2 && (rpts1s_num > 5 || rpts0s_num > 5))
             {
                 cross_type = CROSS_NONE;
                 not_have_line=0;
@@ -182,19 +182,6 @@ void check_Left_Cross()
 
     }
 
-    else if(circle_type==CIRCLE_RIGHT_IN)
-    {
-        if(far_Lpt1_found){
-        inv_far_Lpt1[0]=Cal_inv_rot_x((far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][0]),far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][1]);
-        inv_far_Lpt1[1]=Cal_inv_rot_y((far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][0]),far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][1]);
-       //将寻到的右远线的L角点向右下偏移30后当成左远线的起始点，此时可寻左远线入环
-        far_x0=round(inv_far_Lpt1[0])+20;
-        far_y0=round(inv_far_Lpt1[1])+10;
-        }else{
-            far_x0=40;
-            far_y0=100;
-        }
-    }
     else if(circle_type==CIRCLE_LEFT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
     {
         if(ipts0_num<8){//右线太少，则固定点
@@ -249,6 +236,16 @@ void check_Left_Cross()
     nms_angle(far_rpts0a, far_rpts0a_num, far_rpts0an, (int) round(0.2 / sample_dist) * 2 + 1);
     far_rpts0an_num = far_rpts0a_num;
     find_far_L0();
+
+    if(circle_type==CIRCLE_LEFT_IN)
+    {
+        if(far_Lpt0_found){
+        //将寻到的左远线的L角点当成右远线的起始点，此时可寻右远线入环
+            for(int i=0;i<far_Lpt0_rpts0s_id;i++){
+                far_rpts1s[i][0]=far_rpts0s[far_Lpt0_rpts0s_id-i][0];
+                far_rpts1s[i][1]=far_rpts0s[far_Lpt0_rpts0s_id-i][1];}
+            far_rpts1s_num=far_Lpt0_rpts0s_id;}
+    }
     if(circle_obstacle_flag==0)//防止寻到远线，中线会出问题
      {
         if(cross_type!=CROSS_NONE)
@@ -283,19 +280,7 @@ void check_Right_Cross()
         far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+4;
         far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-5;//偏移是为了防止还在黑线处
     }
-    else if(circle_type==CIRCLE_LEFT_IN)
-    {
-        if(far_Lpt0_found){
-        inv_far_Lpt0[0]=Cal_inv_rot_x((far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][0]),far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][1]);
-        inv_far_Lpt0[1]=Cal_inv_rot_y((far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][0]),far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][1]);
-       //将寻到的左远线的L角点向左下偏移30后当成右远线的起始点，此时可寻右远线入环
-        far_x1=round(inv_far_Lpt0[0])-20;
-        far_y1=round(inv_far_Lpt0[1])+10;
-        }else{
-            far_x1=148;
-            far_y1=100;
-        }
-    }
+
     else if(circle_type==CIRCLE_RIGHT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
     {
         if(ipts1_num<8){//右线太少，则固定点
@@ -353,6 +338,16 @@ void check_Right_Cross()
     far_rpts1an_num = far_rpts1a_num;
 
     find_far_L1();
+
+    if(circle_type==CIRCLE_RIGHT_IN)
+    {
+        if(far_Lpt1_found){
+        //将寻到的右远线的L角点当成左远线的起始点，此时可寻左远线入环
+            for(int i=0;i<far_Lpt1_rpts1s_id;i++){
+                far_rpts0s[i][0]=far_rpts1s[far_Lpt1_rpts1s_id-i][0];
+                far_rpts0s[i][1]=far_rpts1s[far_Lpt1_rpts1s_id-i][1];}
+            far_rpts0s_num=far_Lpt1_rpts1s_id;}
+    }
 
     if(circle_obstacle_flag==0)//防止寻到远线，中线会出问题
      {
