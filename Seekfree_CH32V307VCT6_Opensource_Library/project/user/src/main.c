@@ -203,7 +203,6 @@ void data_show(void)
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (1,96,angle,4,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
                     tft180_show_int (35, 64,obstacle_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35, 80,cross_type,1,RGB565_RED,RGB565_WHITE);

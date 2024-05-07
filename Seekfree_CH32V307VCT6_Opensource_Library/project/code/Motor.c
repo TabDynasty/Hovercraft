@@ -10,10 +10,10 @@
 /*=============================  电机引脚定义  ================================*/
 #define PWM_UP_PIN         TIM4_PWM_MAP1_CH4_D15
 #define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH1_D12
-#define PWM_1_PIN           TIM5_PWM_MAP0_CH2_A1
-#define PWM_2_PIN          TIM4_PWM_MAP1_CH2_D13
-#define PWM_3_PIN          TIM4_PWM_MAP1_CH3_D14
-#define PWM_4_PIN          TIM5_PWM_MAP0_CH1_A0
+#define PWM_1_PIN          TIM4_PWM_MAP1_CH2_D13
+#define PWM_2_PIN          TIM5_PWM_MAP0_CH2_A1
+#define PWM_3_PIN          TIM5_PWM_MAP0_CH1_A0
+#define PWM_4_PIN          TIM4_PWM_MAP1_CH3_D14
 
 ///*============================= 4路电机的起转pwm值  ================================*
 #define MOTOR_PWM_START      540
@@ -135,14 +135,14 @@ void Motor_Set(int speed, int spin ,float force)
             pwm4+=force * centripetal_p_instraight*anti_coefficient/100;
         }
     }
-    if(pwm1 > 200)
-        pwm1 = 200;
-    if(pwm2 > 200)
-        pwm2 = 200;
-    if(pwm3 > 200)
-        pwm3 = 200;
-    if(pwm4 > 200)
-        pwm4 = 200;
+    if(pwm1 > 250)
+        pwm1 = 250;
+    if(pwm2 > 250)
+        pwm2 = 250;
+    if(pwm3 > 250)
+        pwm3 = 250;
+    if(pwm4 > 250)
+        pwm4 = 250;
 
     if(pwm1 <= 0)
         pwm1 = 0;

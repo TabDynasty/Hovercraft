@@ -153,8 +153,8 @@ void control_Init()
        resample_points(rpts + begin_id, rpts_num - begin_id, rptsn, &rptsn_num, sample_dist * pixel_per_meter);
        AIM_DISTANCE=aim_distance;
 
-
-       aim_idx = (int)clip(round(AIM_DISTANCE/1000.0/sample_dist), 0, rptsn_num - 1);
+       if(rptsn_num > 0)
+           aim_idx = (int)clip(round(AIM_DISTANCE/1000.0/sample_dist), 0, rptsn_num - 1);
        // 计算远锚点偏差值
        float dx    = rptsn[aim_idx][0] - cx;
        if(obstacle_type==OBSTACLE_LEFT_BEGIN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=20;
@@ -168,6 +168,7 @@ void control_Init()
        // 纯跟踪算法
       // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
        pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
+       tft180_show_int (1,112,aim_idx,4,RGB565_RED,RGB565_WHITE);
 
        //外环角度环
 
@@ -178,7 +179,6 @@ void control_Init()
        else{
            angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
        }
-       //angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
    }
    else  // 中线点过少(出现问题)，此时不转角
    {
