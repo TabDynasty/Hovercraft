@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "filters.h"
 #include "image.h"
+#include "straight_road.h"
 /*=============================  电机引脚定义  ================================*/
 #define PWM_UP_PIN         TIM4_PWM_MAP1_CH4_D15
 #define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH1_D12
@@ -14,7 +15,6 @@
 #define PWM_2_PIN          TIM5_PWM_MAP0_CH2_A1
 #define PWM_3_PIN          TIM5_PWM_MAP0_CH1_A0
 #define PWM_4_PIN          TIM4_PWM_MAP1_CH3_D14
-
 ///*============================= 4路电机的起转pwm值  ================================*
 #define MOTOR_PWM_START      540
 /*================================ 全局变量 ==================================*/
@@ -54,7 +54,6 @@ void Speed_Set(void)
         pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
        }
 }
-
  //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     6路无刷电调以及电机各项参数初始化
 // 参数说明     void
@@ -83,6 +82,7 @@ void Motor_Set(int speed, int spin ,float force)
 {
 
     int pwm1=0,pwm2=0,pwm3=0,pwm4=0;
+    /******给速度用**********/
     if(speed>=0)
     {
         pwm3+=speed;
@@ -91,7 +91,7 @@ void Motor_Set(int speed, int spin ,float force)
         pwm1+=speed;
         pwm2+=speed;
     }
-
+    //*********转向用
     if(spin>=0){
         pwm1+=spin;
         pwm4+=spin;
@@ -99,42 +99,35 @@ void Motor_Set(int speed, int spin ,float force)
         pwm2+=-spin;
         pwm3+=-spin;
     }
-
-    if(is_straight0 == 1 && is_straight1 == 1)
+    /**************给侧推防止漂移用*******************/
+    if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
     {
         if(angle> angle_thred){
             pwm1+=force * centripetal_p_straight;
             pwm3+=force * centripetal_p_straight;
-            //pwm3 -= force * centripetal_p_straight * 0.6;
-            //pwm4 -= force * centripetal_p_straight * 0.5;
         }
         if(angle<angle_thred * (-1)){
             pwm2+=force * centripetal_p_straight;
             pwm4+=force * centripetal_p_straight;
-            //pwm3 -= force * centripetal_p_straight * 0.5;
-            //pwm4 -= force * centripetal_p_straight * 0.6;
         }
-//        if(x0 >60)
-//        {
-//            pwm2+=force * centripetal_p_straight;
-//            pwm4+=force * centripetal_p_straight;
-//        }
-//        if(x1 <120)
-//        {
-//            pwm1+=force * centripetal_p_straight;
-//            pwm3+=force * centripetal_p_straight;
-//        }
-    }else{
+    }else{                                    //弯道防甩出去
         if(angle> angle_thred){
             pwm1+=force * centripetal_p_instraight;
-            pwm3+=force * centripetal_p_instraight*anti_coefficient/100;
+            pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
 
         }
         if(angle<angle_thred * (-1)){
             pwm2+=force * centripetal_p_instraight;
-            pwm4+=force * centripetal_p_instraight*anti_coefficient/100;
+            pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
         }
     }
+    /*********************直道入弯****************************/
+    if(straight_road_type == STRAIGHT_OUT)
+    {
+        pwm1 = 120;
+        pwm2 = 120;
+    }
+    /*********************限幅防止越界***************************/
     if(pwm1 > 250)
         pwm1 = 250;
     if(pwm2 > 250)
@@ -152,6 +145,7 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3 = 0;
     if(pwm4 <= 0)
         pwm4 = 0;
+    /***********************缓启动*******************************/
     if(slow_start_flag == true)
     {
         pwm1 = 0;
@@ -159,6 +153,8 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3 = 0;
         pwm4 = 0;
     }
+
+    /**********************最终赋值用*************************/
         pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
         pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
         pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);
@@ -227,7 +223,6 @@ void pit_speed(void)
         total_distance += Speed_now;
     }
 }
-
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     停车关闭所有电机，在中断调用
 // 参数说明     void

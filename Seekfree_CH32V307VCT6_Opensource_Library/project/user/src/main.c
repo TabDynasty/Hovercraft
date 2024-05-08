@@ -47,6 +47,7 @@
 #include "W25QXX.h"
 #include "dual.h"
 #include "filters.h"
+#include "straight_road.h"
 #include "optical_flow.h"
 /*================================无线图传部分=================================*/
 #define WIFI_SSID_TEST          "qwe"
@@ -132,12 +133,12 @@ int main (void)
             else gpio_set_level(C1, 0);//2
             if(circle_type)gpio_set_level(E13, 1);//3;
             else gpio_set_level(E13, 0);//3
-            if(cross_type)gpio_set_level(C0, 1);//4;
+            if(straight_road_type)gpio_set_level(C0, 1);//4;
             else gpio_set_level(C0, 0);//4
             //屏显
             data_show();
             /********此区域debug用*********/
-
+            //Integral_vel_flag = 1;
             // debug_show_float("serr",Angle_PID.SumError*0.1 , 2);
             /********此区域debug用*********/
 
@@ -203,8 +204,9 @@ void data_show(void)
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (1,96,angle,4,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,obstacle_type,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,straight_road_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35, 80,cross_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
@@ -232,7 +234,7 @@ void data_show(void)
                 {
                     //tft180_show_int (1, 0,gain,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 16,Speed_now,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1, 32,dl1a_distance_mm,4,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1, 32,straight_road_type,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 48,far_y1,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 64,(int)inv_far_Lpt1[0],3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 80,(int)inv_far_Lpt1[1],3,RGB565_RED,RGB565_WHITE);
@@ -264,7 +266,7 @@ void data_show(void)
                     else motorflag=1;
                     if(flag == 0)
                     {
-                        system_delay_ms(2000);
+                        system_delay_ms(1000);
                         flag = 1;
                         slow_start_flag = false;
                     }

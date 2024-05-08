@@ -7,6 +7,7 @@
 #include "Motor.h"
 #include "obstacle.h"
 #include "circle.h"
+#include "straight_road.h"
 #include "zf_common_headfile.h"
 
 uint32 aimSpeed=0;/**< 目标速度*/
@@ -65,6 +66,10 @@ void control_Init()
     }
     if(garage_type!=GARAGE_NONE)
         run_garage();
+    if(straight_road_type!=STRAIGHT_NONE)
+    {
+        Run_straight();
+    }
     if(cross_type==CROSS_IN)//近十字，切寻远线
     {
         if (track_type == TRACK_LEFT){
@@ -110,7 +115,7 @@ void control_Init()
     //速度决策,缓变化
 //    if(reset_flag == false)
 //    {
-        if(!bend_flag)
+        if(straight_road_type != STRAIGHT_NONE)
         {
             aimSpeed = Speed_straight;
         }else{
@@ -168,7 +173,6 @@ void control_Init()
        // 纯跟踪算法
       // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
        pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
-       tft180_show_int (1,112,aim_idx,4,RGB565_RED,RGB565_WHITE);
 
        //外环角度环
 
@@ -188,10 +192,12 @@ void control_Init()
 void check_all()
 {
 
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
+    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
     check_circle();
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE)
+    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
     check_Cross();
+    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
+    check_straight_road();
 //    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
 //    check_garage();
 }
