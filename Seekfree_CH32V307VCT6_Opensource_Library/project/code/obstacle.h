@@ -19,6 +19,7 @@ extern enum obstacle_type_e  obstacle_type;
 
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 
+void check_obstacle();
 void run_Lobstacle();
 void run_Robstacle();
 

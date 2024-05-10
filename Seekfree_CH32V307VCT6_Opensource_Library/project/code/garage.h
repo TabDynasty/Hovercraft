@@ -16,6 +16,7 @@ void run_garage();
 
 /*================================ 全局变量 ==================================*/
 extern enum garage_type_e garage_type;
-
+extern bool zebra_L_flag,zebra_R_flag;
+extern int zebraL_x,zebraR_x;
 
 #endif /* GARAGE_H_ */

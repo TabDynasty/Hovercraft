@@ -4,6 +4,14 @@
 #include "Motor.h"
 #include "zf_common_headfile.h"
 enum obstacle_type_e  obstacle_type=OBSTACLE_NONE;
+
+
+void check_obstacle()
+{
+    if(dir_rightnum0>10 && conf0_max>40 && is_straight1)obstacle_type=OBSTACLE_LEFT_BEGIN;
+    if(dir_leftnum1>10 && conf1_max>40 && is_straight0)obstacle_type=OBSTACLE_RIGHT_BEGIN;
+}
+
 void run_Lobstacle()
 {
     track_type = TRACK_RIGHT;

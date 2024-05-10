@@ -105,26 +105,26 @@ float PID_Realize_Inner(PID *sptr, int *PID, float NowData, float Point)
      //积分限幅
 
 
-         if (sptr->SumError*ki_t >= PID[KT])
-         {
-             sptr->SumError = PID[KT]/ki_t;
-         }
-         else if (sptr->SumError*ki_t <= -PID[KT])
-         {
-             sptr->SumError = -PID[KT]/ki_t;
-         }
+//         if (sptr->SumError*ki_t >= PID[KT])
+//         {
+//             sptr->SumError = PID[KT]/ki_t;
+//         }
+//         else if (sptr->SumError*ki_t <= -PID[KT])
+//         {
+//             sptr->SumError = -PID[KT]/ki_t;
+//         }
      //积分分离
-     if(fabs(pure_angle)> abs(angle_thred))
-     {
-     sptr->SumError +=  iError; // 误差积分
+//     if(fabs(pure_angle)> abs(angle_thred))
+//     {
+     //sptr->SumError +=  iError; // 误差积分
      Realize = kp_t * iError
-             + ki_t * sptr->SumError
+             //+ ki_t * sptr->SumError
              + kd_t * (iError - sptr->LastError);
-     }else {
-     Realize = kp_t * iError
-              + ki_t * sptr->SumError
-              + kd_t * (iError - sptr->LastError);
-    }
+//     }else {
+//     Realize = kp_t * iError
+//              //+ ki_t * sptr->SumError
+//              + kd_t * (iError - sptr->LastError);
+//    }
      sptr->LastError = iError;           // 更新上次误差
      sptr->LastData  = NowData;          // 更新上次数据
 

@@ -540,7 +540,7 @@ void findline_righthand_sobel(image_t *img, int block_size, int clip_value, int 
 void findline_righthand_adaptive01(image_t *img, int block_size, int clip_value, int x, int y, int pts[][2], int *num,int dir_[],int *num0,int  *num1) {
     int half = block_size / 2;
     int step = 0, dir = 0, turn = 0,back_num=0,left_num=0;
-    while (step < *num && 0 < x && x < img->width -half- 1 && 0 < y && y < img->height -half && turn < 4) {
+    while (step < *num && half < x && x < img->width -half- 1 && 0 < y && y < img->height -half && turn < 4) {
         int local_thres = 0;
         for (int dy = -half; dy <= half; dy++) {
             for (int dx = -half; dx <= half; dx++) {
@@ -976,10 +976,10 @@ void find_corners() {
             Lpt0_rpts0s_id = i;
             Lpt0_found = true;
         }
-        if(conf0>15&&i< 1.5/sample_dist) is_straight0 = false; //只要中间有大角度，就不是长直道
+        if(conf0>15&&i< 1.6/sample_dist) is_straight0 = false; //只要中间有大角度，就不是长直道
 
         //用于长直道判断
-        if(conf0>10&&bend_flag) is_longstraight0 = false; //只要中间有大角度，就不是长直道
+        if(conf0>15&&bend_flag) is_longstraight0 = false; //只要中间有大角度，就不是长直道
         if(conf0>15&&i< 1.8/sample_dist&&!bend_flag) is_longstraight0 = false; //只要中间有大角度，就不是长直道
 
         if(conf0>conf0_max)conf0_max = conf0;//用于图显
@@ -1005,10 +1005,10 @@ void find_corners() {
             Lpt1_rpts1s_id = i;
             Lpt1_found = true;
         }
-        if(conf1>15&&i< 1.5/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
+        if(conf1>15&&i< 1.6/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
 
         //用于长直道判断
-        if(conf1>10&&bend_flag) is_longstraight1 = false; //只要中间有大角度，就不是长直道
+        if(conf1>15&&bend_flag) is_longstraight1 = false; //只要中间有大角度，就不是长直道
         if(conf1>15&&i< 1.8/sample_dist&&!bend_flag) is_longstraight1 = false;
 
 

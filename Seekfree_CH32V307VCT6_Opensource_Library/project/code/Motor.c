@@ -122,11 +122,11 @@ void Motor_Set(int speed, int spin ,float force)
         }
     }
     /*********************直道入弯****************************/
-    if(straight_road_type == STRAIGHT_OUT)
-    {
-        pwm1 = 120;
-        pwm2 = 120;
-    }
+//    if(straight_road_type == STRAIGHT_OUT)
+//    {
+//        pwm1 = Speed_now * 2;
+//        pwm2 = Speed_now * 2;
+//    }
     /*********************限幅防止越界***************************/
     if(pwm1 > 250)
         pwm1 = 250;

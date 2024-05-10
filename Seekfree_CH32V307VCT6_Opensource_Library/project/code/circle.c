@@ -113,7 +113,7 @@ void run_Lcircle()
             case CIRCLE_LEFT_IN:
                 track_type = TRACK_RIGHT;
                 check_Left_Cross();
-                if(far_Lpt0_found&&ipts0_num<120)
+                if(far_Lpt0_found&&ipts0_num<60)
                 {
                     //check_Right_Cross();
                     Integral_vel_flag=1;

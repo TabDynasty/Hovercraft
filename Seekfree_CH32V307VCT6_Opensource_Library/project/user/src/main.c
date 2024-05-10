@@ -206,7 +206,7 @@ void data_show(void)
                     tft180_show_int   (1,96,angle,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,straight_road_type,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,obstacle_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35, 80,cross_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
@@ -224,7 +224,8 @@ void data_show(void)
                     tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
 
-                    tft180_show_int (140, 48,bend_flag,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 64,is_longstraight0,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 80,is_longstraight1,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 96,is_straight0,1,RGB565_RED,RGB565_WHITE);
@@ -351,6 +352,8 @@ void data_show(void)
                 //边线
                 lcd_Show_Line(ipts0_num,ipts0,RGB565_RED);
                 lcd_Show_Line(ipts1_num,ipts1,RGB565_BLUE);
+                tft180_draw_point(  (int)((zebraL_x)/x_Zoom) , (int)(ipts0[1][1]/y_Zoom) , RGB565_PURPLE   );
+                tft180_draw_point(  (int)((zebraR_x)/x_Zoom) , (int)(ipts1[1][1]/y_Zoom) , RGB565_PURPLE   );
                 //lcd_Show_in1v_Line(rptsn_num,rptsn,RGB565_PURPLE);
                 //起始点
 //                tft180_draw_point(  (int)((ipts0[0][0])/x_Zoom) , (int)(ipts0[0][1]/y_Zoom) , RGB565_YELLOW   );
@@ -368,6 +371,14 @@ void data_show(void)
 //                tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+
+                tft180_show_int (70, 64,garage_type,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70, 80,total_distance,4,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70, 96,zebra_L_flag,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70, 112,zebra_R_flag,1,RGB565_RED,RGB565_WHITE);
+
+                tft180_show_int (105, 96,zebraL_x,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (105, 112,zebraR_x,3,RGB565_RED,RGB565_WHITE);
             }
 
 
