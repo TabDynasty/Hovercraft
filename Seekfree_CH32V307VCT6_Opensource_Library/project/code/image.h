@@ -116,8 +116,10 @@ extern int x0,x1;
 extern uint32 Lconf_Min,Lconf_Max;
 
 extern int Lpt0_rpts0s_id, Lpt1_rpts1s_id;
+extern int Lpt0_s_rpts0s_id, Lpt1_s_rpts1s_id;
 extern int inv_Lpt0_rpts0s_id,inv_Lpt1_rpts1s_id;
 extern bool Lpt0_found,Lpt1_found;
+extern bool Lpt0_s_found,Lpt1_s_found;
 extern bool is_straight0, is_straight1,is_straight_far_0,is_straight_far_1;
 extern bool is_longstraight0, is_longstraight1,bend_flag;
 

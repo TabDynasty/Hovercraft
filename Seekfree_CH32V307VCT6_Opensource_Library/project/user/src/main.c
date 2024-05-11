@@ -219,10 +219,10 @@ void data_show(void)
                     tft180_show_int   (105,32,conf0_max,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,48,conf1_max,3,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
-                    tft180_show_int   (105,64,far_conf0_max,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,80,far_conf1_max,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,64,Lpt0_s_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,80,Lpt1_s_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,96,Lpt0_s_found, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,112,Lpt1_s_found, 3,RGB565_RED,RGB565_WHITE);
 
                     tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);

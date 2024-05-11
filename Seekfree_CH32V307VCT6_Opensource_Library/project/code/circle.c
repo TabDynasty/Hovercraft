@@ -31,8 +31,8 @@ void check_Lcircle_Lobstacle()
     }
     if(circle_obstacle_flag==1)
     {
-          if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
-          else
+//          if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
+//          else
           {
               check_Left_Cross();
               if(far_conf0_max<30&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
@@ -61,8 +61,8 @@ void check_Rcircle_Robstacle()
     }
     if(circle_obstacle_flag==1)
        {
-            if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
-            else
+//            if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
+//            else
             {
                 check_Right_Cross();
                 if(far_conf1_max<30&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
