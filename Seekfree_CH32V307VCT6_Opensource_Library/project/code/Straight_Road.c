@@ -21,7 +21,7 @@ void check_straight_road(void)
         {
             check_angle++;
         }
-    if(check_straight>5&& check_angle > 2)
+    if(check_straight>8&& check_angle > 2)
     {
         check_straight = 0;
         check_angle = 0;

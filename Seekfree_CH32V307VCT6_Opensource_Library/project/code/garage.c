@@ -48,7 +48,7 @@ void run_garage()
     if(garage_type==GARAGE_OUT)//³ö³µ¿â
     {
         Integral_vel_flag=1;
-        if(total_distance>1500)
+        if(total_distance>1200)
         {
             garage_type=GARAGE_NONE;
             Integral_vel_flag=0;
@@ -57,7 +57,7 @@ void run_garage()
     if(garage_type==GARAGE_FOUND)//Í£³µ
     {
         Integral_vel_flag=1;
-        if(total_distance>1500)
+        if(total_distance>1200)
         {
             garage_type=GARAGE_STOP;
             Integral_vel_flag=0;

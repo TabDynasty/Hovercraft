@@ -20,7 +20,7 @@ void run_Lobstacle()
     switch (obstacle_type) {
         case OBSTACLE_LEFT_BEGIN:
             Integral_vel_flag=1;
-            if(total_distance>2500){
+            if(total_distance>2300){
                 obstacle_type=OBSTACLE_NONE;
                 Integral_vel_flag=0;
             }
@@ -36,7 +36,7 @@ void run_Robstacle()
     switch (obstacle_type) {
         case OBSTACLE_RIGHT_BEGIN:
             Integral_vel_flag=1;
-            if(total_distance>2500){
+            if(total_distance>2300){
                 obstacle_type=OBSTACLE_NONE;
                 Integral_vel_flag=0;
             }

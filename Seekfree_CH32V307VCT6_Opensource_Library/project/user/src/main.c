@@ -108,6 +108,7 @@ int main (void)
     Read_Load();    //加载菜单
     MainMenu_Set(); //进入菜单
     My_FlashWrite(flash_num); //读取菜单
+    Motor_Init();
     tft180_clear(RGB565_WHITE);
     while(1)
     {
@@ -218,8 +219,8 @@ void data_show(void)
                     tft180_show_int   (105,32,conf0_max,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,48,conf1_max,3,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
-                    tft180_show_int   (105,64,Lpt0_s_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,80,Lpt1_s_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,64,Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,80,Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,96,Lpt0_s_found, 3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,112,Lpt1_s_found, 3,RGB565_RED,RGB565_WHITE);
 
@@ -592,10 +593,9 @@ void Init_all(void)
 
     tft180_set_dir(TFT180_CROSSWISE_180 );//屏幕设置方向
     tft180_init ();                       //屏幕初始化
-    Motor_Init();
     Key_Init();
     mpu6050_init ();
-    W25QXX_Init();
+    //W25QXX_Init();
     gpio_init(D8,GPI,0,GPI_FLOATING_IN);
 
     gpio_init(C0,GPO,0,GPO_PUSH_PULL);
