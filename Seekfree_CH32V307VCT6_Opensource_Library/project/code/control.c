@@ -113,23 +113,13 @@ void control_Init()
     }
 
     //速度决策,缓变化
-//    if(reset_flag == false)
-//    {
-//        if(straight_road_type != STRAIGHT_NONE)
-//        {
-//            aimSpeed = Speed_straight;
-//        }else{
-//            aimSpeed = Speed_instraight;
-//        }
-    if(bend_flag == 0)
-            {
-                aimSpeed = Speed_straight;
-            }else{
-                aimSpeed = Speed_instraight;
-            }
-//        reset_flag = true;
-//        speed_counter =0;
-//    }
+        if(straight_road_type != STRAIGHT_NONE)
+        {
+            aimSpeed = Speed_straight;
+        }else{
+            aimSpeed = Speed_instraight;
+        }
+
 
     if(circle_type == CIRCLE_LEFT_BEGIN||circle_type == CIRCLE_LEFT_IN
        || circle_type == CIRCLE_RIGHT_BEGIN||circle_type == CIRCLE_RIGHT_IN)
@@ -202,10 +192,10 @@ void check_all()
     check_circle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
     check_Cross();
+    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
+    check_straight_road();
 //    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
-//    check_straight_road();
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
-    check_obstacle();
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
-    check_garage();
+//    check_obstacle();
+//    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
+//    check_garage();
 }

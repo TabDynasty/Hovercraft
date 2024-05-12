@@ -6,6 +6,7 @@
 #include "image.h"
 #include "control.h"
 #include "PID.h"
+#include "straight_road.h"
 /*============================= 宏定义/重定义 ================================*/
 #define PAGE_DISP_NUM 6 /**< 定义LCD单页显示项目数*/
 #define NUM 56 /**<数字坐标*/
@@ -56,6 +57,7 @@ uint32 *Flash_Data[] = {
                         &Speed_circle,
                         &angle_thred,
                         &anti_coefficient,
+                        &break_dis,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -118,6 +120,7 @@ MENU_TABLE Ctrl_MenuTable[] =
         {"8.aim_signal",Menu_Null,&aim_signal},
         {"9.angle_thred",Menu_Null,&angle_thred},
         {"10.anti_coef",Menu_Null,&anti_coefficient},
+        {"11.break_dis",Menu_Null,&break_dis},
 };
 
 
@@ -576,4 +579,30 @@ void Write_Flash3()
   tft180_show_string(5, 50, "Wr1OK!", RGB565_RED,RGB565_WHITE);
   system_delay_ms(500);
   tft180_clear(RGB565_BLACK);
+}
+
+//EEROM版本
+void My_FlashWrite(int16 Boot)
+{
+    //将参数读到缓冲区
+    for(int i=0;i<FLASHDATANUM;i++)
+    {
+        flash_union_buffer[i].uint32_type = *((FLASH_WRITE_TYPE*)(Flash_Data[i])) ;
+    }
+    flash_write_page_from_buffer(46, Boot);
+    tft180_clear(RGB565_BLACK);
+    tft180_show_string(0,56,"LoadOK!",RGB565_RED,RGB565_WHITE);
+    system_delay_ms(1000);
+
+}
+
+//EEPROM版本
+void My_FlashRead(int16 Boot)
+{
+    //将EEPOM中的数据读到数据缓冲区（256个数据）
+    flash_read_page_to_buffer(46, Boot);
+    for(int i=0;i<FLASHDATANUM;i++)
+    {
+        *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = flash_union_buffer[i].uint32_type;
+    }
 }

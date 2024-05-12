@@ -613,25 +613,17 @@ void W25QXX_read_uint8_buf(uint8 *addr_buf,uint16 data_len ,uint32 startadr)
 
 
 
-void My_FlashWrite(int16 Boot)
-{
-
-    for(int i=0;i<FLASHDATANUM;i++)
-    {
-        W25QXX_write_uint32(*Flash_Data[i],Boot*200,i);
-    }
-    tft180_clear(RGB565_BLACK);
-    tft180_show_string(0,56,"LoadOK!",RGB565_RED,RGB565_WHITE);
-    system_delay_ms(1000);
-
-}
 
 
-void My_FlashRead(int16 Boot)
-{
-    for(int i=0;i<FLASHDATANUM;i++)
-    {
-        *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = (FLASH_WRITE_TYPE)W25QXX_read_uint32(Boot*200,i);
-    }
-}
+//w25q64°æ±¾
+//void My_FlashRead(int16 Boot)
+//{
+//    for(int i=0;i<FLASHDATANUM;i++)
+//    {
+//        *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = (FLASH_WRITE_TYPE)W25QXX_read_uint32(Boot*200,i);
+//    }
+//}
+
+
+
 

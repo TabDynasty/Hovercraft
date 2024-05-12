@@ -62,3 +62,6 @@ extern uint32 *Flash_Data[];
 extern uint16 FLASHDATANUM;
 extern uint32 mode_Flag;
 extern uint32 motor_Flag;
+
+extern void My_FlashWrite(int16 Boot);
+extern void My_FlashRead(int16 Boot);

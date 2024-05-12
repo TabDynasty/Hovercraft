@@ -58,7 +58,7 @@ float PID_Realize(PID *sptr, int *PID, float NowData, float Point)
      ki_t=(float)(PID[KI]/1000.0);
 
      //积分限幅
-     if(ki_t != 0)
+     if(ki_t)
      {
          sptr->SumError +=  iError; // 误差积分
          if (sptr->SumError*ki_t >= PID[KT])
@@ -103,28 +103,30 @@ float PID_Realize_Inner(PID *sptr, int *PID, float NowData, float Point)
      ki_t=(float)(PID[KI]/1000.0);
 
      //积分限幅
-
-
-//         if (sptr->SumError*ki_t >= PID[KT])
-//         {
-//             sptr->SumError = PID[KT]/ki_t;
-//         }
-//         else if (sptr->SumError*ki_t <= -PID[KT])
-//         {
-//             sptr->SumError = -PID[KT]/ki_t;
-//         }
+     if(ki_t)
+     {
+         sptr->SumError +=  iError; // 误差积分
+         if (sptr->SumError*ki_t >= PID[KT])
+         {
+             sptr->SumError = PID[KT]/ki_t;
+         }
+         else if (sptr->SumError*ki_t <= -PID[KT])
+         {
+             sptr->SumError = -PID[KT]/ki_t;
+         }
+     }
      //积分分离
-//     if(fabs(pure_angle)> abs(angle_thred))
-//     {
-     //sptr->SumError +=  iError; // 误差积分
+     if(fabs(pure_angle)> abs(angle_thred))
+     {
+     sptr->SumError +=  iError; // 误差积分
      Realize = kp_t * iError
-             //+ ki_t * sptr->SumError
+             + ki_t * sptr->SumError
              + kd_t * (iError - sptr->LastError);
-//     }else {
-//     Realize = kp_t * iError
-//              //+ ki_t * sptr->SumError
-//              + kd_t * (iError - sptr->LastError);
-//    }
+     }else {
+     Realize = kp_t * iError
+              //+ ki_t * sptr->SumError
+              + kd_t * (iError - sptr->LastError);
+    }
      sptr->LastError = iError;           // 更新上次误差
      sptr->LastData  = NowData;          // 更新上次数据
 

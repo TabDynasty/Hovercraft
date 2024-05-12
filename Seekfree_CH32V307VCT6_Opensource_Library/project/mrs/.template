@@ -1,5 +1,5 @@
 Address=0x08000000
-Erase All=true
+Erase All=false
 Program=true
 Verify=true
 Reset=true

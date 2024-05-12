@@ -122,8 +122,7 @@ void W25QXX_write_uint8_buf(uint8 *buf,uint16 data_len ,uint32 startadr);
 void W25QXX_read_uint8_buf(uint8 *addr_buf,uint16 data_len ,uint32 startadr);
 //---------------------------------------------------------------
 //
-extern void My_FlashWrite(int16 Boot);
-extern void My_FlashRead(int16 Boot);
+
 
 
 #endif /* W25QXX_H_ */
