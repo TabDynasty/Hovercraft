@@ -29,6 +29,7 @@ int total_distance = 0;
 int aim_signal = 0;
 int angle_thred;
 int anti_coefficient;
+int break_coefficient;  //刹车系数
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -124,8 +125,8 @@ void Motor_Set(int speed, int spin ,float force)
     /*********************直道入弯****************************/
     if(straight_road_type == STRAIGHT_OUT)
     {
-        pwm1  +=Speed_now * 2;
-        pwm2  +=Speed_now * 2;
+        pwm1  +=Speed_now * break_coefficient/10;
+        pwm2  +=Speed_now * break_coefficient/10;
     }
     /*********************限幅防止越界***************************/
     if(pwm1 > 250)

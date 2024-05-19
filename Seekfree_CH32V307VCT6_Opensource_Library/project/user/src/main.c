@@ -96,7 +96,7 @@ void Init_all();
 void select_section();
 void distort_show(uint8*);
 void data_show();
-void get_offset();
+void get_offset_and_reset_flag();
 void show_power();
 int key=0;
 char strff[8];
@@ -198,7 +198,7 @@ void data_show(void)
             if(show_pagex==0){
                     draw_Show();
                     //测定偏置以及获得电池电量
-                    get_offset();
+                    get_offset_and_reset_flag();
                     show_power();
                     //第1列存放各种标志位
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
@@ -248,13 +248,7 @@ void data_show(void)
                     tft180_show_int   (70,64,mpu6050_gyro_x,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (70,80,mpu6050_gyro_y,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (70,96,mpu6050_gyro_z,3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int   (70,112,total_angel_z,3,RGB565_RED,RGB565_WHITE);
                     //第四列
-                    //tft180_show_int   (105,0,aimSpeed,3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int   (105,16,SPD.aimSpeedL,3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int   (105,32,SPD.aimSpeedR, 3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_int   (105,48,test_D, 3,RGB565_RED,RGB565_WHITE);
-                    //tft180_show_string(105, 0, strff,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,64,is_straight0, 2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,80,is_straight1, 2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,96,pure_angle, 2,RGB565_RED,RGB565_WHITE);
@@ -391,30 +385,9 @@ void data_show(void)
 
 void show_power()
 {
-    power_level = Sliding_Filter(&Power_level, adc_convert(ADC1_IN9_B1), 0);
-    float percent = ((float)power_level * 0.1578-14.8)/2*45;
-    if(percent > 1 && percent<45){
-        tft180_show_float (105, 16, ((float)power_level * 0.1578-14.8)/2*100, 2,1,RGB565_BLACK,RGB565_WHITE);
-        tft180_show_char (140, 16, '%',RGB565_BLACK,RGB565_WHITE);
-        tft180_draw_line (105, 0, 150, 0, RGB565_BLACK);
-        tft180_draw_line (105, 0, 105, 15, RGB565_BLACK);
-        tft180_draw_line (105, 15, 150, 15, RGB565_BLACK);
-        tft180_draw_line (150, 0, 150, 15, RGB565_BLACK);
-        for(int i = 1; i<percent;i++)
-        {
-            if(percent <= 15)
-            {
-                tft180_draw_line (105+i, 1, 105+i, 15, RGB565_RED);
-            }
-            else if(percent <= 30 && percent >= 15)
-            {
-                tft180_draw_line (105+i, 1, 105+i, 15, RGB565_YELLOW);
-            }else if(percent >= 30)
-            {
-                tft180_draw_line (105+i, 1, 105+i, 15, RGB565_GREEN);
-            }
-        }
-    }
+    power_level =  adc_convert(ADC1_IN9_B1);
+    tft180_show_float (105, 16, (float)power_level * 0.1578*0.893, 3,1,RGB565_BLACK,RGB565_WHITE);
+    tft180_show_char (140, 16, 'V' , RGB565_BLACK,RGB565_WHITE);
 }
 
 //展示圆环，十字
@@ -500,7 +473,7 @@ void draw_Show()
 }
 
 
-void get_offset(void)
+void get_offset_and_reset_flag(void)
 {
 
     if(gpio_get_level(D9)==1){
@@ -513,8 +486,14 @@ void get_offset(void)
               off_setz += mpu6050_gyro_z;
               system_delay_ms(5);   //采样周期
           }
-
           off_setz /= 100;
+
+          /******所有元素标志清零*******/
+          garage_type = GARAGE_NONE;
+          circle_type = CIRCLE_NONE;
+          cross_type = CROSS_NONE;
+          obstacle_type = OBSTACLE_NONE;
+          straight_road_type = STRAIGHT_NONE;
     }
 }
 void select_section()
@@ -522,6 +501,9 @@ void select_section()
     while(1){
         key=Key_Scan();
         tft180_show_string(0, 0, "The current version ",RGB565_RED,RGB565_WHITE);
+        power_level =  adc_convert(ADC1_IN9_B1);
+        tft180_show_float (120, 112, (float)power_level * 0.1578*0.893, 3,1,RGB565_BLACK,RGB565_WHITE);
+        tft180_show_char (150, 112, 'V' , RGB565_BLACK,RGB565_WHITE);
         switch (flash_num) {
             case 0:
                 tft180_show_string(65,70 , "slow",RGB565_BLUE,RGB565_WHITE);

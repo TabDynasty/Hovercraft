@@ -58,6 +58,7 @@ uint32 *Flash_Data[] = {
                         &angle_thred,
                         &anti_coefficient,
                         &break_dis,
+                        &break_coefficient,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -121,6 +122,7 @@ MENU_TABLE Ctrl_MenuTable[] =
         {"9.angle_thred",Menu_Null,&angle_thred},
         {"10.anti_coef",Menu_Null,&anti_coefficient},
         {"11.break_dis",Menu_Null,&break_dis},
+        {"12.break_conf",Menu_Null,&break_coefficient},
 };
 
 
@@ -468,8 +470,8 @@ void MainMenu_Set(void)
 
   Menu_Process(" -= Setting =- ", &MainMenu_Prmt, MainMenu_Table, menuNum);
 //  mt9v03x_set_confing_buffer[0][1]=(int16)auto_exp;
-  //My_FlashWrite(1);
-  //Update_Flash();
+//My_FlashWrite(1);
+//Update_Flash();
   tft180_clear(RGB565_WHITE);
 }
 
@@ -589,18 +591,17 @@ void My_FlashWrite(int16 Boot)
     {
         flash_union_buffer[i].uint32_type = *((FLASH_WRITE_TYPE*)(Flash_Data[i])) ;
     }
-    flash_write_page_from_buffer(46, Boot);
+    flash_write_page_from_buffer(46+Boot, 0);
     tft180_clear(RGB565_BLACK);
     tft180_show_string(0,56,"LoadOK!",RGB565_RED,RGB565_WHITE);
     system_delay_ms(1000);
-
 }
 
 //EEPROM版本
 void My_FlashRead(int16 Boot)
 {
     //将EEPOM中的数据读到数据缓冲区（256个数据）
-    flash_read_page_to_buffer(46, Boot);
+    flash_read_page_to_buffer(46+Boot, 0);
     for(int i=0;i<FLASHDATANUM;i++)
     {
         *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = flash_union_buffer[i].uint32_type;
