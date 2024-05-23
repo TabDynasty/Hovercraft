@@ -7,6 +7,7 @@
 #include "control.h"
 #include "PID.h"
 #include "straight_road.h"
+#include "circle.h"
 /*============================= 宏定义/重定义 ================================*/
 #define PAGE_DISP_NUM 6 /**< 定义LCD单页显示项目数*/
 #define NUM 56 /**<数字坐标*/
@@ -59,6 +60,12 @@ uint32 *Flash_Data[] = {
                         &anti_coefficient,
                         &break_dis,
                         &break_coefficient,
+
+                        &check_straight_thred,
+                        &check_bend_thred,
+                        &check_angle_thred,
+                        &LcircleIn_thred,
+                        &RcircleIn_thred,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -102,6 +109,11 @@ MENU_TABLE Img_MenuTable[] =
   {"2.begin_y",Menu_Null,&begin_y},
   {"3.sobelThres",Menu_Null,&sobelThres},
   {"4.find_type",Menu_Null,&find_type},
+  {"5.straight_fps",Menu_Null,&check_straight_thred},
+  {"6.bend_fps",Menu_Null,&check_bend_thred},
+  {"7.angle_fps",Menu_Null,&check_angle_thred},
+  {"8.LcircleIn",Menu_Null,&LcircleIn_thred},
+  {"9.RcircleIn",Menu_Null,&RcircleIn_thred},
 };
 
 

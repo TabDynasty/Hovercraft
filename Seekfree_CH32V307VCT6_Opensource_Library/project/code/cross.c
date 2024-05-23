@@ -194,10 +194,10 @@ void check_Left_Cross()
     }
 
 
-    if(far_y0-far_ipts0[0][1]<5)
-    {
-        far_y0=far_ipts0[0][1]+5;
-    }
+//    if(far_y0-far_ipts0[0][1]<5)
+//    {
+//        far_y0=far_ipts0[0][1]+5;
+//    }
     //用于图显
     far_Show_x0=far_x0;
     far_Show_y0=far_y0;
@@ -293,10 +293,10 @@ void check_Right_Cross()
     }
 
 
-    if(far_y1-far_ipts1[0][1]<5)
-    {
-        far_y1=far_ipts1[0][1]+5;
-    }
+//    if(far_y1-far_ipts1[0][1]<5)
+//    {
+//        far_y1=far_ipts1[0][1]+5;
+//    }
 
     //用于图显
     far_Show_x1=far_x1;

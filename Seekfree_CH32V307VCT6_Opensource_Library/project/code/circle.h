@@ -19,5 +19,7 @@ void run_Rcircle();
 /*================================ 全局变量 ==================================*/
 extern enum circle_type_e circle_type;
 extern bool circle_obstacle_flag;
+extern int LcircleIn_thred;
+extern int RcircleIn_thred;
 
 #endif /* CIRCLE_H_ */

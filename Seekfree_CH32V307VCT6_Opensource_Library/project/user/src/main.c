@@ -221,8 +221,8 @@ void data_show(void)
                     //第4列下半存放远近边线长度
                     tft180_show_int   (105,64,Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,80,Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,96,Lpt0_s_found, 3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,112,Lpt1_s_found, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,96,far_conf0_max, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,112,far_conf1_max, 3,RGB565_RED,RGB565_WHITE);
 
                     tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);
@@ -393,7 +393,7 @@ void show_power()
 //展示圆环，十字
 void cross_circle_Show(void)
 {
-    if(cross_type!=CROSS_NONE||circle_type==CIRCLE_LEFT_IN||circle_type==CIRCLE_RIGHT_IN)
+    if(cross_type!=CROSS_NONE||circle_type==CIRCLE_LEFT_IN||circle_type==CIRCLE_RIGHT_IN||circle_obstacle_flag)
     {
                 tft180_draw_point((int)((inv_Lpt0[0])/x_Zoom),(int)(inv_Lpt0[1]/y_Zoom),RGB565_PURPLE   );//左角点
                 tft180_draw_point(  (int)(far_Show_x0/x_Zoom) , (int)(far_Show_y0/y_Zoom) , RGB565_YELLOW   );//左远起始点
@@ -401,7 +401,7 @@ void cross_circle_Show(void)
                 lcd_Show_Line(far_ipts0_num,far_ipts0,RGB565_RED);//左远线
 
                 tft180_draw_point((int)((inv_Lpt1[0])/x_Zoom),(int)(inv_Lpt1[1]/y_Zoom),RGB565_PURPLE   );//右角点
-                tft180_draw_point(  (int)(far_Show_x1/x_Zoom) , (int)(far_Show_y1/y_Zoom) , RGB565_YELLOW   );//右远起始点
+                tft180_draw_point(  (int)(far_Show_x1/x_Zoom) , (int)(far_Show_y1/y_Zoom) , RGB565_RED   );//右远起始点
                 tft180_draw_point((int)((inv_far_Lpt1[0])/x_Zoom),(int)(inv_far_Lpt1[1]/y_Zoom),RGB565_GREEN   );//右远角点
                 lcd_Show_Line(far_ipts1_num,far_ipts1,RGB565_BLUE);//右远线
     }

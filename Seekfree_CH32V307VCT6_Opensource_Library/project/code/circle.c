@@ -13,6 +13,8 @@ int broadcast_flag=1;
 bool circle_obstacle_flag=0;//圆环障碍共用的一套标志位
 int none_left_line = 0, none_right_line = 0;
 int have_left_line = 0, have_right_line = 0;
+int LcircleIn_thred = 60;
+int RcircleIn_thred = 120;
 
 /*================================ 接口函数 ==================================*/
 void check_Left_Circle();
@@ -30,7 +32,7 @@ void check_Lcircle_Lobstacle()
 //        circle_obstacle_flag=1;
 //    }
 //    if(circle_obstacle_flag==1)
-    if(Lpt0_found && !Lpt1_found && is_straight1 && Lpt0_rpts0s_id<60)//左边长直道，右边近角点
+    if(Lpt0_found && !Lpt1_found && is_longstraight1 && Lpt0_rpts0s_id<60)//左边长直道，右边近角点
     {
 //          if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
 //          else
@@ -61,7 +63,7 @@ void check_Rcircle_Robstacle()
 //
 //    }
 //    if(circle_obstacle_flag==1)
-    if (Lpt1_found && is_straight0 && Lpt1_rpts1s_id<60) //左边长直道，右边近角点
+    if (Lpt1_found && is_longstraight0 && Lpt1_rpts1s_id<60) //左边长直道，右边近角点
        {
 //            if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
 //            else
@@ -115,7 +117,7 @@ void run_Lcircle()
             case CIRCLE_LEFT_IN:
                 track_type = TRACK_RIGHT;
                 check_Left_Cross();
-                if(far_Lpt0_found&&ipts0_num<60)
+                if(far_Lpt0_found&&ipts0_num<LcircleIn_thred)
                 {
                     //check_Right_Cross();
                     Integral_vel_flag=1;
@@ -188,7 +190,7 @@ void run_Rcircle()
                 track_type = TRACK_LEFT;
                 check_Right_Cross();
 
-                if(far_Lpt1_found&&ipts1_num<120)
+                if(far_Lpt1_found&&ipts1_num<RcircleIn_thred)
                 {
                     //check_Left_Cross();
                     Integral_vel_flag=1;
