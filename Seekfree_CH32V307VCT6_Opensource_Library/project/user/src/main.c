@@ -74,7 +74,7 @@ int total_angel_z;
 int start=0;
 int launch_car=1;
 float off_setz =0;    //z轴角速度偏置，去零飘用
-uint16 power_level = 0;
+float power_level = 0;
 image_t img_raw = DEF_IMAGE(NULL, MT9V03X_W, MT9V03X_H);
 //按键调参的标志
 int8 show_pagex,show_pagey,key_pos;
@@ -333,7 +333,6 @@ void data_show(void)
                 tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
-
             }
             else if(show_pagex==2)
             {
@@ -385,8 +384,9 @@ void data_show(void)
 
 void show_power()
 {
-    power_level =  adc_convert(ADC1_IN9_B1);
-    tft180_show_float (105, 16, (float)power_level * 0.1578*0.893, 3,1,RGB565_BLACK,RGB565_WHITE);
+
+    power_level = (float)Sliding_Filter(&Power_level,adc_convert(ADC1_IN9_B1),0)* 0.1578*0.893;
+    tft180_show_float (105, 16, power_level , 3,1,RGB565_BLACK,RGB565_WHITE);
     tft180_show_char (140, 16, 'V' , RGB565_BLACK,RGB565_WHITE);
 }
 

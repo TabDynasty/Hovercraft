@@ -93,9 +93,9 @@ float LowPass_Filter(LowPassFilter *filter, float input)
 // 参数说明     Offset_Data    输入偏置
 // 返回参数     void
 //-------------------------------------------------------------------------------------------------------------------
-short int Sliding_Filter(Sliding_Data* Data_Reserved,unsigned short int Input_Data,short int Data_Offset)
+int Sliding_Filter(Sliding_Data* Data_Reserved,unsigned short int Input_Data,short int Data_Offset)
 {
-    unsigned long int sum=0;
+    int sum=0;
     /* 接收数据，存放在数组里面 */
     Data_Reserved->filter_arry[Data_Reserved->count]=Input_Data;
     /* 限幅滑动参数 */
@@ -106,5 +106,5 @@ short int Sliding_Filter(Sliding_Data* Data_Reserved,unsigned short int Input_Da
     {
         sum+= Data_Reserved->filter_arry[i];
     }
-    return (short int)((sum>>4)-Data_Offset);
+    return ((sum/16)-Data_Offset);
 }

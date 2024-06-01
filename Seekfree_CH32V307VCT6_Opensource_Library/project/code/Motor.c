@@ -30,6 +30,7 @@ int aim_signal = 0;
 int angle_thred;
 int anti_coefficient;
 int break_coefficient;  //刹车系数
+int max_output;//最终输出限制幅度
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -79,10 +80,12 @@ void Motor_Init(void)
 // 参数说明     pwmn 对应引脚的pwm输入值
 // 返回参数     void
 //-------------------------------------------------------------------------------------------------------------------
+extern float power_level;
 void Motor_Set(int speed, int spin ,float force)
 {
 
     int pwm1=0,pwm2=0,pwm3=0,pwm4=0;
+    static float power_conf;
     /******给速度用**********/
     if(speed>=0)
     {
@@ -128,15 +131,21 @@ void Motor_Set(int speed, int spin ,float force)
         pwm1  +=Speed_now * break_coefficient/10;
         pwm2  +=Speed_now * break_coefficient/10;
     }
+    /***********************电池电压补偿*************************/
+    power_conf = 16.5/power_level;
+    pwm1 *= power_conf;
+    pwm2 *= power_conf;
+    pwm3 *= power_conf;
+    pwm4 *= power_conf;
     /*********************限幅防止越界***************************/
-    if(pwm1 > 250)
-        pwm1 = 250;
-    if(pwm2 > 250)
-        pwm2 = 250;
-    if(pwm3 > 250)
-        pwm3 = 250;
-    if(pwm4 > 250)
-        pwm4 = 250;
+    if(pwm1 > max_output)
+        pwm1 = max_output;
+    if(pwm2 > max_output)
+        pwm2 = max_output;
+    if(pwm3 > max_output)
+        pwm3 = max_output;
+    if(pwm4 > max_output)
+        pwm4 = max_output;
 
     if(pwm1 <= 0)
         pwm1 = 0;
@@ -154,6 +163,7 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3 = 0;
         pwm4 = 0;
     }
+
 
     /**********************最终赋值用*************************/
         pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);

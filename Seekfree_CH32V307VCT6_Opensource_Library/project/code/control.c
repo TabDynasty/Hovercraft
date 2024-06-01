@@ -163,8 +163,7 @@ void control_Init()
 
        float dy    = cy - rptsn[aim_idx][1];
        float dn    = sqrt(dx * dx + dy * dy);
-
-
+//
        error=atan2f(dx,-dy)*180.0/PI;
        // ´¿¸ú×ÙËã·¨
       // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle²âÊÔ

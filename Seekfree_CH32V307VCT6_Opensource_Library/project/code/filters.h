@@ -22,7 +22,7 @@ typedef struct _LowPassFilter// 一阶低通滤波器结构体
 
 typedef struct _Sliding_Data//滑行数据
 {
-    unsigned short int filter_arry[10];//滤波器阵列
+    unsigned short int filter_arry[16];//滤波器阵列
     unsigned char      count;
 } Sliding_Data;
 #endif /* FILTERS_H_ */
@@ -37,4 +37,4 @@ extern  void kalman1_init(kalman_state *state, float init_x, float init_p);
 extern  float kalman1_filter(kalman_state *state, float z_measure);
 extern  void initLowPassFilter(LowPassFilter *filter, float alpha, float initialOutput);
 extern  float updateLowPassFilter(LowPassFilter *filter, float input);
-extern  short int Sliding_Filter(Sliding_Data* Data_Reserved,unsigned short int Input_Data,short int Data_Offset);
+extern  int Sliding_Filter(Sliding_Data* Data_Reserved,unsigned short int Input_Data,short int Data_Offset);
