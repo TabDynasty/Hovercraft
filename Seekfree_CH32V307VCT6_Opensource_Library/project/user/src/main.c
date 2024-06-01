@@ -81,6 +81,7 @@ int8 show_pagex,show_pagey,key_pos;
 int frame_vote;
 bool slow_start_flag = true;
 extern int8 flash_num;
+
 /********此区域debug用*********/
 
 
@@ -110,6 +111,7 @@ int main (void)
     My_FlashWrite(flash_num); //读取菜单
     Motor_Init();
     tft180_clear(RGB565_WHITE);
+    uint8 aaa[120][188]={0};
     while(1)
     {
         frame_vote+=1;//计算帧率用
@@ -291,9 +293,6 @@ void data_show(void)
             if(show_pagex==0){
                 //显示原图，画边线
                 draw_Show();
-                //起始点
-                tft180_draw_point(  (int)((ipts0[0][0])/x_Zoom) , (int)(ipts0[0][1]/y_Zoom) , RGB565_YELLOW   );
-                tft180_draw_point(  (int)((ipts1[0][0])/x_Zoom) , (int)(ipts1[0][1]/y_Zoom) , RGB565_YELLOW   );
                 //去畸变边线
                 lcd_Show_Line(dipts0_num,dipts0,RGB565_WHITE);
                 lcd_Show_Line(dipts1_num,dipts1,RGB565_WHITE);
@@ -301,22 +300,44 @@ void data_show(void)
                 //第1列
                 tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (1, 96,dipts0[0][0],3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (1, 112,dipts1[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 96,rpts0s[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 112,rpts1s[0][0],3,RGB565_RED,RGB565_WHITE);
                 //第2列
-                tft180_show_int (35, 64,ipts0_num,3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (35, 80,ipts1_num,3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (35,96,dipts0_num,3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (35,112,dipts1_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35, 64,ipts0[ipts0_num][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35, 80,ipts1[ipts1_num][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,96,rpts0s[rpts0s_num][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (35,112,rpts0s[rpts1s_num][0],3,RGB565_RED,RGB565_WHITE);
 
+                //第3列
+                tft180_show_int (70, 64,ipts0_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70, 80,ipts1_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70,96,rpts0s_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70,112,rpts1s_num,3,RGB565_RED,RGB565_WHITE);
+
+                //第4列下半存放远近边线长度
+                tft180_show_int   (105,32,Lpt0_found,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int   (105,48,Lpt1_found,3,RGB565_RED,RGB565_WHITE);
+
+                tft180_show_int   (105,64,conf0_max,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int   (105,80,conf1_max,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int   (105,96,far_conf0_max, 3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int   (105,112,far_conf1_max, 3,RGB565_RED,RGB565_WHITE);
+
+                tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (140, 64,is_longstraight0,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (140, 80,is_longstraight1,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (140, 96,is_straight0,1,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (140, 112,is_straight1,1,RGB565_RED,RGB565_WHITE);
 
             }
             else if(show_pagex==1)
             {
                 //全图sobel
-                uint8 show_Img[MT9V03X_H][MT9V03X_W];
-                sobelThreshold(img_raw.data,show_Img,img_raw.width,img_raw.height,sobelThres);
-                tft180_displayimage03x((const uint8 *)show_Img, show_X,show_Y);
+//                uint8 show_Img[MT9V03X_H][MT9V03X_W];
+//                sobelThreshold(img_raw.data,show_Img,img_raw.width,img_raw.height,sobelThres);
+//                tft180_displayimage03x((const uint8 *)show_Img, show_X,show_Y);
+                Pimage_show();
                 //边线
                 lcd_Show_Line(ipts0_num,ipts0,RGB565_RED);
                 lcd_Show_Line(ipts1_num,ipts1,RGB565_BLUE);
