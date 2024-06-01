@@ -215,7 +215,7 @@ int Vertical_circle(int aim_vel, int now_vel)
 //-------------------------------------------------------------------------------------------------------------------
 void pit_speed(void)
 {
-    Speed_now = encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
+    Speed_now = -encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
     encoder_clear_count(TIM3_ENCOEDER);                                        // 清空编码器计数
     //flag置为1时，开始积分
     if(!Integral_vel_flag){
