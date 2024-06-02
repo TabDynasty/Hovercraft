@@ -193,11 +193,11 @@ void check_Left_Cross()
         }
     }
 
+    if(far_y0-far_ipts0[0][1]<5 && cross_type)
+    {
+        far_y0=far_ipts0[0][1]+5;
+    }
 
-//    if(far_y0-far_ipts0[0][1]<5)
-//    {
-//        far_y0=far_ipts0[0][1]+5;
-//    }
     //用于图显
     far_Show_x0=far_x0;
     far_Show_y0=far_y0;
@@ -211,14 +211,13 @@ void check_Left_Cross()
            findline_lefthand_adaptive(&img_raw, adaptive_Block, clip_value, far_x0, far_y0, far_ipts0, &far_ipts0_num);
        else far_ipts0_num = 0;
 
-    // 去畸变+透视变换
-    distort_img_process(far_ipts0, far_ipts0_num, far_dipts0);
+    // 透视变换
     for(int i=0;i<far_ipts0_num;i++)
     {
-        far_rpts0[i][0]=Cal_rot_x(far_dipts0[i][0],far_dipts0[i][1]);
-        far_rpts0[i][1]=Cal_rot_y(far_dipts0[i][0],far_dipts0[i][1]);
+        far_rpts0[i][0]=Cal_rot_x(far_ipts0[i][0],far_ipts0[i][1]);
+        far_rpts0[i][1]=Cal_rot_y(far_ipts0[i][0],far_ipts0[i][1]);
     }
-    far_dipts0_num = far_rpts0_num = far_ipts0_num;
+    far_rpts0_num = far_ipts0_num;
 
     // 边线滤波
     blur_points(far_rpts0, far_rpts0_num, far_rpts0b, (int) round(line_blur_kernel));
@@ -279,6 +278,8 @@ void check_Right_Cross()
 
         far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+4;
         far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-5;//偏移是为了防止还在黑线处
+
+
     }
 
     else if(circle_type==CIRCLE_RIGHT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
@@ -292,11 +293,11 @@ void check_Right_Cross()
             }
     }
 
+    if(far_y1-far_ipts1[0][1]<5 && cross_type)
+    {
+        far_y1=far_ipts1[0][1]+5;
+    }
 
-//    if(far_y1-far_ipts1[0][1]<5)
-//    {
-//        far_y1=far_ipts1[0][1]+5;
-//    }
 
     //用于图显
     far_Show_x1=far_x1;
@@ -312,14 +313,13 @@ void check_Right_Cross()
            findline_righthand_adaptive(&img_raw, adaptive_Block, clip_value, far_x1, far_y1, far_ipts1, &far_ipts1_num);
        else far_ipts1_num = 0;
 
-    // 去畸变+透视变换
-    distort_img_process(far_ipts1, far_ipts1_num, far_dipts1);
+    // 透视变换
     for(int i=0;i<far_ipts1_num;i++)
     {
-        far_rpts1[i][0]=Cal_rot_x(far_dipts1[i][0],far_dipts1[i][1]);
-        far_rpts1[i][1]=Cal_rot_y(far_dipts1[i][0],far_dipts1[i][1]);
+        far_rpts1[i][0]=Cal_rot_x(far_ipts1[i][0],far_ipts1[i][1]);
+        far_rpts1[i][1]=Cal_rot_y(far_ipts1[i][0],far_ipts1[i][1]);
     }
-    far_dipts1_num = far_rpts1_num = far_ipts1_num;
+    far_rpts1_num = far_ipts1_num;
 
     // 边线滤波
     blur_points(far_rpts1, far_rpts1_num, far_rpts1b, (int) round(line_blur_kernel));

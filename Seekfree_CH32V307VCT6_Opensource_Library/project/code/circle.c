@@ -13,8 +13,8 @@ int broadcast_flag=1;
 bool circle_obstacle_flag=0;//圆环障碍共用的一套标志位
 int none_left_line = 0, none_right_line = 0;
 int have_left_line = 0, have_right_line = 0;
-int LcircleIn_thred = 60;
-int RcircleIn_thred = 120;
+int LcircleIn_thred;//60
+int RcircleIn_thred;//120
 
 /*================================ 接口函数 ==================================*/
 void check_Left_Circle();
@@ -37,8 +37,8 @@ void check_Lcircle_Lobstacle()
 //          if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
 //          else
           {
-              check_Left_Cross();
-              if(far_conf0_max<30&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+//              check_Left_Cross();
+//              if(far_conf0_max<30&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
               {
                   circle_type = CIRCLE_LEFT_BEGIN;
                   none_left_line = 0;
@@ -68,8 +68,8 @@ void check_Rcircle_Robstacle()
 //            if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
 //            else
             {
-                check_Right_Cross();
-                if(far_conf1_max<30&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+//                check_Right_Cross();
+//                if(far_conf1_max<30&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
                 {
                     circle_type = CIRCLE_RIGHT_BEGIN;
                     none_right_line = 0;

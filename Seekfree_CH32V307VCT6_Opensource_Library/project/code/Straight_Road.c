@@ -8,9 +8,9 @@ enum straigh_troad_type_e straight_road_type = STRAIGHT_NONE;
 static uint8 check_straight = 0;//用于计直道标志的帧数
 static uint8 check_bend = 0; //用于计弯道标志的帧数
 static uint8 check_angle = 0; //用于计角度标志的帧数
-int check_straight_thred = 8;
-int check_angle_thred = 2;
-int check_bend_thred = 3;
+int check_straight_thred;//8
+int check_angle_thred;//2
+int check_bend_thred;//3
 int break_dis;
 void check_straight_road(void)
 {
