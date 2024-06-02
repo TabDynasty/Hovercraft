@@ -8,6 +8,7 @@
 #include "filters.h"
 #include "image.h"
 #include "straight_road.h"
+#include "circle.h"
 /*=============================  电机引脚定义  ================================*/
 #define PWM_UP_PIN         TIM4_PWM_MAP1_CH4_D15
 #define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH1_D12
@@ -127,6 +128,11 @@ void Motor_Set(int speed, int spin ,float force)
     }
     /*********************直道入弯****************************/
     if(straight_road_type == STRAIGHT_OUT)
+    {
+        pwm1  +=Speed_now * break_coefficient/10;
+        pwm2  +=Speed_now * break_coefficient/10;
+    }
+    if(circle_type == CIRCLE_LEFT_BEGIN || circle_type == CIRCLE_RIGHT_BEGIN)
     {
         pwm1  +=Speed_now * break_coefficient/10;
         pwm2  +=Speed_now * break_coefficient/10;

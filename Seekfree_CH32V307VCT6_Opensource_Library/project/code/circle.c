@@ -116,6 +116,8 @@ void run_Lcircle()
                 break;
             case CIRCLE_LEFT_IN:
                 track_type = TRACK_RIGHT;
+                if(ipts0_num<LcircleIn_thred)
+                    track_type = TRACK_LEFT;
                 check_Left_Cross();
                 if(far_Lpt0_found&&ipts0_num<LcircleIn_thred)
                 {
@@ -134,16 +136,14 @@ void run_Lcircle()
             case CIRCLE_LEFT_RUNNING:
                 track_type = TRACK_RIGHT;
                 if (Lpt0_found) rpts0s_num = rptsc0_num = Lpt0_rpts0s_id-10;//截断
-                begin_y=110;//近线起始点拉低，防止丢线
                 if (Lpt1_found && Lpt1_rpts1s_id < 50)//右角点足够靠下
                 {
                     circle_type = CIRCLE_LEFT_OUT;
-                    begin_y=96;
                 }
 
                 break;
             case CIRCLE_LEFT_OUT:
-                track_type = TRACK_LEFT;
+
                 if (is_straight1)
                     circle_type = CIRCLE_LEFT_END;
                 break;
@@ -151,12 +151,10 @@ void run_Lcircle()
             case CIRCLE_LEFT_END:
                 track_type = TRACK_RIGHT;
                 Integral_vel_flag=1;
-                begin_y=110;//近线起始点拉低，防止丢线
                 if (total_distance>=3000)
                 {
                     aim_distance=440;
                     circle_type = CIRCLE_NONE;
-                    begin_y=96;
                     Integral_vel_flag=0;
                 }
                 break;
@@ -188,8 +186,9 @@ void run_Rcircle()
                 //寻右线，左线丢线后有线
             case CIRCLE_RIGHT_IN:
                 track_type = TRACK_LEFT;
+                if(ipts1_num<RcircleIn_thred)
+                    track_type = TRACK_RIGHT;
                 check_Right_Cross();
-
                 if(far_Lpt1_found&&ipts1_num<RcircleIn_thred)
                 {
                     //check_Left_Cross();
@@ -207,28 +206,26 @@ void run_Rcircle()
             case CIRCLE_RIGHT_RUNNING:
                 track_type = TRACK_LEFT;
                 if (Lpt1_found) rpts1s_num = rptsc1_num = Lpt1_rpts1s_id-10; //截断
-                begin_y=110;//近线起始点拉低，防止丢线
+
                 if (Lpt0_found && Lpt0_rpts0s_id < 50)//左角点足够靠下
                 {
                     circle_type = CIRCLE_RIGHT_OUT;
-                    begin_y=96;
                 }
                 break;
 
             case CIRCLE_RIGHT_OUT:
-                track_type = TRACK_RIGHT;
+                if(rpts1s_num)track_type = TRACK_RIGHT;
+                else track_type = TRACK_LEFT;
                 if (is_straight0)
                     circle_type = CIRCLE_RIGHT_END;
                 break;
             case CIRCLE_RIGHT_END:
                 track_type = TRACK_LEFT;
                 Integral_vel_flag=1;
-                begin_y=110;//近线起始点拉低，防止丢线
                 if (total_distance>3000)
                 {
                     aim_distance=440;
                     circle_type = CIRCLE_NONE;
-                    begin_y=96;
                     Integral_vel_flag=0;
                 }
                 break;

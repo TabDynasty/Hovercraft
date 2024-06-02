@@ -86,7 +86,7 @@ void control_Init()
         rpts = far_rptsc1;
         rpts_num = far_rptsc1_num;
     }
-    else if ((circle_type==CIRCLE_LEFT_RUNNING)&&Lpt1_found)//出圆环，截取角点以前的近线
+    else if ((circle_type==CIRCLE_LEFT_RUNNING)&&Lpt1_found&&track_type == TRACK_RIGHT)//出圆环，截取角点以前的近线
     {
         rpts = rptsc1;
         rpts_num = rptsc1_num = rpts1s_num= Lpt1_rpts1s_id;
@@ -96,7 +96,7 @@ void control_Init()
         rpts = far_rptsc0;
         rpts_num = far_rptsc0_num;
     }
-    else if ((circle_type==CIRCLE_RIGHT_RUNNING)&&Lpt0_found)//出圆环，截取角点以前的近线
+    else if ((circle_type==CIRCLE_RIGHT_RUNNING)&&Lpt0_found&&track_type == TRACK_LEFT)//出圆环，截取角点以前的近线
     {
         rpts = rptsc0;
         rpts_num = rptsc0_num = rpts0s_num= Lpt0_rpts0s_id;
