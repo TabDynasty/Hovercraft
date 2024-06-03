@@ -37,8 +37,8 @@ void check_Lcircle_Lobstacle()
 //          if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
 //          else
           {
-//              check_Left_Cross();
-//              if(far_conf0_max<30&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+              check_Left_Cross();
+              if(far_conf0_max<30&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
               {
                   circle_type = CIRCLE_LEFT_BEGIN;
                   none_left_line = 0;
@@ -68,8 +68,8 @@ void check_Rcircle_Robstacle()
 //            if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
 //            else
             {
-//                check_Right_Cross();
-//                if(far_conf1_max<30&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+                check_Right_Cross();
+                if(far_conf1_max<30&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
                 {
                     circle_type = CIRCLE_RIGHT_BEGIN;
                     none_right_line = 0;
@@ -116,10 +116,10 @@ void run_Lcircle()
                 break;
             case CIRCLE_LEFT_IN:
                 track_type = TRACK_RIGHT;
-                if(ipts0_num<LcircleIn_thred)
+                if(ipts0_num<LcircleIn_thred){
                     track_type = TRACK_LEFT;
-                check_Left_Cross();
-                if(far_Lpt0_found&&ipts0_num<LcircleIn_thred)
+                    check_Left_Cross();}
+                if(far_Lpt0_found)
                 {
                     //check_Right_Cross();
                     Integral_vel_flag=1;
@@ -143,7 +143,8 @@ void run_Lcircle()
 
                 break;
             case CIRCLE_LEFT_OUT:
-
+                if(ipts0_num)track_type = TRACK_LEFT;
+                else track_type = TRACK_RIGHT;
                 if (is_straight1)
                     circle_type = CIRCLE_LEFT_END;
                 break;
@@ -153,7 +154,7 @@ void run_Lcircle()
                 Integral_vel_flag=1;
                 if (total_distance>=3000)
                 {
-                    aim_distance=440;
+//                    aim_distance=440;
                     circle_type = CIRCLE_NONE;
                     Integral_vel_flag=0;
                 }
@@ -187,9 +188,9 @@ void run_Rcircle()
             case CIRCLE_RIGHT_IN:
                 track_type = TRACK_LEFT;
                 if(ipts1_num<RcircleIn_thred)
-                    track_type = TRACK_RIGHT;
-                check_Right_Cross();
-                if(far_Lpt1_found&&ipts1_num<RcircleIn_thred)
+                    {track_type = TRACK_RIGHT;
+                    check_Right_Cross();}
+                if(far_Lpt1_found)
                 {
                     //check_Left_Cross();
                     Integral_vel_flag=1;
@@ -214,7 +215,7 @@ void run_Rcircle()
                 break;
 
             case CIRCLE_RIGHT_OUT:
-                if(rpts1s_num)track_type = TRACK_RIGHT;
+                if(ipts1_num)track_type = TRACK_RIGHT;
                 else track_type = TRACK_LEFT;
                 if (is_straight0)
                     circle_type = CIRCLE_RIGHT_END;
@@ -224,7 +225,7 @@ void run_Rcircle()
                 Integral_vel_flag=1;
                 if (total_distance>3000)
                 {
-                    aim_distance=440;
+//                    aim_distance=440;
                     circle_type = CIRCLE_NONE;
                     Integral_vel_flag=0;
                 }

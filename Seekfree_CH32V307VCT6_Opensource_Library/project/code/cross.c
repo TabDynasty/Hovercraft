@@ -192,6 +192,16 @@ void check_Left_Cross()
         far_y0=round(ipts0[ipts0_num-5][1])-3;//减3向上做一定的偏移
         }
     }
+//    else if(circle_type==CIRCLE_RIGHT_OUT)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
+//    {
+//        if(ipts0_num+ipts1_num<8){//右线太少，则固定点
+//            far_x0=28;
+//            far_y0=90;
+//        }else{
+//        far_x0=round(ipts0[ipts0_num-5][0]);
+//        far_y0=round(ipts0[ipts0_num-5][1])-3;//减3向上做一定的偏移
+//        }
+//    }
 
     if(far_y0-far_ipts0[0][1]<5 && cross_type)
     {
@@ -283,6 +293,16 @@ void check_Right_Cross()
     }
 
     else if(circle_type==CIRCLE_RIGHT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
+    {
+        if(ipts1_num<8){//右线太少，则固定点
+            far_x1=160;
+            far_y1=90;
+        }else{
+            far_x1=round(ipts1[ipts1_num-5][0]);
+            far_y1=round(ipts1[ipts1_num-5][1])-3;//减3向上做一定的偏移
+            }
+    }
+    else if(circle_type==CIRCLE_LEFT_OUT)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
     {
         if(ipts1_num<8){//右线太少，则固定点
             far_x1=160;

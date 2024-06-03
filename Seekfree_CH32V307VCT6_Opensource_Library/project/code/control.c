@@ -86,20 +86,20 @@ void control_Init()
         rpts = far_rptsc1;
         rpts_num = far_rptsc1_num;
     }
-    else if ((circle_type==CIRCLE_LEFT_RUNNING)&&Lpt1_found&&track_type == TRACK_RIGHT)//出圆环，截取角点以前的近线
+    else if ((circle_type==CIRCLE_LEFT_RUNNING||circle_type==CIRCLE_LEFT_OUT)&&Lpt1_found&&track_type == TRACK_RIGHT)//出圆环，截取角点以前的近线
     {
         rpts = rptsc1;
-        rpts_num = rptsc1_num = rpts1s_num= Lpt1_rpts1s_id;
+        rpts_num = rptsc1_num = rpts1s_num= Lpt1_rpts1s_id-5;
     }
     else if ((circle_type==CIRCLE_RIGHT_IN)&&farline_type==1)//入圆环，切特殊远线
     {
         rpts = far_rptsc0;
         rpts_num = far_rptsc0_num;
     }
-    else if ((circle_type==CIRCLE_RIGHT_RUNNING)&&Lpt0_found&&track_type == TRACK_LEFT)//出圆环，截取角点以前的近线
+    else if ((circle_type==CIRCLE_RIGHT_RUNNING||circle_type==CIRCLE_RIGHT_OUT)&&Lpt0_found&&track_type == TRACK_LEFT)//出圆环，截取角点以前的近线
     {
         rpts = rptsc0;
-        rpts_num = rptsc0_num = rpts0s_num= Lpt0_rpts0s_id;
+        rpts_num = rptsc0_num = rpts0s_num= Lpt0_rpts0s_id-5;
     }
     else{//正常寻左右线,左障碍寻左线，右障碍寻右线
        if (track_type == TRACK_LEFT){
