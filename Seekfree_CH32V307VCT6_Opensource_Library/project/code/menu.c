@@ -56,7 +56,7 @@ uint32 *Flash_Data[] = {
                         &Angle_1[2],
 
                         &Speed_circle,
-                        &angle_thred,
+                        &angle_thred1,
                         &anti_coefficient,
                         &break_dis,
                         &break_coefficient,
@@ -67,6 +67,8 @@ uint32 *Flash_Data[] = {
                         &LcircleIn_thred,
                         &RcircleIn_thred,
                         &max_output,
+                        &angle_thred2,
+                        &circle_slow,
                        };
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void beep_On();
@@ -132,10 +134,12 @@ MENU_TABLE Ctrl_MenuTable[] =
         {"6.UP",Menu_Null,&Motor.PWM_fan_up},
         {"7.DOWN",Menu_Null,&Motor.PWM_fan_down},
         {"8.max_output",Menu_Null,&max_output},
-        {"9.angle_thred",Menu_Null,&angle_thred},
-        {"10.anti_coef",Menu_Null,&anti_coefficient},
-        {"11.break_dis",Menu_Null,&break_dis},
-        {"12.break_conf",Menu_Null,&break_coefficient},
+        {"9.ang_thred1",Menu_Null,&angle_thred1},
+        {"10.ang_thred2",Menu_Null,&angle_thred2},
+        {"11.anti_coef",Menu_Null,&anti_coefficient},
+        {"12.break_dis",Menu_Null,&break_dis},
+        {"13.break_conf",Menu_Null,&break_coefficient},
+        {"13.circ_slow",Menu_Null,&circle_slow},
 };
 
 

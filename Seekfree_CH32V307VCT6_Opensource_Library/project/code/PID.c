@@ -1,6 +1,7 @@
 #include "PID.h"
 #include "control.h"
 #include "utils.h"
+#include "motor.h"
 #include "zf_common_headfile.h"
 
 
@@ -116,7 +117,7 @@ float PID_Realize_Inner(PID *sptr, int *PID, float NowData, float Point)
          }
      }
      //积分分离
-     if(fabs(pure_angle)> abs(angle_thred))
+     if(fabs(pure_angle)> abs(angle_thred2))
      {
      sptr->SumError +=  iError; // 误差积分
      Realize = kp_t * iError

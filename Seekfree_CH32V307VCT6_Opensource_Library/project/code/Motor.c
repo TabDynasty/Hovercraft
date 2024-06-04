@@ -28,10 +28,12 @@ int centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
 int total_distance = 0;
 int aim_signal = 0;
-int angle_thred;
+int angle_thred1;
+int angle_thred2;
 int anti_coefficient;
 int break_coefficient;  //刹车系数
 int max_output;//最终输出限制幅度
+int circle_slow;//圆环降速
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -107,21 +109,21 @@ void Motor_Set(int speed, int spin ,float force)
     /**************给侧推防止漂移用*******************/
     if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
     {
-        if(angle> angle_thred){
+        if(angle> angle_thred1){
             pwm1+=force * centripetal_p_straight;
             pwm3+=force * centripetal_p_straight;
         }
-        if(angle<angle_thred * (-1)){
+        if(angle<angle_thred1 * (-1)){
             pwm2+=force * centripetal_p_straight;
             pwm4+=force * centripetal_p_straight;
         }
     }else{                                    //弯道防甩出去
-        if(angle> angle_thred){
+        if(angle> angle_thred1){
             pwm1+=force * centripetal_p_instraight;
             pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
 
         }
-        if(angle<angle_thred * (-1)){
+        if(angle<angle_thred1 * (-1)){
             pwm2+=force * centripetal_p_instraight;
             pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
         }
@@ -134,8 +136,8 @@ void Motor_Set(int speed, int spin ,float force)
     }
     if(circle_type == CIRCLE_LEFT_BEGIN || circle_type == CIRCLE_RIGHT_BEGIN)
     {
-        pwm1  +=Speed_now * break_coefficient/10;
-        pwm2  +=Speed_now * break_coefficient/10;
+        pwm1  +=Speed_now * break_coefficient/5 - circle_slow;
+        pwm2  +=Speed_now * break_coefficient/5 - circle_slow;
     }
     /***********************电池电压补偿*************************/
     power_conf = 16.5/power_level;

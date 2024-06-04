@@ -19,7 +19,7 @@ void check_straight_road(void)
     {
         check_straight++;
     }
-    if(pure_angle < angle_thred )
+    if(pure_angle < angle_thred1 )
         {
             check_angle++;
         }

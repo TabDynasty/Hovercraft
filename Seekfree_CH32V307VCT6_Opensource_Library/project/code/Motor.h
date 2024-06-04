@@ -46,7 +46,9 @@ extern int aim_signal;
 extern int anti_coefficient;
 extern int break_coefficient;  //刹车系数
 extern int max_output;//最终输出限制幅度
-extern int angle_thred;
+extern int circle_slow;//圆环降速
+extern int angle_thred1;
+extern int angle_thred2;
 extern int Speed_now ;
 #endif /* MOTOR_H_ */
 /*================================ 接口函数 ==================================*/

@@ -512,6 +512,7 @@ void select_section()
                 break;
         }
 
+
         if(key == KEY_RIGHT)
         {
             flash_num++;
