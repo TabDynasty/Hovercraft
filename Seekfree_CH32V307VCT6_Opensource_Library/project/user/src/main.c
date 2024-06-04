@@ -298,8 +298,8 @@ void data_show(void)
                 //第1列
                 tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (1, 96,rpts0s[0][0],3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (1, 112,rpts1s[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 96,obstacle_type,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 112,total_distance,3,RGB565_RED,RGB565_WHITE);
                 //第2列
                 tft180_show_int (35, 64,ipts0[ipts0_num][0],3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (35, 80,ipts1[ipts1_num][0],3,RGB565_RED,RGB565_WHITE);
@@ -307,10 +307,10 @@ void data_show(void)
                 tft180_show_int (35,112,rpts0s[rpts1s_num][0],3,RGB565_RED,RGB565_WHITE);
 
                 //第3列
-                tft180_show_int (70, 64,ipts0_num,3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (70, 80,ipts1_num,3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (70,96,rpts0s_num,3,RGB565_RED,RGB565_WHITE);
-                tft180_show_int (70,112,rpts1s_num,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70, 64,Lpt0_s_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70, 80,Lpt1_s_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70,96,Lpt0_s_found,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (70,112,Lpt1_s_found,3,RGB565_RED,RGB565_WHITE);
 
                 //第4列下半存放远近边线长度
                 tft180_show_int   (105,32,Lpt0_found,3,RGB565_RED,RGB565_WHITE);

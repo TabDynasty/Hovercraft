@@ -804,16 +804,20 @@ void process_image()
         findpoint_otsu(Ostu_Thres);
         ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
         ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
-        if (AT_IMAGE(&img_raw, x0, begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres)
-            if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)<=abs(x1-img_raw.width/2)))
-                findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, begin_y, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
+//        do{
+            if (AT_IMAGE(&img_raw, x0, begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres)
+                if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)<=abs(x1-img_raw.width/2)))
+                    findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, begin_y, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
+                else ipts0_num = 0;
             else ipts0_num = 0;
-        else ipts0_num = 0;
-        if (AT_IMAGE(&img_raw, x1, begin_y) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres)
-            if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)>abs(x1-img_raw.width/2)))
-                findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
+//        }while(ipts0_num>100&&(abs(ipts0[0][0]-ipts0[ipts0_num][0])+abs(ipts0[0][1]-ipts0[ipts0_num][1]))<40);
+//        do{
+            if (AT_IMAGE(&img_raw, x1, begin_y) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres)
+                if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)>abs(x1-img_raw.width/2)))
+                    findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
+                else ipts1_num = 0;
             else ipts1_num = 0;
-        else ipts1_num = 0;
+//        }while(ipts1_num>100&&(abs(ipts1[0][0]-ipts1[ipts1_num][0])+abs(ipts1[0][1]-ipts1[ipts1_num][1]))<40);
         break;
     case 1:
         findpoint_sobel();
@@ -915,7 +919,7 @@ void find_corners() {
 
         if(conf0_s>15&&i< 1.8/sample_dist&&!bend_flag) is_longstraight0 = false; //长直道入弯
         //路障
-        if (Lpt0_s_found == false&&Lconf_Min<conf0_s&&conf0_s<Lconf_Max&&(i<1.5/(sample_dist)))
+        if (Lpt0_s_found == false&&Lconf_Min-10<conf0_s&&conf0_s<Lconf_Max&&(i<1.5/(sample_dist)))
         {
             Lpt0_s_rpts0s_id = i;
             Lpt0_s_found = true;
@@ -957,7 +961,7 @@ void find_corners() {
 
         if(conf1_s>15&&i< 1.8/sample_dist&&!bend_flag) is_longstraight1 = false;//长直道入弯
         //路障
-        if (Lpt1_s_found == false&&Lconf_Min<conf1_s&&conf1_s<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
+        if (Lpt1_s_found == false&&Lconf_Min-10<conf1_s&&conf1_s<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
         {
             Lpt1_s_rpts1s_id = i;
             Lpt1_s_found = true;
