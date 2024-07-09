@@ -10,11 +10,11 @@
 #include "straight_road.h"
 #include "circle.h"
 /*=============================  电机引脚定义  ================================*/
-#define PWM_UP_PIN         TIM4_PWM_MAP1_CH4_D15
-#define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH1_D12
-#define PWM_1_PIN          TIM4_PWM_MAP1_CH2_D13
-#define PWM_2_PIN          TIM5_PWM_MAP0_CH2_A1
-#define PWM_3_PIN          TIM5_PWM_MAP0_CH1_A0
+#define PWM_UP_PIN         TIM4_PWM_MAP1_CH1_D12
+#define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH2_D13
+#define PWM_1_PIN          TIM5_PWM_MAP0_CH1_A0
+#define PWM_2_PIN          TIM4_PWM_MAP1_CH4_D15
+#define PWM_3_PIN          TIM5_PWM_MAP0_CH2_A1
 #define PWM_4_PIN          TIM4_PWM_MAP1_CH3_D14
 ///*============================= 4路电机的起转pwm值  ================================*
 #define MOTOR_PWM_START      540
@@ -34,6 +34,11 @@ int anti_coefficient;
 int break_coefficient;  //刹车系数
 int max_output;//最终输出限制幅度
 int circle_slow;//圆环降速
+int start_pwm;
+int bottom_Speed_Max;
+int bottom_Speed_Min;
+int speed_up_conf;
+int slow_down_conf;
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -52,8 +57,8 @@ void Speed_Set(void)
     //上下两个风扇,船浮起来
     if(slow_start_flag == true)
        {
-        pwm_set_duty(PWM_UP_PIN,   620);
-        pwm_set_duty(PWM_DOWN_PIN, 620);
+        pwm_set_duty(PWM_UP_PIN,   start_pwm);
+        pwm_set_duty(PWM_DOWN_PIN, start_pwm);
        }else{
         pwm_set_duty(PWM_UP_PIN,   Motor.PWM_fan_up);
         pwm_set_duty(PWM_DOWN_PIN, Motor.PWM_fan_down);
@@ -68,8 +73,6 @@ void Motor_Init(void)
 {
     //气垫船浮起所需的pwm
 
-    Motor.PWM_fan_up = 590;
-    Motor.PWM_fan_down = 590;
     pwm_init(PWM_UP_PIN,    MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_DOWN_PIN,  MOTOR_FREQ, INIT_PWM);
     pwm_init(PWM_1_PIN,     MOTOR_FREQ, INIT_PWM);
@@ -98,7 +101,7 @@ void Motor_Set(int speed, int spin ,float force)
         pwm1+=speed;
         pwm2+=speed;
     }
-    //*********转向用
+    /*********转向用***********/
     if(spin>=0){
         pwm1+=spin;
         pwm4+=spin;
@@ -128,19 +131,26 @@ void Motor_Set(int speed, int spin ,float force)
             pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
         }
     }
+    /*********************直道提速****************************/
+    if(straight_road_type == STRAIGHT_IN)
+    {
+        pwm3  +=(Speed_straight-Speed_now) * speed_up_conf/10;
+        pwm4  +=(Speed_straight-Speed_now) * speed_up_conf/10;
+    }
     /*********************直道入弯****************************/
     if(straight_road_type == STRAIGHT_OUT)
     {
         pwm1  +=Speed_now * break_coefficient/10;
         pwm2  +=Speed_now * break_coefficient/10;
     }
-    if(circle_type == CIRCLE_LEFT_BEGIN || circle_type == CIRCLE_RIGHT_BEGIN)
-    {
-        pwm1  +=Speed_now * break_coefficient/5 - circle_slow;
-        pwm2  +=Speed_now * break_coefficient/5 - circle_slow;
-    }
+    /*********************圆环减速****************************/
+//    if(circle_type == CIRCLE_LEFT_BEGIN || circle_type == CIRCLE_RIGHT_BEGIN)
+//    {
+//        pwm1  += circle_slow;
+//        pwm2  += circle_slow;
+//    }
     /***********************电池电压补偿*************************/
-    power_conf = 16.5/power_level;
+    power_conf = 12.8/power_level;
     pwm1 *= power_conf;
     pwm2 *= power_conf;
     pwm3 *= power_conf;

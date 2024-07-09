@@ -43,8 +43,8 @@ uint32 *Flash_Data[] = {
                         &Speed[1],
                         &Speed[2],
 //                        &Speed[3],
-                        &Motor.PWM_fan_up,
-                        &Motor.PWM_fan_down,
+                        &bottom_Speed_Max,
+                        &bottom_Speed_Min,
                         &sobelThres,
                         &find_type,
                         &Speed_straight,
@@ -61,20 +61,25 @@ uint32 *Flash_Data[] = {
                         &break_dis,
                         &break_coefficient,
 
-                        &check_straight_thred,
-                        &check_bend_thred,
-                        &check_angle_thred,
+                        &check_straight_num,
+                        &check_bend_num,
+                        &check_angle_num,
                         &LcircleIn_thred,
                         &RcircleIn_thred,
                         &max_output,
                         &angle_thred2,
                         &circle_slow,
+                        &start_pwm,
+                        &speed_up_conf,
+                        &slow_down_conf,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
 void beep_Off();
 void Menu_Null(void);
-void Menu_Img(void);
+void Menu_BaseImg(void);
+void Menu_ElemImg(void);
+void Menu_Motor(void);
 void Menu_Ctrl();
 void Menu_PID();
 //void Menu_Cross();
@@ -97,30 +102,48 @@ MENU_PRMT MainMenu_Prmt;
 MENU_TABLE MainMenu_Table[] =
 {
       {"0.mode_Flag",Menu_Null,&mode_Flag},
-      {"1.ImgDebug", Menu_Img,NULL},
-      {"2.CtrlDebug",Menu_Ctrl,NULL},
-      {"3.PIDDebug",Menu_PID,NULL},
+      {"1.BaseImg", Menu_BaseImg,NULL},
+      {"2.ElemImg", Menu_ElemImg,NULL},
+      {"3.MotorDebug",Menu_Motor,NULL},
+      {"4.CtrlDebug",Menu_Ctrl,NULL},
+      {"5.PIDDebug",Menu_PID,NULL},
 };
 
 //---------------------------------   二级菜单  -------------------------------\
 // 二级菜单1  图像基础参数调节
-MENU_PRMT Img_Prmt;
-MENU_TABLE Img_MenuTable[] =
+MENU_PRMT BaseImg_Prmt;
+MENU_TABLE BaseImg_MenuTable[] =
 {
   {"0.th_edge",Menu_Null,&th_edge},
   {"1.begin_x",Menu_Null,&begin_x},
   {"2.begin_y",Menu_Null,&begin_y},
   {"3.sobelThres",Menu_Null,&sobelThres},
   {"4.find_type",Menu_Null,&find_type},
-  {"5.straight_fps",Menu_Null,&check_straight_thred},
-  {"6.bend_fps",Menu_Null,&check_bend_thred},
-  {"7.angle_fps",Menu_Null,&check_angle_thred},
-  {"8.LcircleIn",Menu_Null,&LcircleIn_thred},
-  {"9.RcircleIn",Menu_Null,&RcircleIn_thred},
 };
 
+// 二级菜单2  元素基础参数调节
+MENU_PRMT ElemImg_Prmt;
+MENU_TABLE ElemImg_MenuTable[] =
+{
+    {"1.straight_fps",Menu_Null,&check_straight_num},
+    {"2.bend_fps",Menu_Null,&check_bend_num},
+    {"3.angle_fps",Menu_Null,&check_angle_num},
+    {"4.LcircleIn",Menu_Null,&LcircleIn_thred},
+    {"5.RcircleIn",Menu_Null,&RcircleIn_thred},
+};
 
-// 二级菜单2  控制基础参数调节
+// 二级菜单3  电机基础参数调节
+MENU_PRMT Motor_Prmt;
+MENU_TABLE Motor_MenuTable[] =
+{
+        {"0.force_k_stra",Menu_Null,&centripetal_p_straight},
+        {"1.force_k_in",Menu_Null,&centripetal_p_instraight},
+        {"2.MAX",Menu_Null,&bottom_Speed_Max},
+        {"3.MIN",Menu_Null,&bottom_Speed_Min},
+        {"4.max_output",Menu_Null,&max_output},
+        {"5.start_pwm",Menu_Null,&start_pwm},
+};
+// 二级菜单4  控制基础参数调节
 
 MENU_PRMT Ctrl_Prmt;
 MENU_TABLE Ctrl_MenuTable[] =
@@ -129,21 +152,18 @@ MENU_TABLE Ctrl_MenuTable[] =
         {"1.S_instra",Menu_Null,&Speed_instraight},
         {"2.S_circle",Menu_Null,&Speed_circle},
         {"3.aim_dis",Menu_Null,&aim_distance},
-        {"4.force_k_stra",Menu_Null,&centripetal_p_straight},
-        {"5.force_k_in",Menu_Null,&centripetal_p_instraight},
-        {"6.UP",Menu_Null,&Motor.PWM_fan_up},
-        {"7.DOWN",Menu_Null,&Motor.PWM_fan_down},
-        {"8.max_output",Menu_Null,&max_output},
-        {"9.ang_thred1",Menu_Null,&angle_thred1},
-        {"10.ang_thred2",Menu_Null,&angle_thred2},
-        {"11.anti_coef",Menu_Null,&anti_coefficient},
-        {"12.break_dis",Menu_Null,&break_dis},
-        {"13.break_conf",Menu_Null,&break_coefficient},
-        {"13.circ_slow",Menu_Null,&circle_slow},
+        {"4.ang_thred1",Menu_Null,&angle_thred1},
+        {"5.ang_thred2",Menu_Null,&angle_thred2},
+        {"6.anti_coef",Menu_Null,&anti_coefficient},
+        {"7.break_dis",Menu_Null,&break_dis},
+        {"8.break_conf",Menu_Null,&break_coefficient},
+        {"9.speed_up_conf",Menu_Null,&speed_up_conf},
+        {"10.slow_down_conf",Menu_Null,&slow_down_conf},
+        {"11.circ_slow",Menu_Null,&circle_slow},
 };
 
 
-// 二级菜单3  PID基础参数调节
+// 二级菜单5  PID基础参数调节
 
 MENU_PRMT PID_Prmt;
 MENU_TABLE PID_MenuTable[] =
@@ -185,17 +205,44 @@ MENU_TABLE Write_Flash_MenuTable[] =
 
 };
 /******************************************************************************
-* FunctionName   : Menu_Img()
-* Description    : 图像设置
+* FunctionName   : Menu_BaseImg()
+* Description    : 基础图像设置
 * EntryParameter : None
 * ReturnValue    : None
 *******************************************************************************/
-void Menu_Img(void)
+void Menu_BaseImg(void)
 {
     tft180_clear(RGB565_BLACK);
     uint8 menuNum;
-    menuNum = sizeof(Img_MenuTable)/sizeof(Img_MenuTable[0]);         // 菜单项数
-    Menu_Process("-= ImgDebug =-", &Img_Prmt, Img_MenuTable, menuNum);
+    menuNum = sizeof(BaseImg_MenuTable)/sizeof(BaseImg_MenuTable[0]);         // 菜单项数
+    Menu_Process("-= BaseImg =-", &BaseImg_Prmt, BaseImg_MenuTable, menuNum);
+}
+
+/******************************************************************************
+* FunctionName   : Menu_ElemImg()
+* Description    : 元素设置
+* EntryParameter : None
+* ReturnValue    : None
+*******************************************************************************/
+void Menu_ElemImg(void)
+{
+    tft180_clear(RGB565_BLACK);
+    uint8 menuNum;
+    menuNum = sizeof(ElemImg_MenuTable)/sizeof(ElemImg_MenuTable[0]);         // 菜单项数
+    Menu_Process("-= ElemImg =-", &ElemImg_Prmt, ElemImg_MenuTable, menuNum);
+}
+/******************************************************************************
+* FunctionName   : Menu_Motor()
+* Description    : 控制设置
+* EntryParameter : None
+* ReturnValue    : None
+*******************************************************************************/
+void Menu_Motor(void)
+{
+    tft180_clear(RGB565_BLACK);
+    uint8 menuNum;
+    menuNum = sizeof(Motor_MenuTable)/sizeof(Motor_MenuTable[0]);         // 菜单项数
+    Menu_Process("-= MotorDebug =-", &Motor_Prmt, Motor_MenuTable, menuNum);
 }
 
 /******************************************************************************
@@ -211,6 +258,7 @@ void Menu_Ctrl(void)
     menuNum = sizeof(Ctrl_MenuTable)/sizeof(Ctrl_MenuTable[0]);         // 菜单项数
     Menu_Process("-= CtrlDebug =-", &Ctrl_Prmt, Ctrl_MenuTable, menuNum);
 }
+
 /******************************************************************************
 * FunctionName   : Menu_PID()
 * Description    : PID设置

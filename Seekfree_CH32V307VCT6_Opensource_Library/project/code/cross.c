@@ -177,7 +177,7 @@ void check_Left_Cross()
 
          inv_Back_Lpt0[0]=Cal_inv_rot_x((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
          inv_Back_Lpt0[1]=Cal_inv_rot_y((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
-         far_x0=round((0.5*inv_Back_Lpt0[0]+0.5*inv_Lpt0[0]))-4;
+         far_x0=round((0.5*inv_Back_Lpt0[0]+0.5*inv_Lpt0[0]))-10;
          far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))-5;//偏移是为了防止还在黑线处
 
     }
@@ -286,7 +286,7 @@ void check_Right_Cross()
         inv_Back_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
         inv_Back_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
 
-        far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+4;
+        far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+10;
         far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-5;//偏移是为了防止还在黑线处
 
 

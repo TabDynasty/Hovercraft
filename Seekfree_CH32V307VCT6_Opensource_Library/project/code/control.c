@@ -144,7 +144,14 @@ void control_Init()
        }
    }
 
-
+   if(fabs(pure_angle)>5)
+   {
+       Motor.PWM_fan_up =   bottom_Speed_Max - fabs(pure_angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/10/30;
+       Motor.PWM_fan_down = bottom_Speed_Max - fabs(pure_angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/10/30;
+   }else{
+       Motor.PWM_fan_up =   bottom_Speed_Max;
+       Motor.PWM_fan_down = bottom_Speed_Max;
+   }
    // 中线有点，同时最近点不是最后几个点
    if (begin_id >= 0 && rpts_num - begin_id >= 3)//切摄像头
    {
@@ -170,7 +177,6 @@ void control_Init()
        pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
 
        //外环角度环
-
        if(is_straight0&&is_straight1)
        {
            angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
@@ -178,6 +184,7 @@ void control_Init()
        else{
            angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
        }
+
    }
    else  // 中线点过少(出现问题)，此时不转角
    {
@@ -186,7 +193,6 @@ void control_Init()
 }
 void check_all()
 {
-
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
     check_circle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE)
