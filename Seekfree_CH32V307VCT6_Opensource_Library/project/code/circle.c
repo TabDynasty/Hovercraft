@@ -145,7 +145,7 @@ void run_Lcircle()
             case CIRCLE_LEFT_OUT:
                 if(ipts0_num)track_type = TRACK_LEFT;
                 else track_type = TRACK_RIGHT;
-                if (is_straight1)
+                if (is_longstraight1)
                     circle_type = CIRCLE_LEFT_END;
                 break;
 
@@ -207,17 +207,15 @@ void run_Rcircle()
             case CIRCLE_RIGHT_RUNNING:
                 track_type = TRACK_LEFT;
                 if (Lpt1_found) rpts1s_num = rptsc1_num = Lpt1_rpts1s_id-10; //½Ø¶Ï
-
                 if (Lpt0_found && Lpt0_rpts0s_id < 50)//×ó½Çµã×ã¹»¿¿ÏÂ
                 {
                     circle_type = CIRCLE_RIGHT_OUT;
                 }
                 break;
-
             case CIRCLE_RIGHT_OUT:
                 if(ipts1_num)track_type = TRACK_RIGHT;
                 else track_type = TRACK_LEFT;
-                if (is_straight0)
+                if (is_longstraight0)
                     circle_type = CIRCLE_RIGHT_END;
                 break;
             case CIRCLE_RIGHT_END:
