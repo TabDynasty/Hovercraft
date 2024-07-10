@@ -113,6 +113,9 @@ void run_Lcircle()
                     circle_type = CIRCLE_LEFT_IN;
                     none_left_line = 0;
                     have_left_line = 0;
+                    track_type = TRACK_RIGHT;
+                    if(ipts0_num<LcircleIn_thred)
+                        track_type = TRACK_LEFT;
                 }
                 break;
             case CIRCLE_LEFT_IN:
@@ -186,6 +189,9 @@ void run_Rcircle()
                    circle_type = CIRCLE_RIGHT_IN;
                    none_right_line = 0;
                    have_right_line = 0;
+                   track_type = TRACK_LEFT;
+                   if(ipts1_num<RcircleIn_thred)
+                       {track_type = TRACK_RIGHT;}
                }
                 break;
                 //寻右线，左线丢线后有线

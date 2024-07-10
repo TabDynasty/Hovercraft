@@ -51,10 +51,9 @@
 #include "optical_flow.h"
 #include "led_show.h"
 /*================================无线图传部分=================================*/
-#define WIFI_SSID_TEST          "qwe"
-#define WIFI_SSID_TEST          "qwe"
-#define WIFI_PASSWORD_TEST      "qqqwwweee" // 如果需要连接的WIFI 没有密码则需要将 这里 替换为 NULL
-#define WIFI_SPI_SHOW            (0)        // 如果要启用无线图传,则置为1
+#define WIFI_SSID_TEST          "RAQUEL"
+#define WIFI_PASSWORD_TEST      "987654321" // 如果需要连接的WIFI 没有密码则需要将 这里 替换为 NULL
+#define WIFI_SPI_SHOW            (1)        // 如果要启用无线图传,则置为1
 uint8 image_copy[MT9V03X_H][MT9V03X_W];     // 图像备份数组，在发送前将图像备份再进行发送，这样可以避免图像出现撕裂的问题
 /*================================ 全局变量 ==================================*/
 uint8 show_Img[MT9V03X_H][MT9V03X_W];/**< 用来展示图片*/
@@ -140,7 +139,20 @@ int main (void)
 
             // 无线图传发送图像
             #if (WIFI_SPI_SHOW == 1)
-                //memcpy(image_copy[0], mt9v03x_image[0             seekfree_assistant_camera_send();
+            seekfree_assistant_oscilloscope_data.data[0] = Speed_now;
+            seekfree_assistant_oscilloscope_data.data[1] = pure_angle;
+            seekfree_assistant_oscilloscope_data.data[2] = ang_gain;
+            seekfree_assistant_oscilloscope_data.data[3] = vel_gain;
+            seekfree_assistant_oscilloscope_data.data[4] = circle_type;
+            seekfree_assistant_oscilloscope_data.data[5] = ipts0_num;
+            seekfree_assistant_oscilloscope_data.data[6] = ipts1_num;
+            seekfree_assistant_oscilloscope_data.data[7] = farline_type;
+            // 设置本次需要发送几个通道的数据
+            seekfree_assistant_oscilloscope_data.channel_num = 8;
+            // 最大支持8通道
+            seekfree_assistant_oscilloscope_send(&seekfree_assistant_oscilloscope_data);
+            system_delay_ms(20);
+            seekfree_assistant_data_analysis();
         #endif
 
         }
@@ -220,8 +232,9 @@ void data_show(void)
                     tft180_show_int   (105,96,far_conf0_max, 3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,112,far_conf1_max, 3,RGB565_RED,RGB565_WHITE);
 
-                    tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 32,lose_count,3,RGB565_RED,RGB565_WHITE);
+//                    tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
+//                    tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 64,is_longstraight0,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 80,is_longstraight1,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 96,is_straight0,1,RGB565_RED,RGB565_WHITE);
@@ -560,7 +573,6 @@ void Init_all(void)
         // 逐飞助手初始化 数据传输使用高速WIFI SPI
         seekfree_assistant_interface_init(SEEKFREE_ASSISTANT_WIFI_SPI);
         // 发送总钻风图像信息(仅包含原始图像信息)
-        seekfree_assistant_camera_information_config(SEEKFREE_ASSISTANT_MT9V03X, mt9v03x_image[0], MT9V03X_W, MT9V03X_H);
 #endif
 
     tft180_set_dir(TFT180_CROSSWISE_180 );//屏幕设置方向

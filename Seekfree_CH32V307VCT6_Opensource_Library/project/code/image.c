@@ -110,6 +110,7 @@ float conf0_s,conf0,conf1_s,conf1,conf0_max,conf1_max;/**< max用来显示在屏幕*/
 extern image_t img_raw ;
 int x0,x1;
 int find_type=0;//0表示使用大津法寻找起始点，1表示使用sobel寻找起始点
+int lose_count;
 /*================================ 接口函数 ==================================*/
 //Sobel函数
 #define Sobel_Gx(addr,y,x,width)    (addr[(y-1)*width+x+1]+2*addr[y*width+x+1]+addr[(y+1)*width+x+1]-(addr[(y-1)*width+x-1]+2*addr[y*width+x-1]+addr[(y+1)*width+x-1]))
@@ -798,6 +799,10 @@ void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_
 
 void process_image()
 {
+    int l;
+    for(l=begin_y,lose_count=0;l>0;l--)
+        if(AT_IMAGE(&img_raw, img_raw.width/2, l) >= Ostu_Thres)lose_count++;
+        else break;
     //寻找起始点，提取边线
     switch(find_type){
     case 0:

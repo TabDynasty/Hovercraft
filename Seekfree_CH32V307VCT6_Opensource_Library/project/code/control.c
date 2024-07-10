@@ -122,6 +122,7 @@ void control_Init()
         }
 
 
+
     if(circle_type == CIRCLE_LEFT_BEGIN||circle_type == CIRCLE_LEFT_IN
        || circle_type == CIRCLE_RIGHT_BEGIN||circle_type == CIRCLE_RIGHT_IN)
         aimSpeed = Speed_circle;
@@ -179,12 +180,12 @@ void control_Init()
        if(circle_type == CIRCLE_RIGHT_OUT)
        {
            if(Lpt0_found && Lpt0_rpts0s_id > 10)data_old=pure_angle;
-           else pure_angle=data_old;
+           else if(ipts1_num<10)pure_angle=data_old;
        }
        else if(circle_type == CIRCLE_LEFT_OUT)
        {
            if(Lpt1_found && Lpt1_rpts1s_id > 10)data_old=pure_angle;
-           else pure_angle=data_old;
+           else if(ipts0_num<10)pure_angle=data_old;
        }
 
        //外环角度环

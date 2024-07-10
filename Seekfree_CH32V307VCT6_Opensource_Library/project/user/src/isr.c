@@ -41,6 +41,7 @@
 #include "utils.h"
 #include "obstacle.h"
 #include "filters.h"
+#include "image.h"
 //串口采集数据用
 
 /*================================ 全局变量 ==================================*/
@@ -347,7 +348,8 @@ void TIM7_IRQHandler(void)
     if(TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)
     {
        TIM_ClearITPendingBit(TIM7, TIM_IT_Update );
-       if(motorflag==1)
+       if(motorflag==1&&lose_count>5)
+//       if(motorflag==1)
            Speed_Set();
        else
            Stop_Set();

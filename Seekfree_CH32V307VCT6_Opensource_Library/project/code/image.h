@@ -120,4 +120,5 @@ extern bool is_longstraight0, is_longstraight1,bend_flag;
 extern float sobel0,sobel1;
 extern bool origin_flag;/**< ³õÊ¼Ö¡±êÖ¾*/
 extern int find_type;
+extern int lose_count;
 #endif /* IMAGE_H_ */

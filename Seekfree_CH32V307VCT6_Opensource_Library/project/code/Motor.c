@@ -39,6 +39,8 @@ int bottom_Speed_Max;
 int bottom_Speed_Min;
 int speed_up_conf;
 int slow_down_conf;
+int ang_gain;
+int vel_gain;
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -47,8 +49,8 @@ extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 void Speed_Set(void)
 {
-    int ang_gain = Stable_posture(angle,mpu6050_gyro_z);
-    int vel_gain = Vertical_circle(aimSpeed, Speed_now);
+    ang_gain = Stable_posture(angle,mpu6050_gyro_z);
+    vel_gain = Vertical_circle(aimSpeed, Speed_now);
     float centripetal_gain = (float)Speed_now * abs((int)pure_angle)/1000;
     debug_show_int("ang", ang_gain, 1);
     debug_show_int("vel", vel_gain, 3);
@@ -201,7 +203,7 @@ extern float off_setz;
 
 int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 {
-    int increment_max = 200;
+    int increment_max = 300;
     float data = mpu6050_gyro_transition(imu_angle_vel_data-off_setz);
 
     data = LowPass_Filter(&imu_dataz,(float)data); //对采集到的imu值进行滤波
