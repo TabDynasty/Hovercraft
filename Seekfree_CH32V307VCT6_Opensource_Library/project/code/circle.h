@@ -20,6 +20,7 @@ void run_Rcircle();
 extern enum circle_type_e circle_type;
 extern bool circle_obstacle_flag;
 extern int LcircleIn_thred;
+extern int none_left_line, none_right_line;
 extern int RcircleIn_thred;
 
 #endif /* CIRCLE_H_ */

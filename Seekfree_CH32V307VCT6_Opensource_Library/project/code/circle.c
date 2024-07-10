@@ -107,6 +107,7 @@ void run_Lcircle()
                 //先丢左线后识别到左线转换到下一个阶段
                 if (rpts0s_num < 0.2 / sample_dist&&!Lpt0_found) { none_left_line++; have_left_line = 0;}
                 if (rpts0s_num > 0.2 / sample_dist && none_left_line > 2)have_left_line++;
+
                 if (have_left_line >= 1 && !Lpt0_found)
                 {
                     circle_type = CIRCLE_LEFT_IN;
@@ -144,7 +145,10 @@ void run_Lcircle()
                 break;
             case CIRCLE_LEFT_OUT:
                 if(ipts0_num)track_type = TRACK_LEFT;
-                else track_type = TRACK_RIGHT;
+                else
+                {   track_type = TRACK_RIGHT;
+                    if (Lpt1_found) rpts1s_num = rptsc1_num = Lpt1_rpts1s_id-10;//截断
+                }
                 if (is_longstraight1)
                     circle_type = CIRCLE_LEFT_END;
                 break;
@@ -214,7 +218,10 @@ void run_Rcircle()
                 break;
             case CIRCLE_RIGHT_OUT:
                 if(ipts1_num)track_type = TRACK_RIGHT;
-                else track_type = TRACK_LEFT;
+                else
+                {   track_type = TRACK_LEFT;
+                    if (Lpt0_found) rpts0s_num = rptsc0_num = Lpt0_rpts0s_id-10; //截断
+                }
                 if (is_longstraight0)
                     circle_type = CIRCLE_RIGHT_END;
                 break;

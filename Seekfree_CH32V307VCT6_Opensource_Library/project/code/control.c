@@ -31,6 +31,7 @@ float cx,cy;/**< 纯跟踪起始点*/
 int aim_idx;
 float error;
 float pure_angle;
+float data_old;
 
 #define ABS(x) (((x) > 0) ? (x) : (-(x)))
 int rpts_num;
@@ -175,6 +176,16 @@ void control_Init()
        // 纯跟踪算法
       // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
        pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
+       if(circle_type == CIRCLE_RIGHT_OUT)
+       {
+           if(Lpt0_found && Lpt0_rpts0s_id > 10)data_old=pure_angle;
+           else pure_angle=data_old;
+       }
+       else if(circle_type == CIRCLE_LEFT_OUT)
+       {
+           if(Lpt1_found && Lpt1_rpts1s_id > 10)data_old=pure_angle;
+           else pure_angle=data_old;
+       }
 
        //外环角度环
        if(is_straight0&&is_straight1)

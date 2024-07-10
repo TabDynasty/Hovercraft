@@ -131,6 +131,7 @@ void Motor_Set(int speed, int spin ,float force)
             pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
         }
     }
+
     /*********************直道提速****************************/
     if(straight_road_type == STRAIGHT_IN)
     {
@@ -144,11 +145,11 @@ void Motor_Set(int speed, int spin ,float force)
         pwm2  +=Speed_now * break_coefficient/10;
     }
     /*********************圆环减速****************************/
-//    if(circle_type == CIRCLE_LEFT_BEGIN || circle_type == CIRCLE_RIGHT_BEGIN)
-//    {
-//        pwm1  += circle_slow;
-//        pwm2  += circle_slow;
-//    }
+    if((circle_type == CIRCLE_LEFT_BEGIN && none_left_line == 0)||( circle_type == CIRCLE_RIGHT_BEGIN&& none_right_line == 0 ))
+    {
+        pwm1  += circle_slow;
+        pwm2  += circle_slow;
+    }
     /***********************电池电压补偿*************************/
     power_conf = 12.8/power_level;
     pwm1 *= power_conf;
@@ -197,10 +198,12 @@ void Motor_Set(int speed, int spin ,float force)
 // 返回参数     spin_Increment     加在对角两个电机上的pwm值，产生一个用于转向的力矩
 //-------------------------------------------------------------------------------------------------------------------
 extern float off_setz;
+
 int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 {
     int increment_max = 200;
     float data = mpu6050_gyro_transition(imu_angle_vel_data-off_setz);
+
     data = LowPass_Filter(&imu_dataz,(float)data); //对采集到的imu值进行滤波
 
     debug_show_float("imuz",data,0);
@@ -224,7 +227,7 @@ int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 //-------------------------------------------------------------------------------------------------------------------
 int Vertical_circle(int aim_vel, int now_vel)
 {
-    int increment_max = 100;
+    int increment_max = 300;
 
      int vel_Increment = (int)PID_Realize(&Speed_PID, Speed, (float)now_vel, (float)aim_vel);
      //输出限幅
@@ -243,7 +246,7 @@ int Vertical_circle(int aim_vel, int now_vel)
 //-------------------------------------------------------------------------------------------------------------------
 void pit_speed(void)
 {
-    Speed_now = encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
+    Speed_now = -encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
     encoder_clear_count(TIM3_ENCOEDER);                                        // 清空编码器计数
     //flag置为1时，开始积分
     if(!Integral_vel_flag){

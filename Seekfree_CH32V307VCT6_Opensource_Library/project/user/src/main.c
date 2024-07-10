@@ -49,6 +49,7 @@
 #include "filters.h"
 #include "straight_road.h"
 #include "optical_flow.h"
+#include "led_show.h"
 /*================================无线图传部分=================================*/
 #define WIFI_SSID_TEST          "qwe"
 #define WIFI_SSID_TEST          "qwe"
@@ -117,6 +118,7 @@ int main (void)
     {
         frame_vote+=1;//计算帧率用
         change_show_page();
+        Led_show_all();
         if(mt9v03x_finish_flag)
         {
             //tft180_clear(RGB565_BLUE);
@@ -129,15 +131,6 @@ int main (void)
             control_Init();//中线处理
 
 
-//            if(circle_type == CIRCLE_RIGHT_IN)section_On_1();
-            if(far_Lpt0_found||far_Lpt1_found)gpio_set_level(E12, 1);//1;
-            else gpio_set_level(E12, 0);//1
-            if(!bend_flag)gpio_set_level(C1, 1);//2
-            else gpio_set_level(C1, 0);//2
-            if(circle_type)gpio_set_level(E13, 1);//3;
-            else gpio_set_level(E13, 0);//3
-            if(straight_road_type)gpio_set_level(C0, 1);//4;
-            else gpio_set_level(C0, 0);//4
             //屏显
             data_show();
             /********此区域debug用*********/
@@ -577,16 +570,16 @@ void Init_all(void)
     //W25QXX_Init();
     gpio_init(D8,GPI,0,GPI_FLOATING_IN);
 
-    gpio_init(C0,GPO,0,GPO_PUSH_PULL);
-    gpio_init(C1,GPO,0,GPO_PUSH_PULL);
     gpio_init(E12,GPO,0,GPO_PUSH_PULL);
     gpio_init(E13,GPO,0,GPO_PUSH_PULL);
-
+    gpio_init(E14,GPO,0,GPO_PUSH_PULL);
+    gpio_init(E15,GPO,0,GPO_PUSH_PULL);
+    gpio_set_level(E12, 1);
     adc_init(ADC1_IN9_B1, ADC_8BIT);
     adc_convert(ADC1_IN9_B1);
     encoder_dir_init(TIM3_ENCOEDER, TIM3_ENCOEDER_MAP3_CH1_C6, TIM3_ENCOEDER_MAP3_CH2_C7);
 
-    section_On_4();
+
     /*中断初始化*/
     pit_ms_init(TIM6_PIT,10);
     pit_ms_init(TIM7_PIT,10);

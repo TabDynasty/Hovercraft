@@ -17,6 +17,7 @@ D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Ope
 D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/filters.c \
 D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/garage.c \
 D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/image.c \
+D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/led_show.c \
 D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/menu.c \
 D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/obstacle.c \
 D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/optical_flow.c \
@@ -35,6 +36,7 @@ OBJS += \
 ./code/filters.o \
 ./code/garage.o \
 ./code/image.o \
+./code/led_show.o \
 ./code/menu.o \
 ./code/obstacle.o \
 ./code/optical_flow.o \
@@ -53,6 +55,7 @@ C_DEPS += \
 ./code/filters.d \
 ./code/garage.d \
 ./code/image.d \
+./code/led_show.d \
 ./code/menu.d \
 ./code/obstacle.d \
 ./code/optical_flow.d \
@@ -94,6 +97,9 @@ code/garage.o: D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_C
 	@	@	riscv-none-embed-gcc -march=rv32imafc -mabi=ilp32f -msmall-data-limit=8 -mno-save-restore -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -pedantic -Wunused -Wuninitialized -Wall  -g -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\Libraries\doc" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Core" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Ld" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Peripheral" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Startup" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\project\user\inc" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_common" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_device" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\project\code" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_driver" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_components" -std=gnu11 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
 	@	@
 code/image.o: D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/image.c
+	@	@	riscv-none-embed-gcc -march=rv32imafc -mabi=ilp32f -msmall-data-limit=8 -mno-save-restore -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -pedantic -Wunused -Wuninitialized -Wall  -g -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\Libraries\doc" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Core" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Ld" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Peripheral" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Startup" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\project\user\inc" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_common" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_device" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\project\code" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_driver" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_components" -std=gnu11 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
+	@	@
+code/led_show.o: D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/led_show.c
 	@	@	riscv-none-embed-gcc -march=rv32imafc -mabi=ilp32f -msmall-data-limit=8 -mno-save-restore -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -fno-common -pedantic -Wunused -Wuninitialized -Wall  -g -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\Libraries\doc" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Core" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Ld" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Peripheral" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\sdk\Startup" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\project\user\inc" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_common" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_device" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\project\code" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_driver" -I"D:\Raquel\hht\智能车\十九届智能车气垫船\git\Hovercraft\Seekfree_CH32V307VCT6_Opensource_Library\libraries\zf_components" -std=gnu11 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -c -o "$@" "$<"
 	@	@
 code/menu.o: D:/Raquel/hht/智能车/十九届智能车气垫船/git/Hovercraft/Seekfree_CH32V307VCT6_Opensource_Library/project/code/menu.c
