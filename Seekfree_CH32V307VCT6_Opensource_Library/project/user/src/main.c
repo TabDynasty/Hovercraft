@@ -122,16 +122,17 @@ int main (void)
         {
             //tft180_clear(RGB565_BLUE);
             img_raw.data = mt9v03x_image[0];
-            Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,MT9V03X_H);
-            process_image();
-            find_corners();
-            check_all();
+            //Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,MT9V03X_H);
+            //process_image();
+            //find_corners();
+            // check_all();
 
-            control_Init();//中线处理
+            //control_Init();//中线处理
 
 
             //屏显
-            data_show();
+            //data_show();
+            tft180_displayimage03x((const uint8 *)mt9v03x_image, show_X,show_Y);
             /********此区域debug用*********/
             //Integral_vel_flag = 1;
             // debug_show_float("serr",Angle_PID.SumError*0.1 , 2);
