@@ -17,7 +17,7 @@
 #define PWM_3_PIN          TIM5_PWM_MAP0_CH2_A1
 #define PWM_4_PIN          TIM4_PWM_MAP1_CH3_D14
 ///*============================= 4路电机的起转pwm值  ================================*
-#define MOTOR_PWM_START      540
+#define MOTOR_PWM_START      560
 /*================================ 全局变量 ==================================*/
 SPEED_st Motor;          /* 电机结构体*/
 //标志位
@@ -137,8 +137,8 @@ void Motor_Set(int speed, int spin ,float force)
     /*********************直道提速****************************/
     if(straight_road_type == STRAIGHT_IN)
     {
-        pwm3  +=(Speed_straight-Speed_now) * speed_up_conf/10;
-        pwm4  +=(Speed_straight-Speed_now) * speed_up_conf/10;
+        pwm3  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
+        pwm4  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
     }
     /*********************直道入弯****************************/
     if(straight_road_type == STRAIGHT_OUT)

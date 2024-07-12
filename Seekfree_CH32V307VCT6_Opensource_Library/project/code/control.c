@@ -11,7 +11,7 @@
 #include "zf_common_headfile.h"
 
 uint32 aimSpeed=0;/**< 目标速度*/
-int Speed_straight,Speed_instraight,Speed_circle;
+int Speed_long_straight,Speed_short_straight,Speed_instraight,Speed_circle;
 uint32 aim_distance=440;//除了1000
 uint32 AIM_DISTANCE=440;/**< 直接用于计算*/
 float angle;
@@ -114,11 +114,17 @@ void control_Init()
     }
 
     //速度决策,缓变化
-        if(straight_road_type != STRAIGHT_NONE)
+        if(straight_road_type == STRAIGHT_IN)
         {
-            aimSpeed = Speed_straight;
+            aimSpeed = Speed_long_straight;
         }else{
-            aimSpeed = Speed_instraight;
+            if(bend_flag == false)
+            {
+                aimSpeed = Speed_short_straight;
+            }else{
+                aimSpeed = Speed_instraight;
+
+            }
         }
 
 

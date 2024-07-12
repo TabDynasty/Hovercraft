@@ -47,7 +47,7 @@ uint32 *Flash_Data[] = {
                         &bottom_Speed_Min,
                         &sobelThres,
                         &find_type,
-                        &Speed_straight,
+                        &Speed_long_straight,
                         &Speed_instraight,
                         &aim_signal,
 
@@ -72,6 +72,7 @@ uint32 *Flash_Data[] = {
                         &start_pwm,
                         &speed_up_conf,
                         &slow_down_conf,
+                        &Speed_short_straight,
                        };
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void beep_On();
@@ -148,18 +149,19 @@ MENU_TABLE Motor_MenuTable[] =
 MENU_PRMT Ctrl_Prmt;
 MENU_TABLE Ctrl_MenuTable[] =
 {
-        {"0.S_stra",Menu_Null,&Speed_straight},
-        {"1.S_instra",Menu_Null,&Speed_instraight},
-        {"2.S_circle",Menu_Null,&Speed_circle},
-        {"3.aim_dis",Menu_Null,&aim_distance},
-        {"4.ang_thred1",Menu_Null,&angle_thred1},
-        {"5.ang_thred2",Menu_Null,&angle_thred2},
-        {"6.anti_coef",Menu_Null,&anti_coefficient},
-        {"7.break_dis",Menu_Null,&break_dis},
-        {"8.break_conf",Menu_Null,&break_coefficient},
-        {"9.speed_up_conf",Menu_Null,&speed_up_conf},
-        {"10.slow_down_conf",Menu_Null,&slow_down_conf},
-        {"11.circ_slow",Menu_Null,&circle_slow},
+        {"0.S_lstra",Menu_Null,&Speed_long_straight},
+        {"1.S_sstra",Menu_Null,&Speed_short_straight},
+        {"2.S_instra",Menu_Null,&Speed_instraight},
+        {"3.S_circle",Menu_Null,&Speed_circle},
+        {"4.aim_dis",Menu_Null,&aim_distance},
+        {"5.ang_thred1",Menu_Null,&angle_thred1},
+        {"6.ang_thred2",Menu_Null,&angle_thred2},
+        {"7.anti_coef",Menu_Null,&anti_coefficient},
+        {"8.break_dis",Menu_Null,&break_dis},
+        {"9.break_conf",Menu_Null,&break_coefficient},
+        {"10.speed_up_conf",Menu_Null,&speed_up_conf},
+        {"11.slow_down_conf",Menu_Null,&slow_down_conf},
+        {"12.circ_slow",Menu_Null,&circle_slow},
 };
 
 

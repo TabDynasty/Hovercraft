@@ -14,7 +14,7 @@ enum track_type_e {
 
 /*================================ 全局变量 ==================================*/
 extern uint32 aimSpeed;/**< 目标速度*/
-extern int Speed_straight,Speed_instraight,Speed_circle;
+extern int Speed_long_straight,Speed_short_straight,Speed_instraight,Speed_circle;
 extern int times;
 extern uint32 aim_distance;//除了1000
 extern uint32 AIM_DISTANCE;/**< 直接用于计算*/

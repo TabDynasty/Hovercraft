@@ -122,17 +122,17 @@ int main (void)
         {
             //tft180_clear(RGB565_BLUE);
             img_raw.data = mt9v03x_image[0];
-            //Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,MT9V03X_H);
-            //process_image();
-            //find_corners();
-            // check_all();
+            Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,MT9V03X_H);
+            process_image();
+            find_corners();
+             check_all();
 
-            //control_Init();//中线处理
+            control_Init();//中线处理
 
 
             //屏显
-            //data_show();
-            tft180_displayimage03x((const uint8 *)mt9v03x_image, show_X,show_Y);
+            data_show();
+//            tft180_displayimage03x((const uint8 *)mt9v03x_image, show_X,show_Y);
             /********此区域debug用*********/
             //Integral_vel_flag = 1;
             // debug_show_float("serr",Angle_PID.SumError*0.1 , 2);
@@ -385,6 +385,8 @@ void data_show(void)
                 //第1列
                 tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 96,motorflag,3,RGB565_RED,RGB565_WHITE);
+                tft180_show_int (1, 112,total_distance,3,RGB565_RED,RGB565_WHITE);
                 //第2列
 //                tft180_show_float (35, 64,sobel0,3,1,RGB565_RED,RGB565_WHITE);
 //                tft180_show_float (35, 80,sobel1,3,1,RGB565_RED,RGB565_WHITE);
@@ -410,7 +412,6 @@ void data_show(void)
 
 void show_power()
 {
-
     power_level = (float)Sliding_Filter(&Power_level,adc_convert(ADC1_IN9_B1),0)* 0.1578*0.893;
     tft180_show_float (105, 16, power_level , 3,1,RGB565_BLACK,RGB565_WHITE);
     tft180_show_char (140, 16, 'V' , RGB565_BLACK,RGB565_WHITE);
@@ -492,13 +493,14 @@ void get_offset_and_reset_flag(void)
           off_setz /= 100;
 
           /******所有元素标志清零*******/
-          garage_type = GARAGE_NONE;
+          //garage_type = GARAGE_NONE;
           circle_type = CIRCLE_NONE;
           cross_type = CROSS_NONE;
           obstacle_type = OBSTACLE_NONE;
           straight_road_type = STRAIGHT_NONE;
     }
 }
+
 void select_section()
 {
     while(1){

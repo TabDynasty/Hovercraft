@@ -6,7 +6,7 @@
 #include "cross.h"
 #include "Motor.h"
 #include "zf_common_headfile.h"
-enum garage_type_e garage_type = GARAGE_NONE;
+enum garage_type_e garage_type = GARAGE_OUT;
 extern image_t img_raw ;
 bool zebra_L_flag,zebra_R_flag;
 int zebraL_x,zebraR_x;
@@ -48,7 +48,7 @@ void run_garage()
     if(garage_type==GARAGE_OUT)//³ö³µ¿â
     {
         Integral_vel_flag=1;
-        if(total_distance>1200)
+        if(total_distance>3000)
         {
             garage_type=GARAGE_NONE;
             Integral_vel_flag=0;
