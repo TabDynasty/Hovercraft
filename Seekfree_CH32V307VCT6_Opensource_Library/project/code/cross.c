@@ -62,6 +62,7 @@ float far_conf0_max,far_conf0;/**< 用于图显*/
 float far_conf1_max,far_conf1;/**< 用于图显*/
 
 int not_have_line=0;
+int cross_Lpt_id;//40,25
 
 /*================================ 接口函数 ==================================*/
 void check_Cross();
@@ -134,7 +135,7 @@ void run_Cross()
             }
 
             //两近处角点靠下
-            if((Lpt0_rpts0s_id<40&&(rpts0s_num<50&&ipts0_num>2)&&far_ipts0_num>15)||(Lpt1_rpts1s_id<25&&(rpts1s_num<50&&ipts1_num>2)&&far_ipts1_num>15))
+            if((Lpt0_rpts0s_id<cross_Lpt_id&&(rpts0s_num<50&&ipts0_num>2)&&far_ipts0_num>15)||(Lpt1_rpts1s_id<cross_Lpt_id&&(rpts1s_num<50&&ipts1_num>2)&&far_ipts1_num>15))
             {
                 cross_type=CROSS_IN;
             }

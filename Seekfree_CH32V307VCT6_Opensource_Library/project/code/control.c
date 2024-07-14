@@ -32,6 +32,7 @@ int aim_idx;
 float error;
 float pure_angle;
 float data_old;
+int obs_dx;
 
 #define ABS(x) (((x) > 0) ? (x) : (-(x)))
 int rpts_num;

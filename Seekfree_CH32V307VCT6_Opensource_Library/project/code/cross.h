@@ -11,6 +11,7 @@ enum cross_type_e {
 
 /*================================ 全局变量 ==================================*/
 extern enum cross_type_e cross_type;
+extern int cross_Lpt_id;
 
 extern float inv_Lpt0[2],inv_Lpt1[2];/**< 左右L角点对应原图的点*/
 extern float inv_Back_Lpt0[2],inv_Back_Lpt1[2];/**< 左右L角点后的一个点*/

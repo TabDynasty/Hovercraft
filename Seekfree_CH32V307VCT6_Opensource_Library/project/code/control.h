@@ -33,5 +33,6 @@ extern float (*rpts)[2];/**< 中线*/
 extern int rpts_num;
 extern float rptsn[MT9V03X_W][2];/**< 归一化中线*/
 extern int rptsn_num;
+extern int obs_dx;
 
 #endif /* CONTROL_H_ */

@@ -10,6 +10,7 @@ enum garage_type_e garage_type = GARAGE_OUT;
 extern image_t img_raw ;
 bool zebra_L_flag,zebra_R_flag;
 int zebraL_x,zebraR_x;
+int out_distance,stop_distance;//3000,1200
 
 void check_garage()
 {
@@ -48,7 +49,7 @@ void run_garage()
     if(garage_type==GARAGE_OUT)//³ö³µ¿â
     {
         Integral_vel_flag=1;
-        if(total_distance>3000)
+        if(total_distance>out_distance)
         {
             garage_type=GARAGE_NONE;
             Integral_vel_flag=0;
@@ -57,7 +58,7 @@ void run_garage()
     if(garage_type==GARAGE_FOUND)//Í£³µ
     {
         Integral_vel_flag=1;
-        if(total_distance>1200)
+        if(total_distance>stop_distance)
         {
             garage_type=GARAGE_STOP;
             Integral_vel_flag=0;

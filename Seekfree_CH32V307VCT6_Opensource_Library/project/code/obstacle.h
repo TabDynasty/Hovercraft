@@ -16,6 +16,9 @@ enum obstacle_type_e
 
 /*================================ 全局变量 ==================================*/
 extern enum obstacle_type_e  obstacle_type;
+extern int obs_Lpt_id;
+extern int obs_dir_num;
+extern int obs_distance;
 
 /*================================ 接口函数 ==================================*/
 

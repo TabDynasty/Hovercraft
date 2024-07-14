@@ -18,5 +18,6 @@ void run_garage();
 extern enum garage_type_e garage_type;
 extern bool zebra_L_flag,zebra_R_flag;
 extern int zebraL_x,zebraR_x;
+extern int out_distance,stop_distance;
 
 #endif /* GARAGE_H_ */

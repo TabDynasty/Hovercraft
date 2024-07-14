@@ -8,6 +8,9 @@
 #include "PID.h"
 #include "straight_road.h"
 #include "circle.h"
+#include "obstacle.h"
+#include "cross.h"
+#include "garage.h"
 /*============================= 宏定义/重定义 ================================*/
 #define PAGE_DISP_NUM 6 /**< 定义LCD单页显示项目数*/
 #define NUM 56 /**<数字坐标*/
@@ -73,6 +76,14 @@ uint32 *Flash_Data[] = {
                         &speed_up_conf,
                         &slow_down_conf,
                         &Speed_short_straight,
+
+                        &obs_Lpt_id,
+                        &obs_dir_num,
+                        &obs_dx,
+                        &obs_distance,
+                        &cross_Lpt_id,
+                        &out_distance,
+                        &stop_distance,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -131,6 +142,13 @@ MENU_TABLE ElemImg_MenuTable[] =
     {"3.angle_fps",Menu_Null,&check_angle_num},
     {"4.LcircleIn",Menu_Null,&LcircleIn_thred},
     {"5.RcircleIn",Menu_Null,&RcircleIn_thred},
+    {"6.obs_Lpt",Menu_Null,&obs_Lpt_id},
+    {"7.obs_dir",Menu_Null,&obs_dir_num},
+    {"8.obs_dx",Menu_Null,&obs_dx},
+    {"9.obs_dis",Menu_Null,&obs_distance},
+    {"10.cross_Lpt",Menu_Null,&cross_Lpt_id},
+    {"11.out_dis",Menu_Null,&out_distance},
+    {"12.stop_dis",Menu_Null,&stop_distance},
 };
 
 // 二级菜单3  电机基础参数调节
