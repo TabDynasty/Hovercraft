@@ -51,7 +51,7 @@ void Speed_Set(void)
 {
     ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     vel_gain = Vertical_circle(aimSpeed, Speed_now);
-    float centripetal_gain = (float)Speed_now * abs((int)pure_angle)/1000;
+    float centripetal_gain = (float)Speed_now * Speed_now * abs((int)pure_angle)/10000;
     debug_show_int("ang", ang_gain, 1);
     debug_show_int("vel", vel_gain, 3);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
@@ -105,11 +105,11 @@ void Motor_Set(int speed, int spin ,float force)
     }
     /*********转向用***********/
     if(spin>=0){
-        pwm1+=spin;
-        pwm4+=spin;
+        pwm1+=0.8*spin;
+        pwm4+=1.2*spin;
     }else {
-        pwm2+=-spin;
-        pwm3+=-spin;
+        pwm2+=-0.8*spin;
+        pwm3+=-1.2*spin;
     }
     /**************给侧推防止漂移用*******************/
     if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
@@ -204,14 +204,18 @@ extern float off_setz;
 int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 {
     int increment_max = 300;
+    int spin_Increment;
     float data = mpu6050_gyro_transition(imu_angle_vel_data-off_setz);
 
     data = LowPass_Filter(&imu_dataz,(float)data); //对采集到的imu值进行滤波
 
     debug_show_float("imuz",data,0);
-
-    int spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel, data,aim_angle_vel);   //pid内环
-
+    if(abs(error)>angle_thred2)
+        {
+            spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel, data,aim_angle_vel);   //pid内环
+        }else{
+            spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel_vel, data,aim_angle_vel);   //pid内环
+        }
     //输出限幅
     if(spin_Increment > increment_max)
         spin_Increment = increment_max;

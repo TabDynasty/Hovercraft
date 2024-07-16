@@ -7,7 +7,8 @@
 
 PID Angle_PID,Angle_vel_PID,Speed_PID;         // 角度环， 角速度环，速度环PID误差参数结构体
 //下面的各项参数都除了100，方便flash的读取
-int Angle_vel[4]       = {250, 0, 10 , 1000};    // 角速度环PID系数
+int Angle_vel[4]       = {250, 0, 10 , 1000};    //  error大时角速度环PID系数
+int Angle_vel_vel[4]       = {0,0,0,1000};       //  error小时角速度环PID系数
 int Angle_0[4]           = {40, 0, 10 , 1000};    // 角度环PID系数
 int Angle_1[4]           = {40, 0, 10 , 1000};    // 角度环PID系数
 int Speed[4]           = {0, 0, 0 ,   1000};    // 速度环PID系数

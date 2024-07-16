@@ -84,6 +84,10 @@ uint32 *Flash_Data[] = {
                         &cross_Lpt_id,
                         &out_distance,
                         &stop_distance,
+
+                        &Angle_vel_vel[0],
+                        &Angle_vel_vel[1],
+                        &Angle_vel_vel[2],
                        };
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void beep_On();
@@ -191,6 +195,10 @@ MENU_TABLE PID_MenuTable[] =
   {"Ang_vel_P",Menu_Null,&Angle_vel[0]},
   {"Ang_vel_I",Menu_Null,&Angle_vel[1]},
   {"Ang_vel_D",Menu_Null,&Angle_vel[2]},
+
+  {"Ang_Vel_P",Menu_Null,&Angle_vel_vel[0]},
+  {"Ang_Vel_I",Menu_Null,&Angle_vel_vel[1]},
+  {"Ang_Vel_D",Menu_Null,&Angle_vel_vel[2]},
 
   {"Ang0_P",Menu_Null,&Angle_0[0]},
   {"Ang0_I",Menu_Null,&Angle_0[1]},
