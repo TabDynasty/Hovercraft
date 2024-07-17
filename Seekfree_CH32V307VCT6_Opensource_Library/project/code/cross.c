@@ -13,7 +13,7 @@
 /*================================ 全局变量 ==================================*/
 enum cross_type_e cross_type = CROSS_NONE;
 extern image_t img_raw ;
-uint32 back_Position;/**< 左右L角点往后点的位置*/
+uint32 back_Position = 5;/**< 左右L角点往后点的位置*/
 float inv_Lpt0[2],inv_Lpt1[2];/**< 左右L角点对应原图的点*/
 float inv_Back_Lpt0[2],inv_Back_Lpt1[2];/**< 左右L角点后的一个点*/
 float inv_far_Lpt0[2],inv_far_Lpt1[2];/**< 远处左右L角点*/
@@ -119,12 +119,9 @@ void run_Cross()
     {
         //对边线进行截断处理
         case CROSS_BEGIN:
-            far0_process_flag=0;
-            far1_process_flag=0;
             check_Left_Cross ();
             check_Right_Cross();
-            far0_process_flag=1;
-            far1_process_flag=1;
+
             if (Lpt0_found)
             {
                 rptsc0_num = rpts0s_num= Lpt0_rpts0s_id-10;//用于后面的近线控制
@@ -199,7 +196,11 @@ void check_Left_Cross()
          far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))+10;//偏移是为了防止还在黑线处
 
     }
-
+    else if(far_y0-far_ipts0[0][1]<5 && cross_type)
+    {
+        far_x0=far_ipts0[0][0];
+        far_y0=far_ipts0[0][1]+5;
+    }
 
     else if(circle_type==CIRCLE_LEFT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
     {
@@ -228,10 +229,7 @@ void check_Left_Cross()
     }
 
 
-    if(far_y0-far_ipts0[0][1]<5 && cross_type)
-    {
-        far_y0=far_ipts0[0][1]+5;
-    }
+
 
     //用于图显
     far_Show_x0=far_x0;
@@ -333,6 +331,11 @@ void check_Right_Cross()
 
     }
 
+    else if(far_y1-far_ipts1[0][1]<5 && cross_type)
+    {
+        far_x1=far_ipts1[0][0];
+        far_y1=far_ipts1[0][1]+5;
+    }
     else if(circle_type==CIRCLE_RIGHT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
     {
         if(ipts1_num<8){//右线太少，则固定点
@@ -360,10 +363,6 @@ void check_Right_Cross()
 
     }
 
-    if(far_y1-far_ipts1[0][1]<5 && cross_type)
-    {
-        far_y1=far_ipts1[0][1]+5;
-    }
 
 
     //用于图显
