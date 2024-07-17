@@ -144,9 +144,9 @@ int main (void)
             seekfree_assistant_oscilloscope_data.data[1] = pure_angle;
             seekfree_assistant_oscilloscope_data.data[2] = ang_gain;
             seekfree_assistant_oscilloscope_data.data[3] = vel_gain;
-            seekfree_assistant_oscilloscope_data.data[4] = circle_type;
-            seekfree_assistant_oscilloscope_data.data[5] = ipts0_num;
-            seekfree_assistant_oscilloscope_data.data[6] = ipts1_num;
+            seekfree_assistant_oscilloscope_data.data[4] = mpu6050_gyro_z;
+            seekfree_assistant_oscilloscope_data.data[5] = Motor.PWM_fan_up;
+            seekfree_assistant_oscilloscope_data.data[6] = Motor.PWM_fan_down;
             seekfree_assistant_oscilloscope_data.data[7] = farline_type;
             // 设置本次需要发送几个通道的数据
             seekfree_assistant_oscilloscope_data.channel_num = 8;
@@ -215,7 +215,7 @@ void data_show(void)
                     tft180_show_int   (1,96,angle,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,obstacle_type,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,circle_obstacle_flag,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35, 80,cross_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
@@ -225,13 +225,13 @@ void data_show(void)
                     tft180_show_int (70, 96,Lpt0_found,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (70, 112,Lpt1_found,1,RGB565_RED,RGB565_WHITE);
 
-                    tft180_show_int   (105,32,conf0_max,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,48,conf1_max,3,RGB565_RED,RGB565_WHITE);
                     //第4列下半存放远近边线长度
+                    tft180_show_int   (105,32,far_Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,48,far_Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,64,Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,80,Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,96,far_conf0_max, 3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,112,far_conf1_max, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
 
                     tft180_show_int (140, 32,lose_count,3,RGB565_RED,RGB565_WHITE);
 //                    tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);

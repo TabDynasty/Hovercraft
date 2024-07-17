@@ -155,8 +155,8 @@ void control_Init()
 
    if(fabs(pure_angle)>5)
    {
-       Motor.PWM_fan_up =   bottom_Speed_Max - fabs(pure_angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/10/30;
-       Motor.PWM_fan_down = bottom_Speed_Max - fabs(pure_angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/10/30;
+       Motor.PWM_fan_up =   bottom_Speed_Max - fabs(angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/100/100;
+       Motor.PWM_fan_down = bottom_Speed_Max - fabs(angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/100/100;
    }else{
        Motor.PWM_fan_up =   bottom_Speed_Max;
        Motor.PWM_fan_down = bottom_Speed_Max;

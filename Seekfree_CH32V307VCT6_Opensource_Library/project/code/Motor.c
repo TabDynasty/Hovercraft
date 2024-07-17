@@ -51,11 +51,11 @@ void Speed_Set(void)
 {
     ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     vel_gain = Vertical_circle(aimSpeed, Speed_now);
-    float centripetal_gain = (float)Speed_now * Speed_now * abs((int)pure_angle)/10000;
+    float centripetal_gain = (float)Speed_now  * abs((int)pure_angle)/1000;
     debug_show_int("ang", ang_gain, 1);
     debug_show_int("vel", vel_gain, 3);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
-    Motor_Set(vel_gain, ang_gain, centripetal_gain);
+    Motor_Set(vel_gain, ang_gain,  centripetal_gain);
     //上下两个风扇,船浮起来
     if(slow_start_flag == true)
        {
@@ -105,11 +105,11 @@ void Motor_Set(int speed, int spin ,float force)
     }
     /*********转向用***********/
     if(spin>=0){
-        pwm1+=0.8*spin;
-        pwm4+=1.2*spin;
+        pwm1+=spin;
+        pwm4+=spin;
     }else {
-        pwm2+=-0.8*spin;
-        pwm3+=-1.2*spin;
+        pwm2+=-1*spin;
+        pwm3+=-1*spin;
     }
     /**************给侧推防止漂移用*******************/
     if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
@@ -210,6 +210,7 @@ int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
     data = LowPass_Filter(&imu_dataz,(float)data); //对采集到的imu值进行滤波
 
     debug_show_float("imuz",data,0);
+
     if(abs(error)>angle_thred2)
         {
             spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel, data,aim_angle_vel);   //pid内环

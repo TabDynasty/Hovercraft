@@ -19,12 +19,12 @@ extern int far_x0,far_y0,far_x1,far_y1;/**< 远处搜线起始点*/
 extern int far_Show_x0,far_Show_y0,far_Show_x1,far_Show_y1;/**< 图显远处搜线起始点*/
 extern float inv_far_Lpt0[2],inv_far_Lpt1[2];/**< 远处左右L角点*/
 
-extern int far_ipts0[MT9V03X_H][2];/**< 原图左边线*/
-extern int far_ipts1[MT9V03X_H][2];/**< 远处右边线*/
+extern int far_ipts0[MT9V03X_H-40][2];/**< 原图左边线*/
+extern int far_ipts1[MT9V03X_H-40][2];/**< 远处右边线*/
 extern int far_ipts0_num, far_ipts1_num;
 
-extern float far_rpts0[MT9V03X_H][2];/**< 透视变换后左边线*/
-extern float far_rpts1[MT9V03X_H][2];/**< 透视变换后右边线*/
+extern float far_rpts0[MT9V03X_H-40][2];/**< 透视变换后左边线*/
+extern float far_rpts1[MT9V03X_H-40][2];/**< 透视变换后右边线*/
 extern int far_rpts0_num, far_rpts1_num;
 
 extern float far_rpts0b[MT9V03X_H][2];/**< 左边线滤波*/

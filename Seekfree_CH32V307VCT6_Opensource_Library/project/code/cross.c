@@ -24,12 +24,12 @@ int far_Show_x0,far_Show_y0,far_Show_x1,far_Show_y1;/**< 图显远处搜线起始点*/
 int far0_process_flag=1,far1_process_flag=1;
 
 // 以下定义为十字寻远线设定，均为远处的线
-int far_ipts0[MT9V03X_H][2];/**< 远处左边线*/
-int far_ipts1[MT9V03X_H][2];/**< 远处右边线*/
+int far_ipts0[MT9V03X_H-40][2];/**< 远处左边线*/
+int far_ipts1[MT9V03X_H-40][2];/**< 远处右边线*/
 int far_ipts0_num, far_ipts1_num;
 
-float far_rpts0[MT9V03X_H][2];/**< 透视变换后左边线*/
-float far_rpts1[MT9V03X_H][2];/**< 透视变换后右边线*/
+float far_rpts0[MT9V03X_H-40][2];/**< 透视变换后左边线*/
+float far_rpts1[MT9V03X_H-40][2];/**< 透视变换后右边线*/
 int far_rpts0_num, far_rpts1_num;
 
 float far_rpts0b[MT9V03X_H][2];/**< 左边线滤波*/
@@ -153,7 +153,11 @@ void run_Cross()
                 not_have_line=0;
 
             }
-            if (far_Lpt1_found) { track_type = TRACK_RIGHT; }
+            if (far_Lpt1_found&&Lpt1_found) { track_type = TRACK_RIGHT; }
+            else if (far_Lpt0_found&&Lpt0_found) { track_type = TRACK_LEFT; }
+            else if (far_Lpt1_found&&rpts1s_num >= rpts0s_num) { track_type = TRACK_RIGHT; }
+            else if (far_Lpt0_found&&rpts0s_num > rpts1s_num) { track_type = TRACK_LEFT; }
+            else if (far_Lpt1_found) { track_type = TRACK_RIGHT; }
             else if (far_Lpt0_found) { track_type = TRACK_LEFT; }
             else if(far_rpts0s_num > far_rpts1s_num)track_type = TRACK_LEFT;
             else if(far_rpts1s_num >= far_rpts0s_num)track_type = TRACK_RIGHT;
@@ -173,7 +177,18 @@ void check_Left_Cross()
     //以下是寻找起始点
 
     //十字情况
-    if(circle_type==0 && far_Lpt0_found)//左近L角点找到,则向左上上偏移作为寻找原线的起始点
+    if(Lpt0_found && circle_type==0)//左近L角点找到,则向左上上偏移作为寻找原线的起始点
+        {
+             inv_Lpt0[0]=Cal_inv_rot_x(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
+             inv_Lpt0[1]=Cal_inv_rot_y(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
+
+             inv_Back_Lpt0[0]=Cal_inv_rot_x((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
+             inv_Back_Lpt0[1]=Cal_inv_rot_y((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
+             far_x0=round((0.5*inv_Back_Lpt0[0]+0.5*inv_Lpt0[0]))-10;
+             far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))-10;//偏移是为了防止还在黑线处
+
+        }
+    else if(circle_type==0 && far_Lpt0_found)//左远L角点找到,则向左下偏移作为寻找原线的起始点
     {
          inv_Lpt0[0]=Cal_inv_rot_x(far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][0],far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][1]);
          inv_Lpt0[1]=Cal_inv_rot_y(far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][0],far_rpts0s[clip(far_Lpt0_rpts0s_id,0,far_rpts0s_num-1)][1]);
@@ -181,20 +196,10 @@ void check_Left_Cross()
          inv_Back_Lpt0[0]=Cal_inv_rot_x((far_rpts0s[clip(far_Lpt0_rpts0s_id+back_Position,0,far_rpts0s_num-1)][0]),far_rpts0s[clip(far_Lpt0_rpts0s_id+back_Position,0,far_rpts0s_num-1)][1]);
          inv_Back_Lpt0[1]=Cal_inv_rot_y((far_rpts0s[clip(far_Lpt0_rpts0s_id+back_Position,0,far_rpts0s_num-1)][0]),far_rpts0s[clip(far_Lpt0_rpts0s_id+back_Position,0,far_rpts0s_num-1)][1]);
          far_x0=round((0.5*inv_Back_Lpt0[0]+0.5*inv_Lpt0[0]))-10;
-         far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))-5;//偏移是为了防止还在黑线处
+         far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))+10;//偏移是为了防止还在黑线处
 
     }
-    else if(Lpt0_found && circle_type==0)//左近L角点找到,则向左上上偏移作为寻找原线的起始点
-    {
-         inv_Lpt0[0]=Cal_inv_rot_x(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
-         inv_Lpt0[1]=Cal_inv_rot_y(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
 
-         inv_Back_Lpt0[0]=Cal_inv_rot_x((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
-         inv_Back_Lpt0[1]=Cal_inv_rot_y((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
-         far_x0=round((0.5*inv_Back_Lpt0[0]+0.5*inv_Lpt0[0]))-10;
-         far_y0=round((0.5*inv_Back_Lpt0[1]+0.5*inv_Lpt0[1]))-5;//偏移是为了防止还在黑线处
-
-    }
 
     else if(circle_type==CIRCLE_LEFT_IN)//L角点没找到，但是处于圆环IN阶段，右线快要丢线，则采用右线倒数第三个点，偏移后作为起始点
     {
@@ -301,7 +306,20 @@ void check_Left_Cross()
 void check_Right_Cross()
 {
     //以下是寻找远线起始点
-    if(circle_type==0 && far_Lpt1_found)//右近L角点找到,则向右上偏移作为寻找原线的起始点
+    if(Lpt1_found && circle_type==0)//右近L角点找到,则向右上偏移作为寻找原线的起始点
+        {
+            inv_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
+            inv_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
+
+            inv_Back_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
+            inv_Back_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
+
+            far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+10;
+            far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-10;//偏移是为了防止还在黑线处
+
+
+        }
+    else if(circle_type==0 && far_Lpt1_found)//右远L角点找到,则向右下偏移作为寻找原线的起始点
     {
         inv_Lpt1[0]=Cal_inv_rot_x((far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][0]),far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][1]);
         inv_Lpt1[1]=Cal_inv_rot_y((far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][0]),far_rpts1s[clip(far_Lpt1_rpts1s_id,0,far_rpts1s_num-1)][1]);
@@ -310,20 +328,7 @@ void check_Right_Cross()
         inv_Back_Lpt1[1]=Cal_inv_rot_y((far_rpts1s[clip(far_Lpt1_rpts1s_id+back_Position,0,far_rpts1s_num-1)][0]),far_rpts1s[clip(far_Lpt1_rpts1s_id+back_Position,0,far_rpts1s_num-1)][1]);
 
         far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+10;
-        far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-5;//偏移是为了防止还在黑线处
-
-
-    }
-    else if(Lpt1_found && circle_type==0)//右近L角点找到,则向右上偏移作为寻找原线的起始点
-    {
-        inv_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
-        inv_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
-
-        inv_Back_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
-        inv_Back_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
-
-        far_x1=round((0.5*inv_Back_Lpt1[0]+0.5*inv_Lpt1[0]))+10;
-        far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))-5;//偏移是为了防止还在黑线处
+        far_y1=round((0.5*inv_Back_Lpt1[1]+0.5*inv_Lpt1[1]))+10;//偏移是为了防止还在黑线处
 
 
     }
