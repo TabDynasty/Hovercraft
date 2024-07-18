@@ -35,4 +35,6 @@ extern float rptsn[MT9V03X_W][2];/**< 归一化中线*/
 extern int rptsn_num;
 extern int obs_dx;
 
+extern int circle_num,circle_switch,garage_switch;
+
 #endif /* CONTROL_H_ */

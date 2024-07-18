@@ -41,6 +41,9 @@ float rptsn[MT9V03X_W][2];/**< 归一化中线*/
 int rptsn_num;
 int speed_counter=0; //速度决策，防止频繁切换速度标志
 bool reset_flag = false;
+
+int circle_num=0;
+int circle_switch,garage_switch;
 void control_Init()
 {
     //根据边线长度切换循线方式
@@ -213,7 +216,11 @@ void control_Init()
 void check_all()
 {
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
-    check_circle();
+        if(circle_num<circle_switch)
+
+            check_circle();
+
+
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&obstacle_type==OBSTACLE_NONE)
     check_Cross();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
@@ -222,4 +229,6 @@ void check_all()
     check_garage();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
     check_straight_road();
+    if(garage_switch&&obstacle_type==OBSTACLE_RIGHT_BEGIN&&total_distance>obs_distance)
+        garage_type=GARAGE_FOUND;//stop_distance=7000
 }

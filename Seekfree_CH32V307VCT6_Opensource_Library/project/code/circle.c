@@ -164,6 +164,7 @@ void run_Lcircle()
 //                    aim_distance=440;
                     circle_type = CIRCLE_NONE;
                     Integral_vel_flag=0;
+                    circle_num++;
                 }
                 break;
         }
@@ -239,6 +240,7 @@ void run_Rcircle()
 //                    aim_distance=440;
                     circle_type = CIRCLE_NONE;
                     Integral_vel_flag=0;
+                    circle_num++;
                 }
                 break;
         }

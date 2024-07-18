@@ -88,6 +88,9 @@ uint32 *Flash_Data[] = {
                         &Angle_vel_vel[0],
                         &Angle_vel_vel[1],
                         &Angle_vel_vel[2],
+
+                        &garage_switch,
+                        &circle_switch,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -153,6 +156,8 @@ MENU_TABLE ElemImg_MenuTable[] =
     {"10.cross_Lpt",Menu_Null,&cross_Lpt_id},
     {"11.out_dis",Menu_Null,&out_distance},
     {"12.stop_dis",Menu_Null,&stop_distance},
+    {"13.garage_swi",Menu_Null,&garage_switch},
+    {"12.circle_swi",Menu_Null,&circle_switch},
 };
 
 // 二级菜单3  电机基础参数调节

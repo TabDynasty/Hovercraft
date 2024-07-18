@@ -581,7 +581,7 @@ void Init_all(void)
     tft180_set_dir(TFT180_CROSSWISE_180 );//屏幕设置方向
     tft180_init ();                       //屏幕初始化
     Key_Init();
-    mpu6050_init ();
+    //mpu6050_init ();
     //W25QXX_Init();
     gpio_init(D8,GPI,0,GPI_FLOATING_IN);
 
