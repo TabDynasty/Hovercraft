@@ -22,7 +22,7 @@ typedef struct image {
 
 /*================================ 接口函数 ==================================*/
 void sobelThreshold(uint8* img_data, uint8* output_data ,int width, int height,int Threshold);
-uint8 otsuThreshold(uint8 *image, uint16 width, uint16 height);
+uint8 otsuThreshold(uint8 *image, uint16 width, uint16 height, uint16 begin);
 void adaptiveThreshold(uint8* img_data, uint8* output_data, int width, int height, int block, uint8 clip_value);
 void Ostu_Robert(unsigned char *org_in, unsigned char *ostu_out, unsigned char th_ostu, unsigned int th_edge, unsigned int start_rows, unsigned int end_rows);
 //左手寻线
@@ -42,7 +42,7 @@ void track_leftline(float pts_in[][2], int num, float pts_out[][2], int approx_n
 void track_rightline(float pts_in[][2], int num, float pts_out[][2], int approx_num, float dist);
 
 
-void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel);
+void blur_points(float pts_in[][2], int num, float pts_out[][2], int half, int weight_sum);
 void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist);
 void process_image();
 void find_corners();

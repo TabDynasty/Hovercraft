@@ -145,7 +145,7 @@
 #define MT9V03X_W2               (188)                                           // 用于边线x
 #define MT9V03X_H2               (120)
 #define PATCH_LENTH              (188)                                          // 用于边线y
-#define LINE_LENTH               (120)
+#define LINE_LENTH               (90)
 extern uint8 show_Img[MT9V03X_H][MT9V03X_W];/**< 用来展示图片*/
 extern uint16 Ostu_Thres;/**< 大津法后的阈值*/
 extern uint32 th_edge;/**< Robert阈值*/

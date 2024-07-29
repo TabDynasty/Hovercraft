@@ -255,7 +255,7 @@ void check_Left_Cross()
         far_rpts0_num = far_ipts0_num;
 
         // 边线滤波
-        blur_points(far_rpts0, far_rpts0_num, far_rpts0b, (int) round(line_blur_kernel));
+        blur_points(far_rpts0, far_rpts0_num, far_rpts0b, 5,11);
         far_rpts0b_num = far_rpts0_num;
 
         // 边线等距采样
@@ -390,7 +390,7 @@ void check_Right_Cross()
         far_rpts1_num = far_ipts1_num;
 
         // 边线滤波
-        blur_points(far_rpts1, far_rpts1_num, far_rpts1b, (int) round(line_blur_kernel));
+        blur_points(far_rpts1, far_rpts1_num, far_rpts1b, 5,11);
         far_rpts1b_num = far_rpts1_num;
 
         // 边线等距采样

@@ -116,21 +116,21 @@ void Motor_Set(int speed, int spin ,float force)
     /**************给侧推防止漂移用*******************/
     if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
     {
-        if(angle> angle_thred1){
+        if(angle> 0){
             pwm1+=force * centripetal_p_straight;
             pwm3+=force * centripetal_p_straight;
         }
-        if(angle<angle_thred1 * (-1)){
+        if(angle<0){
             pwm2+=force * centripetal_p_straight;
             pwm4+=force * centripetal_p_straight;
         }
     }else{                                    //弯道防甩出去
-        if(angle> angle_thred1){
+        if(angle> 0){
             pwm1+=force * centripetal_p_instraight;
             pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
 
         }
-        if(angle<angle_thred1 * (-1)){
+        if(angle< 0){
             pwm2+=force * centripetal_p_instraight;
             pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
         }

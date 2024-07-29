@@ -93,6 +93,8 @@ void control_Init()
     }
     else if ((circle_type==CIRCLE_LEFT_RUNNING||circle_type==CIRCLE_LEFT_OUT)&&Lpt1_found&&track_type == TRACK_RIGHT)//出圆环，截取角点以前的近线
     {
+        track_rightline(rpts1s, rpts1s_num, rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+        rptsc1_num = rpts1s_num;
         rpts = rptsc1;
         rpts_num = rptsc1_num = rpts1s_num= Lpt1_rpts1s_id-5;
     }
@@ -103,15 +105,21 @@ void control_Init()
     }
     else if ((circle_type==CIRCLE_RIGHT_RUNNING||circle_type==CIRCLE_RIGHT_OUT)&&Lpt0_found&&track_type == TRACK_LEFT)//出圆环，截取角点以前的近线
     {
+        track_leftline(rpts0s, rpts0s_num, rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+        rptsc0_num = rpts0s_num;
         rpts = rptsc0;
         rpts_num = rptsc0_num = rpts0s_num= Lpt0_rpts0s_id-5;
     }
     else{//正常寻左右线,左障碍寻左线，右障碍寻右线
        if (track_type == TRACK_LEFT){
+           track_leftline(rpts0s, rpts0s_num, rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+           rptsc0_num = rpts0s_num;
            rpts = rptsc0;
            rpts_num = rptsc0_num;
        }
        else {
+           track_rightline(rpts1s, rpts1s_num, rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+           rptsc1_num = rpts1s_num;
            rpts = rptsc1;
            rpts_num = rptsc1_num;
        }
@@ -131,11 +139,10 @@ void control_Init()
             }
         }
 
-
-
     if(circle_type == CIRCLE_LEFT_BEGIN||circle_type == CIRCLE_LEFT_IN
        || circle_type == CIRCLE_RIGHT_BEGIN||circle_type == CIRCLE_RIGHT_IN)
         aimSpeed = Speed_circle;
+    if(lose_count<5)aimSpeed = 20;
 
    float H_zoom = 0.95f;
    float Half_width = MT9V03X_W/2;
@@ -183,10 +190,11 @@ void control_Init()
        float dy    = cy - rptsn[aim_idx][1];
        float dn    = sqrt(dx * dx + dy * dy);
 //
-       error=atan2f(dx,-dy)*180.0/PI;
+       error=dx;
        // 纯跟踪算法
       // pure_angle = atanf(pixel_per_meter * 2 * 0.2 * dx / dn / dn*1.1) / PI * 180.0;//pure_angle测试
-       pure_angle = atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
+       pure_angle =
+               atanf(pixel_per_meter * 2 * 0.15 * dx / dn / dn) / PI * 180.0;
        if(circle_type == CIRCLE_RIGHT_OUT)
        {
            if(Lpt0_found && Lpt0_rpts0s_id > 10)data_old=pure_angle;
@@ -227,8 +235,8 @@ void check_all()
     check_obstacle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
     check_garage();
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
-    check_straight_road();
+//    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
+//    check_straight_road();
     if(garage_switch&&obstacle_type==OBSTACLE_RIGHT_BEGIN&&total_distance>obs_distance)
         garage_type=GARAGE_FOUND;//stop_distance=7000
 }

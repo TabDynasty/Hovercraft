@@ -122,7 +122,8 @@ int main (void)
         {
             //tft180_clear(RGB565_BLUE);
             img_raw.data = mt9v03x_image[0];
-            Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,MT9V03X_H);
+            Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,30,begin_y-10);
+//            Ostu_Thres = 50;
             process_image();
             find_corners();
              check_all();
@@ -155,7 +156,7 @@ int main (void)
             system_delay_ms(20);
             seekfree_assistant_data_analysis();
         #endif
-
+            mt9v03x_finish_flag = 0;
         }
     }
 }
@@ -212,7 +213,7 @@ void data_show(void)
                     //第1列存放各种标志位
                     tft180_show_int   (1,64,mpu6050_gyro_z,5,RGB565_RED,RGB565_WHITE);
                     tft180_show_float (1, 80, off_setz, 2,1,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (1,96,angle,4,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (1,96,error,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
                     tft180_show_int (35, 64,circle_obstacle_flag,1,RGB565_RED,RGB565_WHITE);
@@ -226,8 +227,8 @@ void data_show(void)
                     tft180_show_int (70, 112,Lpt1_found,1,RGB565_RED,RGB565_WHITE);
 
                     //第4列下半存放远近边线长度
-                    tft180_show_int   (105,32,far_Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int   (105,48,far_Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,32,conf0_max,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int   (105,48,conf1_max,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,64,Lpt0_rpts0s_id,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,80,Lpt1_rpts1s_id,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
@@ -246,7 +247,7 @@ void data_show(void)
                     //tft180_show_int (1, 0,gain,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 16,Speed_now,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 32,straight_road_type,4,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1, 48,far_y1,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1, 48,Ostu_Thres,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 64,(int)inv_far_Lpt1[0],3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 80,(int)inv_far_Lpt1[1],3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,96,Lpt0_found,3,RGB565_RED,RGB565_WHITE);

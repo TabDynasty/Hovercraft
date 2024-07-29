@@ -129,7 +129,7 @@ void sobelThreshold(uint8* img_data, uint8* output_data ,int width, int height,i
 
 
 //大津法
-uint8 otsuThreshold(uint8 *image, uint16 width, uint16 height)
+uint8 otsuThreshold(uint8 *image, uint16 width, uint16 height, uint16 begin)
 {
     #define GrayScale 256
     int pixelCount[GrayScale] = {0};//每个灰度值所占像素个数
@@ -141,7 +141,7 @@ uint8 otsuThreshold(uint8 *image, uint16 width, uint16 height)
 
 
     //统计灰度级中每个像素在整幅图像中的个数
-    for (i = 0; i < height; i++)
+    for (i = begin; i < begin+height; i++)
     {
         for (j = 0; j < width; j++)
         {
@@ -700,16 +700,18 @@ void rot_img_process()
     rpts1_num = ipts1_num;
 }
 
-void blur_points(float pts_in[][2], int num, float pts_out[][2], int kernel){
-    int half = kernel / 2;
+void blur_points(float pts_in[][2], int num, float pts_out[][2], int half, int weight_sum){
+
     for (int i = 0; i < num; i++) {
         pts_out[i][0] = pts_out[i][1] = 0;
         for (int j = -half; j <= half; j++) {
-            pts_out[i][0] += pts_in[clip(i + j, 0, num - 1)][0] * (half + 1 - fabs(j));
-            pts_out[i][1] += pts_in[clip(i + j, 0, num - 1)][1] * (half + 1 - fabs(j));
+//            pts_out[i][0] += pts_in[clip(i + j, 0, num - 1)][0] * (half + 1 - abs(j));
+//            pts_out[i][1] += pts_in[clip(i + j, 0, num - 1)][1] * (half + 1 - abs(j));
+              pts_out[i][0] += pts_in[clip(i + j, 0, num - 1)][0];
+              pts_out[i][1] += pts_in[clip(i + j, 0, num - 1)][1];
         }
-        pts_out[i][0] /= (2 * half + 2) * (half + 1) / 2;
-        pts_out[i][1] /= (2 * half + 2) * (half + 1) / 2;
+        pts_out[i][0] /= weight_sum;
+        pts_out[i][1] /= weight_sum;
     }
 }
 
@@ -808,9 +810,7 @@ void process_image()
     case 0:
         ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
         ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
-//        do{
         /*===============================================提取左边线==================================================*/
-
             if(origin_flag==0){
                 x0 = img_raw.width / 2 - begin_x;
                 for (; x0 > 0; x0--) if (AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres) {
@@ -832,8 +832,6 @@ void process_image()
                     findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, begin_y, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
                 else ipts0_num = 0;
             else ipts0_num = 0;
-//        }while(ipts0_num>100&&(abs(ipts0[0][0]-ipts0[ipts0_num][0])+abs(ipts0[0][1]-ipts0[ipts0_num][1]))<40);
-//        do{
             /*===============================================提取右边线==================================================*/
             if(origin_flag==0){
                 x1 = img_raw.width / 2 + begin_x;
@@ -857,7 +855,57 @@ void process_image()
                     findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
                 else ipts1_num = 0;
             else ipts1_num = 0;
-//        }while(ipts1_num>100&&(abs(ipts1[0][0]-ipts1[ipts1_num][0])+abs(ipts1[0][1]-ipts1[ipts1_num][1]))<40);
+//        /*===============================================提取左边线==================================================*/
+//            if(origin_flag==0){
+//                x0 = img_raw.width / 2 - begin_x;
+//                for (; x0 > 0; x0--) if (AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres) {
+//                    break;}
+//            }
+//            else {
+//                int count=1;
+//                while(x0-count0>0 || x0+count0<img_raw.width || x1-count1>0 || x1+count1<img_raw.width){
+//                    if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width-1),begin_y) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0-count0+1,1,img_raw.width),begin_y) >= Ostu_Thres){//向左寻找，左黑右白
+//                            x0=x0-count+1;
+//                            break;}
+//                    if(AT_IMAGE(&img_raw,clip(x0+count0-1,0,img_raw.width-1),begin_y) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0+count0,1,img_raw.width),begin_y) >= Ostu_Thres){//向右寻找，左黑右白
+//                            x0=x0+count;
+//                            break;
+//                    if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width),begin_y) < Ostu_Thres){//向左寻找，左白右黑
+//                            x1=x1-count;
+//                            break;}
+//                    if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),begin_y) < Ostu_Thres){//向右寻找，左白右黑
+//                            x1=x1+count-1;
+//                            break;}
+//                    count++;}
+//            }
+//            if (AT_IMAGE(&img_raw, x0, begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres)
+//                if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)<=abs(x1-img_raw.width/2)))
+//                    findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, begin_y, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//只有此处使用了左手巡线新版
+//                else ipts0_num = 0;
+//            else ipts0_num = 0;
+//            /*===============================================提取右边线==================================================*/
+//            if(origin_flag==0){
+//                x1 = img_raw.width / 2 + begin_x;
+//                for (; x1 < img_raw.width - 1; x1++) if (AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres) {
+//                    break;}
+//                origin_flag=1;//不使用防丢线时关闭
+//            }
+//            else {
+//                int count1=1;
+//                while(x1-count1>0 || x1+count1<img_raw.width){
+//                    if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width),begin_y) < Ostu_Thres){//向左寻找，左白右黑
+//                            x1=x1-count1;
+//                            break;}
+//                    if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),begin_y) < Ostu_Thres){//向右寻找，左白右黑
+//                            x1=x1+count1-1;
+//                            break;}
+//                    count1++;}
+//            }
+//            if (AT_IMAGE(&img_raw, x1, begin_y) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres)
+//                if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)>abs(x1-img_raw.width/2)))
+//                    findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//只有此处使用了右手巡线新版
+//                else ipts1_num = 0;
+//            else ipts1_num = 0;
         break;
     case 1:
         findpoint_sobel();
@@ -878,12 +926,18 @@ void process_image()
     rot_img_process();
 
     // 边线滤波
-    blur_points(rpts0, rpts0_num, rpts0b, (int) round(line_blur_kernel));
+    blur_points(rpts0, rpts0_num, rpts0b, 5 , 11);
+//            (int) round(line_blur_kernel));
     rpts0b_num = rpts0_num;
-    blur_points(rpts1, rpts1_num, rpts1b, (int) round(line_blur_kernel));
+    blur_points(rpts1, rpts1_num, rpts1b, 5 , 11);
+//            (int) round(line_blur_kernel));
     rpts1b_num = rpts1_num;
 
     // 边线等距采样
+//    rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]);
+//    resample_points(rpts0, rpts0_num, rpts0s, &rpts0s_num, sample_dist * pixel_per_meter);
+//    rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
+//    resample_points(rpts1, rpts1_num, rpts1s, &rpts1s_num, sample_dist * pixel_per_meter);
     rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]);
     resample_points(rpts0b, rpts0b_num, rpts0s, &rpts0s_num, sample_dist * pixel_per_meter);
     rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
@@ -896,36 +950,19 @@ void process_image()
     local_angle_points(rpts1s, rpts1s_num, rpts1a, (int) round(angle_dist / sample_dist));//angle_dist / sample_dist
     rpts1a_num = rpts1s_num;
 
-    // 角度变化率非极大抑制
-    //我们又进行了角度的非极大抑制，保证只留下角度最大的点，即角点。这样算出来的角度很稳定，跟实际也很接近。
+//     角度变化率非极大抑制
+//    我们又进行了角度的非极大抑制，保证只留下角度最大的点，即角点。这样算出来的角度很稳定，跟实际也很接近。
     nms_angle(rpts0a, rpts0a_num, rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);//angle_dist / sample_dist
     rpts0an_num = rpts0a_num;
     nms_angle(rpts1a, rpts1a_num, rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);//angle_dist / sample_dist
     rpts1an_num = rpts1a_num;
 
-    // 左右中线跟踪
-    track_leftline(rpts0s, rpts0s_num, rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
-    rptsc0_num = rpts0s_num;
-    track_rightline(rpts1s, rpts1s_num, rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
-    rptsc1_num = rpts1s_num;
+//    // 左右中线跟踪
+//    track_leftline(rpts0s, rpts0s_num, rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
+//    rptsc0_num = rpts0s_num;
+//    track_rightline(rpts1s, rpts1s_num, rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);//
+//    rptsc1_num = rpts1s_num;
 
-//    if(Lpt0_found)
-//       {
-//            inv_Lpt0_found[0]=Cal_inv_rot_x(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
-//            inv_Lpt0_found[1]=Cal_inv_rot_y(rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_rpts0s_id,0,rpts0s_num-1)][1]);
-//
-//            inv_Back_Lpt0[0]=Cal_inv_rot_x((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
-//            inv_Back_Lpt0[1]=Cal_inv_rot_y((rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][0]),rpts0s[clip(Lpt0_rpts0s_id+back_Position,0,rpts0s_num-1)][1]);
-//       }
-//
-//    if(Lpt1_found)
-//       {
-//           inv_Lpt1_found[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
-//           inv_Lpt1_found[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id,0,rpts1s_num-1)][1]);
-//
-//           inv_Back_Lpt1[0]=Cal_inv_rot_x((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
-//           inv_Back_Lpt1[1]=Cal_inv_rot_y((rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][0]),rpts1s[clip(Lpt1_rpts1s_id+back_Position,0,rpts1s_num-1)][1]);
-//       }
 
 }
 
@@ -940,12 +977,10 @@ void find_corners() {
     Lpt0_found = Lpt1_found = false;
     Lpt0_s_found = Lpt1_s_found = false;
     conf0_max =conf1_max = 0;
-    is_straight0 = rpts0s_num > 1.4 / sample_dist;
-    is_straight1 = rpts1s_num > 1.4 / sample_dist;
-    is_longstraight0 = rpts0s_num > 1.4 / sample_dist;
-    is_longstraight1 = rpts1s_num > 1.4 / sample_dist;
+    is_longstraight0 = is_straight0 = rpts0s_num > 1.4 / sample_dist;
+    is_longstraight1 = is_straight1 = rpts1s_num > 1.4 / sample_dist;
     //计算左线的conf0和判断左线的长直道
-    for (int i = 0; i <rpts0s_num; i++)
+    for (int i = 0; i <rpts0s_num&&i< 1.8/sample_dist; i++)
     {
         //if (rpts0an[i] == 0) continue;
         //小角点，用于长直道及路障判断
@@ -957,7 +992,7 @@ void find_corners() {
 
         //长直道
 
-        if(conf0_s>15&&i< 1.8/sample_dist&&!bend_flag) is_longstraight0 = false; //长直道入弯
+        if(conf0_s>15&&!bend_flag) is_longstraight0 = false; //长直道入弯
         //路障
         if (Lpt0_s_found == false&&Lconf_Min-10<conf0_s&&conf0_s<Lconf_Max&&(i<1.5/(sample_dist)))
         {
@@ -977,17 +1012,23 @@ void find_corners() {
         //十字及圆环
         if (rpts0an[i]!=0&&Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.5/(sample_dist)))
         {
+//            for (int j = -5; j <= 5; j++) {
+//                if (fabs(rpts0a[clip(i + j, 0, rpts0a_num - 1)]) > fabs(rpts0a[i])) {
+//                    rpts0an[i] = 0;
+//                    break;
+//                }
+//            }
             Lpt0_rpts0s_id = i;
             Lpt0_found = true;
         }
         if(conf0>15&&i< 1.6/sample_dist) is_straight0 = false; //只要中间有大角度，就不是直道
 
-        if(conf0_s>conf0_max)conf0_max = conf0_s;//用于图显
+        if(conf0>conf0_max)conf0_max = conf0;//用于图显
         if (Lpt0_found==true) break;//只找第一个角点
     }
 
     //计算右线的conf0和判断右线的长直道
-    for (int i = 0; i <rpts1s_num; i++)
+    for (int i = 0; i <rpts1s_num&&i< 1.8/sample_dist; i++)
     {
         //if (rpts1an[i] == 0) continue;
         //小角点，用于长直道及路障判断
@@ -999,7 +1040,7 @@ void find_corners() {
 
         //长直道
 
-        if(conf1_s>15&&i< 1.8/sample_dist&&!bend_flag) is_longstraight1 = false;//长直道入弯
+        if(conf1_s>15&&!bend_flag) is_longstraight1 = false;//长直道入弯
         //路障
         if (Lpt1_s_found == false&&Lconf_Min-10<conf1_s&&conf1_s<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
         {
@@ -1024,7 +1065,7 @@ void find_corners() {
         }
         if(conf1>15&&i< 1.6/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
 
-        if(conf1_s>conf1_max)conf1_max = conf1_s;//用于图显
+        if(conf1>conf1_max)conf1_max = conf1;//用于图显
         if (Lpt1_found==true) break;//只找第一个角点
     }
 
