@@ -3,7 +3,7 @@
 #include "zf_common_headfile.h"
 /*---------------------PID各项系数数组--------------------*/
 
-extern int Angle_0[4],Angle_1[4],Angle_vel[4],Angle_vel_vel[4],Speed[4];
+extern int Angle_0[4],Angle_1[4],Angle_vel[4],Angle_vel_vel[4],Speed[4],Side[4];
 
 /*-------------------PID各项误差结构体定义初始化--------------*/
 typedef struct PID
@@ -22,7 +22,7 @@ typedef struct _PID_Quick
     int32 LastData;     //Speed[-1]
 } PID_Quick;
 
-extern PID  Angle_PID,Angle_vel_PID,Speed_PID;
+extern PID  Angle_PID,Angle_vel_PID,Speed_PID,Side_PID;
 /*================================ 接口函数 ==================================*/
 void PID_Init(void);
 void PID_Parameter_Init(PID *sptr);

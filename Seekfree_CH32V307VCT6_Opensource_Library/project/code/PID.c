@@ -5,13 +5,14 @@
 #include "zf_common_headfile.h"
 
 
-PID Angle_PID,Angle_vel_PID,Speed_PID;         // 角度环， 角速度环，速度环PID误差参数结构体
+PID Angle_PID,Angle_vel_PID,Speed_PID,Side_PID;         // 角度环， 角速度环，速度环,侧向环PID误差参数结构体
 //下面的各项参数都除了100，方便flash的读取
 int Angle_vel[4]       = {250, 0, 10 , 1000};    //  error大时角速度环PID系数
 int Angle_vel_vel[4]       = {0,0,0,1000};       //  error小时角速度环PID系数
-int Angle_0[4]           = {40, 0, 10 , 1000};    // 角度环PID系数
-int Angle_1[4]           = {40, 0, 10 , 1000};    // 角度环PID系数
+int Angle_0[4]           = {40, 0, 10 , 1000};    // 角度环PID弯道系数
+int Angle_1[4]           = {40, 0, 10 , 1000};    // 角度环PID直道系数
 int Speed[4]           = {0, 0, 0 ,   1000};    // 速度环PID系数
+int Side[4]            = {100,5,0,1000};
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介    PID各个环初始化
@@ -23,6 +24,7 @@ void PID_Init(void)
     PID_Parameter_Init(&Angle_PID);
     PID_Parameter_Init(&Angle_vel_PID);
     PID_Parameter_Init(&Speed_PID);
+    PID_Parameter_Init(&Side_PID);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -102,7 +104,7 @@ float PID_Realize_Inner(PID *sptr, int *PID, float NowData, float Point)
 
      kp_t=(float)(PID[KP]/100.0);
      kd_t=(float)(PID[KD]/100.0);
-     ki_t=(float)(PID[KI]/1000.0);
+     ki_t=(float)(PID[KI]/10000.0);
 
      //积分限幅
      if(ki_t)

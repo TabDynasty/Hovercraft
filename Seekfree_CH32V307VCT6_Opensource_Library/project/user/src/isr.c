@@ -334,7 +334,6 @@ void TIM6_IRQHandler(void)
     if(TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET)
     {
        TIM_ClearITPendingBit(TIM6, TIM_IT_Update );
-       mpu6050_get_gyro ();
        extern void pit_speed(void);
        pit_speed();
 //       char strff[8];
@@ -348,6 +347,8 @@ void TIM7_IRQHandler(void)
     if(TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)
     {
        TIM_ClearITPendingBit(TIM7, TIM_IT_Update );
+       mpu6050_get_gyro ();
+
        //if(motorflag==1&&lose_count>5)
        if(motorflag==1)
            Speed_Set();

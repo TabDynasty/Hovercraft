@@ -63,5 +63,6 @@ void Speed_Set(void);
 void Motor_Set(int speed, int spin, float force);
 int Stable_posture(float aim_angle_vel, int imu_anglevel_data);
 int Vertical_circle(int aim_vel, int now_vel);
+int Side_circle(int now_angle, int aim_angle);
 void pit_speed(void);
 void Stop_Set(void);

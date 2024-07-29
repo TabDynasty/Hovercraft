@@ -52,8 +52,10 @@ void Speed_Set(void)
     ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     vel_gain = Vertical_circle(aimSpeed, Speed_now);
     float centripetal_gain = (float)Speed_now  * abs((int)pure_angle)/1000;
+            //fabs((float)Side_circle(pure_angle,0));
     debug_show_int("ang", ang_gain, 1);
     debug_show_int("vel", vel_gain, 3);
+    debug_show_int("sid", centripetal_gain, 5);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
     Motor_Set(vel_gain, ang_gain,  centripetal_gain);
     //上下两个风扇,船浮起来
@@ -245,6 +247,24 @@ int Vertical_circle(int aim_vel, int now_vel)
      return vel_Increment;
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     侧推环
+// 参数说明     pure_angle      图像误差
+// 参数说明     aim_angle       目标角度（将错就错为零）
+// 返回参数     side_Increment  输出到侧边两个电机上的pwm值
+//-------------------------------------------------------------------------------------------------------------------
+int Side_circle(int now_angle, int aim_angle)
+{
+    int increment_max = 300;
+
+     int side_Increment = (int)PID_Realize(&Side_PID, Side, now_angle, aim_angle);
+     //输出限幅
+     if(side_Increment > increment_max)
+         side_Increment = increment_max;
+     if(side_Increment < -increment_max)
+         side_Increment = -increment_max;
+     return side_Increment;
+}
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     获取当前速度，可选择对其积分
 // 参数说明     void
