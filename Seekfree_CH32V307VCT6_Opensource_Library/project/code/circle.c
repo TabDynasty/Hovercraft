@@ -32,7 +32,7 @@ void check_Lcircle_Lobstacle()
 //        circle_obstacle_flag=1;
 //    }
 //    if(circle_obstacle_flag==1)
-    if(Lpt0_found && !Lpt1_found && is_longstraight1 && Lpt0_rpts0s_id<60)//左边长直道，右边近角点
+    if(Lpt0_found && !Lpt1_found && is_straight1 && Lpt0_rpts0s_id<60)//左边长直道，右边近角点
     {
 //          if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
 //          else
@@ -63,7 +63,7 @@ void check_Rcircle_Robstacle()
 //
 //    }
 //    if(circle_obstacle_flag==1)
-    if (Lpt1_found && is_longstraight0 && Lpt1_rpts1s_id<60) //左边长直道，右边近角点
+    if (Lpt1_found && is_straight0 && Lpt1_rpts1s_id<60) //左边长直道，右边近角点
        {
 //            if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
 //            else

@@ -23,4 +23,5 @@ extern int LcircleIn_thred;
 extern int none_left_line, none_right_line;
 extern int RcircleIn_thred;
 
+
 #endif /* CIRCLE_H_ */

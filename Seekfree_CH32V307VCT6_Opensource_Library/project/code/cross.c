@@ -64,6 +64,9 @@ float far_conf1_max,far_conf1;/**< 用于图显*/
 int not_have_line=0;
 int cross_Lpt_id;//40,25
 
+int LcrossBegin_thred;//60
+int RcrossBegin_thred;//60
+
 /*================================ 接口函数 ==================================*/
 void check_Cross();
 void check_Left_Cross();
@@ -89,7 +92,7 @@ void check_Cross1()
 void check_Cross()
 {
     //找到上下两个角点即进入CROSS_BEGIN
-    if(Lpt0_found&&cross_type==CROSS_NONE&&!is_straight1&&rpts1s_num>5)
+    if(Lpt0_found&&Lpt0_rpts0s_id<LcrossBegin_thred&&cross_type==CROSS_NONE&&!is_straight1&&rpts1s_num>5)
         {
             check_Left_Cross ();
             if(far_Lpt0_found&&!is_straight1)
@@ -97,7 +100,7 @@ void check_Cross()
                 cross_type=CROSS_BEGIN;
             }
         }
-    if(Lpt1_found&&cross_type==CROSS_NONE&&!is_straight0&&rpts0s_num>5)
+    if(Lpt1_found&&Lpt1_rpts1s_id<RcrossBegin_thred&&cross_type==CROSS_NONE&&!is_straight0&&rpts0s_num>5)
         {
             check_Right_Cross();
             if(far_Lpt1_found&&!is_straight0)

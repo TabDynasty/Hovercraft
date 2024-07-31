@@ -122,8 +122,11 @@ int main (void)
         {
             //tft180_clear(RGB565_BLUE);
             img_raw.data = mt9v03x_image[0];
-            Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,30,begin_y-10);
-//            Ostu_Thres = 50;
+            if(cross_type==0)
+                Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,30,begin_y-20);
+            else
+                Ostu_Thres = otsuThreshold(mt9v03x_image[0],MT9V03X_W,120,0);
+
             process_image();
             find_corners();
              check_all();

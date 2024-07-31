@@ -142,7 +142,7 @@ void control_Init()
     if(circle_type == CIRCLE_LEFT_BEGIN||circle_type == CIRCLE_LEFT_IN
        || circle_type == CIRCLE_RIGHT_BEGIN||circle_type == CIRCLE_RIGHT_IN)
         aimSpeed = Speed_circle;
-    if(lose_count<5)aimSpeed = 20;
+   // if(lose_count<5)aimSpeed = 20;
 
    float H_zoom = 0.95f;
    float Half_width = MT9V03X_W/2;

@@ -13,6 +13,9 @@ enum cross_type_e {
 extern enum cross_type_e cross_type;
 extern int cross_Lpt_id;
 
+extern int LcrossBegin_thred;
+extern int RcrossBegin_thred;
+
 extern float inv_Lpt0[2],inv_Lpt1[2];/**< 左右L角点对应原图的点*/
 extern float inv_Back_Lpt0[2],inv_Back_Lpt1[2];/**< 左右L角点后的一个点*/
 extern int far_x0,far_y0,far_x1,far_y1;/**< 远处搜线起始点*/
