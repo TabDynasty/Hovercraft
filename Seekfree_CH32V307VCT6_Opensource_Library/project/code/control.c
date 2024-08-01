@@ -93,7 +93,7 @@ void control_Init()
     }
     else if ((circle_type==CIRCLE_LEFT_RUNNING||circle_type==CIRCLE_LEFT_OUT)&&Lpt1_found&&track_type == TRACK_RIGHT)//出圆环，截取角点以前的近线
     {
-        track_rightline(rpts1s, rpts1s_num, rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+        track_rightline(rpts1s, rpts1s_num, rptsc1, 10, pixel_per_meter * ROAD_WIDTH / 2);
         rptsc1_num = rpts1s_num;
         rpts = rptsc1;
         rpts_num = rptsc1_num = rpts1s_num= Lpt1_rpts1s_id-5;
@@ -105,20 +105,20 @@ void control_Init()
     }
     else if ((circle_type==CIRCLE_RIGHT_RUNNING||circle_type==CIRCLE_RIGHT_OUT)&&Lpt0_found&&track_type == TRACK_LEFT)//出圆环，截取角点以前的近线
     {
-        track_leftline(rpts0s, rpts0s_num, rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+        track_leftline(rpts0s, rpts0s_num, rptsc0, 10, pixel_per_meter * ROAD_WIDTH / 2);
         rptsc0_num = rpts0s_num;
         rpts = rptsc0;
         rpts_num = rptsc0_num = rpts0s_num= Lpt0_rpts0s_id-5;
     }
     else{//正常寻左右线,左障碍寻左线，右障碍寻右线
        if (track_type == TRACK_LEFT){
-           track_leftline(rpts0s, rpts0s_num, rptsc0, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+           track_leftline(rpts0s, rpts0s_num, rptsc0, 10, pixel_per_meter * ROAD_WIDTH / 2);
            rptsc0_num = rpts0s_num;
            rpts = rptsc0;
            rpts_num = rptsc0_num;
        }
        else {
-           track_rightline(rpts1s, rpts1s_num, rptsc1, (int) round(10.0), pixel_per_meter * ROAD_WIDTH / 2);
+           track_rightline(rpts1s, rpts1s_num, rptsc1, 10, pixel_per_meter * ROAD_WIDTH / 2);
            rptsc1_num = rpts1s_num;
            rpts = rptsc1;
            rpts_num = rptsc1_num;
@@ -130,7 +130,7 @@ void control_Init()
         {
             aimSpeed = Speed_long_straight;
         }else{
-            if(bend_flag == false)
+            if(bend_flag == false||cross_type)
             {
                 aimSpeed = Speed_short_straight;
             }else{
@@ -162,15 +162,25 @@ void control_Init()
            begin_id = i;
        }
    }
-
-   if(fabs(pure_angle)>5)
+   if(straight_road_type == STRAIGHT_OUT1)
    {
-       Motor.PWM_fan_up =   bottom_Speed_Max - fabs(angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/100/100;
-       Motor.PWM_fan_down = bottom_Speed_Max - fabs(angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/100/100;
+       Motor.PWM_fan_up =   INIT_PWM;
+       Motor.PWM_fan_down = INIT_PWM;
    }else{
-       Motor.PWM_fan_up =   bottom_Speed_Max;
-       Motor.PWM_fan_down = bottom_Speed_Max;
+
+       if(fabs(pure_angle)>5)
+       {
+           Motor.PWM_fan_up =   bottom_Speed_Max - fabs(angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/100/100;
+           Motor.PWM_fan_down = bottom_Speed_Max - fabs(angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/100/100;
+       }else{
+           Motor.PWM_fan_up =   bottom_Speed_Max;
+           Motor.PWM_fan_down = bottom_Speed_Max;
+       }
    }
+
+
+
+
    // 中线有点，同时最近点不是最后几个点
    if (begin_id >= 0 && rpts_num - begin_id >= 3)//切摄像头
    {
@@ -235,8 +245,8 @@ void check_all()
     check_obstacle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
     check_garage();
-//    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
-//    check_straight_road();
+    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
+    check_straight_road();
     if(garage_switch&&obstacle_type==OBSTACLE_RIGHT_BEGIN&&total_distance>obs_distance)
         garage_type=GARAGE_FOUND;//stop_distance=7000
 }

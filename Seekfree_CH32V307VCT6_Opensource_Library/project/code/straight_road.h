@@ -4,7 +4,8 @@
 enum straigh_troad_type_e {
     STRAIGHT_NONE = 0,
     STRAIGHT_IN,
-    STRAIGHT_OUT,
+    STRAIGHT_OUT1,
+    STRAIGHT_OUT2,
 };
 extern enum straigh_troad_type_e straight_road_type;
 extern int break_dis;

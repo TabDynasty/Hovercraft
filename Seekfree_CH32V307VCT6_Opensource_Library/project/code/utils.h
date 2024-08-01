@@ -26,6 +26,7 @@ float Cal_rot_x(float x,float y);
 float Cal_rot_y(float x,float y);
 float Cal_inv_rot_x(float x,float y);
 float Cal_inv_rot_y(float x,float y);
+float Q_rsqrt( float number );
 void debug_show_int(char data_name[], int debug_data , int index);
 void debug_show_float(char data_name[], float debug_data , int index);
 #endif /* UTILS_H_ */

@@ -27,6 +27,7 @@ void check_straight_road(void)
 
     if(check_straight>check_straight_num&& check_angle > check_angle_num)
     {
+        Integral_vel_flag = 1;
         check_straight = 0;
         check_angle = 0;
         straight_road_type = STRAIGHT_IN;
@@ -57,13 +58,26 @@ void Run_straight(void)
             //出直道
             if(check_bend > check_bend_num )
             {
-                straight_road_type = STRAIGHT_OUT;
+                if(total_distance > 500)
+                    straight_road_type = STRAIGHT_OUT1;
+                else{
+                    straight_road_type = STRAIGHT_NONE;
+                }
+                Integral_vel_flag = 0;
             }
             break;
             //反向推进弯道减速
-        case STRAIGHT_OUT:
+        case STRAIGHT_OUT1:
             Integral_vel_flag = 1;
             if(total_distance > break_dis)
+            {
+                straight_road_type = STRAIGHT_OUT2;
+            }
+            break;
+            //防止还在长直道，再进一次
+        case STRAIGHT_OUT2:
+
+            if(total_distance > break_dis + 200)
             {
                 straight_road_type = STRAIGHT_NONE;
                 Integral_vel_flag = 0;

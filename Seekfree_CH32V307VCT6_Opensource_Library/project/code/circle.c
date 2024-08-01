@@ -38,7 +38,7 @@ void check_Lcircle_Lobstacle()
 //          else
           {
               check_Left_Cross();
-              if(far_conf0_max<30&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+              if(far_conf0_max<50&&far_conf0_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
               {
                   circle_type = CIRCLE_LEFT_BEGIN;
                   none_left_line = 0;
@@ -69,7 +69,7 @@ void check_Rcircle_Robstacle()
 //            else
             {
                 check_Right_Cross();
-                if(far_conf1_max<30&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
+                if(far_conf1_max<50&&far_conf1_max>3)//圆环标志，远线是弧线，角度最大不超过30，但判断太过严格，容易判不到
                 {
                     circle_type = CIRCLE_RIGHT_BEGIN;
                     none_right_line = 0;
@@ -122,12 +122,12 @@ void run_Lcircle()
                 track_type = TRACK_RIGHT;
                 if(ipts0_num<LcircleIn_thred){
                     track_type = TRACK_LEFT;
-                    check_Left_Cross();}
-                if(far_Lpt0_found)
-                {
-                    //check_Right_Cross();
+//                    check_Left_Cross();}
+//                if(far_Lpt0_found)
+//                {
+//                    //check_Right_Cross();
+//                    farline_type=1;//切寻远线
                     Integral_vel_flag=1;
-                    farline_type=1;//切寻远线
                 }
                 if(total_distance>3000)
                 {
@@ -200,12 +200,12 @@ void run_Rcircle()
                 track_type = TRACK_LEFT;
                 if(ipts1_num<RcircleIn_thred)
                     {track_type = TRACK_RIGHT;
-                    check_Right_Cross();}
-                if(far_Lpt1_found)
-                {
-                    //check_Left_Cross();
+//                    check_Right_Cross();}
+//                if(far_Lpt1_found)
+//                {
+//                    //check_Left_Cross();
+//                    farline_type=1;//切寻远线
                     Integral_vel_flag=1;
-                    farline_type=1;//切寻远线
                 }
                 if(total_distance>3000)//左边近处线寻到
                 {

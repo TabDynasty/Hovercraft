@@ -80,6 +80,29 @@ float Cal_inv_rot_y(float x,float y){
 }
 
 /******************************************************************************
+* FunctionName   : Q_rsqrt()
+* Description    : 快速平方根的倒数
+* EntryParameter : number
+* ReturnValue    : y
+*******************************************************************************/
+float Q_rsqrt( float number )
+{
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y  = number;
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+    y  = * ( float * ) &i;
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+
+
+    return y;
+}
+
+/******************************************************************************
 * FunctionName   : patch_Line()
 * Description    : 两点连直线 直线第一个点x为最小值
 * EntryParameter : x1,y1-第一个点坐标 x2,y2-第二个点坐标 *num 返回数组长度

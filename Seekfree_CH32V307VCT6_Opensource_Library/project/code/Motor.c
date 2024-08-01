@@ -41,6 +41,8 @@ int speed_up_conf;
 int slow_down_conf;
 int ang_gain;
 int vel_gain;
+
+float imu_data;
 extern bool slow_start_flag;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     速度设置，在中断调用
@@ -52,10 +54,11 @@ void Speed_Set(void)
     ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     vel_gain = Vertical_circle(aimSpeed, Speed_now);
     float centripetal_gain = (float)Speed_now  * abs((int)pure_angle)/1000;
-            //fabs((float)Side_circle(pure_angle,0));
-    debug_show_int("ang", ang_gain, 1);
-    debug_show_int("vel", vel_gain, 3);
-    debug_show_int("sid", centripetal_gain, 5);
+
+    //fabs((float)Side_circle(pure_angle,0));
+//    debug_show_int("ang", ang_gain, 1);
+//    debug_show_int("vel", vel_gain, 3);
+//    debug_show_int("sid", centripetal_gain, 5);
     //控制方向的4个风扇， 分别进行速度和角度的闭环
     Motor_Set(vel_gain, ang_gain,  centripetal_gain);
     //上下两个风扇,船浮起来
@@ -114,17 +117,17 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3+=-1*spin;
     }
     /**************给侧推防止漂移用*******************/
-    if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
-    {
-        if(angle> 0){
-            pwm1+=force * centripetal_p_straight;
-            pwm3+=force * centripetal_p_straight;
-        }
-        if(angle<0){
-            pwm2+=force * centripetal_p_straight;
-            pwm4+=force * centripetal_p_straight;
-        }
-    }else{                                    //弯道防甩出去
+//    if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
+//    {
+//        if(angle> 0){
+//            pwm1+=force * centripetal_p_straight;
+//            pwm3+=force * centripetal_p_straight;
+//        }
+//        if(angle<0){
+//            pwm2+=force * centripetal_p_straight;
+//            pwm4+=force * centripetal_p_straight;
+//        }
+//    }else{                                    //弯道防甩出去
         if(angle> 0){
             pwm1+=force * centripetal_p_instraight;
             pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
@@ -133,7 +136,7 @@ void Motor_Set(int speed, int spin ,float force)
         if(angle< 0){
             pwm2+=force * centripetal_p_instraight;
             pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
-        }
+        //}
     }
 
     /*********************直道提速****************************/
@@ -143,7 +146,7 @@ void Motor_Set(int speed, int spin ,float force)
         pwm4  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
     }
     /*********************直道入弯****************************/
-    if(straight_road_type == STRAIGHT_OUT)
+    if(straight_road_type == STRAIGHT_OUT1)
     {
         pwm1  +=Speed_now * break_coefficient/10;
         pwm2  +=Speed_now * break_coefficient/10;
@@ -207,17 +210,17 @@ int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
 {
     int increment_max = 300;
     int spin_Increment;
-    float data = mpu6050_gyro_transition(imu_angle_vel_data-off_setz);
+    imu_data = mpu6050_gyro_transition(imu_angle_vel_data-off_setz);
 
-    data = LowPass_Filter(&imu_dataz,(float)data); //对采集到的imu值进行滤波
+    imu_data = LowPass_Filter(&imu_dataz,(float)imu_data); //对采集到的imu值进行滤波
 
-    debug_show_float("imuz",data,0);
+    //debug_show_float("imuz",data,0);
 
     if(abs(error)>angle_thred2)
         {
-            spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel, data,aim_angle_vel);   //pid内环
+            spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel, imu_data,aim_angle_vel);   //pid内环
         }else{
-            spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel_vel, data,aim_angle_vel);   //pid内环
+            spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel_vel, imu_data,aim_angle_vel);   //pid内环
         }
     //输出限幅
     if(spin_Increment > increment_max)

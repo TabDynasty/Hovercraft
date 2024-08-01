@@ -2,6 +2,7 @@
 #include "zf_common_headfile.h"
 #include "utils.h"
 #include "cross.h"
+#include "straight_road.h"
 /*============================= 宏定义/重定义 ================================*/
 #define AT                  AT_IMAGE
 #define MAX_COLS MT9V03X_W /*图像水平分辨率*/
@@ -808,8 +809,14 @@ void process_image()
     //寻找起始点，提取边线
     switch(find_type){
     case 0:
-        ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
-        ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
+        if(straight_road_type == STRAIGHT_IN)
+        {
+            ipts0_num = sizeof(ipts0) / sizeof(ipts0[0]);
+            ipts1_num = sizeof(ipts1) / sizeof(ipts1[0]);
+        }else{
+            ipts0_num = 90;
+            ipts1_num = 90;
+        }
         /*===============================================提取左边线==================================================*/
             if(origin_flag==0){
                 x0 = img_raw.width / 2 - begin_x;
@@ -927,10 +934,8 @@ void process_image()
 
     // 边线滤波
     blur_points(rpts0, rpts0_num, rpts0b, 5 , 11);
-//            (int) round(line_blur_kernel));
     rpts0b_num = rpts0_num;
     blur_points(rpts1, rpts1_num, rpts1b, 5 , 11);
-//            (int) round(line_blur_kernel));
     rpts1b_num = rpts1_num;
 
     // 边线等距采样
@@ -939,22 +944,22 @@ void process_image()
 //    rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
 //    resample_points(rpts1, rpts1_num, rpts1s, &rpts1s_num, sample_dist * pixel_per_meter);
     rpts0s_num = sizeof(rpts0s) / sizeof(rpts0s[0]);
-    resample_points(rpts0b, rpts0b_num, rpts0s, &rpts0s_num, sample_dist * pixel_per_meter);
+    resample_points(rpts0b, rpts0b_num, rpts0s, &rpts0s_num, 2);
     rpts1s_num = sizeof(rpts1s) / sizeof(rpts1s[0]);
-    resample_points(rpts1b, rpts1b_num, rpts1s, &rpts1s_num, sample_dist * pixel_per_meter);
+    resample_points(rpts1b, rpts1b_num, rpts1s, &rpts1s_num, 2);
 
     // 边线局部角度变化率，采用我们的算法可以得到稳定且等距的边线前提下，直接取每个点前后20cm构成一个三点，
     //利用向量的角度计算公式算实际角度即可。为方便判断，
-    local_angle_points(rpts0s, rpts0s_num, rpts0a, (int) round(angle_dist / sample_dist));
+    local_angle_points(rpts0s, rpts0s_num, rpts0a, 10);
     rpts0a_num = rpts0s_num;
-    local_angle_points(rpts1s, rpts1s_num, rpts1a, (int) round(angle_dist / sample_dist));//angle_dist / sample_dist
+    local_angle_points(rpts1s, rpts1s_num, rpts1a, 10);//angle_dist / sample_dist
     rpts1a_num = rpts1s_num;
 
 //     角度变化率非极大抑制
 //    我们又进行了角度的非极大抑制，保证只留下角度最大的点，即角点。这样算出来的角度很稳定，跟实际也很接近。
-    nms_angle(rpts0a, rpts0a_num, rpts0an, (int) round(angle_dist / sample_dist) * 2 + 1);//angle_dist / sample_dist
+    nms_angle(rpts0a, rpts0a_num, rpts0an, 11);//angle_dist / sample_dist
     rpts0an_num = rpts0a_num;
-    nms_angle(rpts1a, rpts1a_num, rpts1an, (int) round(angle_dist / sample_dist) * 2 + 1);//angle_dist / sample_dist
+    nms_angle(rpts1a, rpts1a_num, rpts1an, 11);//angle_dist / sample_dist
     rpts1an_num = rpts1a_num;
 
 //    // 左右中线跟踪
@@ -977,15 +982,15 @@ void find_corners() {
     Lpt0_found = Lpt1_found = false;
     Lpt0_s_found = Lpt1_s_found = false;
     conf0_max =conf1_max = 0;
-    is_longstraight0 = is_straight0 = rpts0s_num > 1.4 / sample_dist;
-    is_longstraight1 = is_straight1 = rpts1s_num > 1.4 / sample_dist;
+    is_longstraight0 = is_straight0 = rpts0s_num > 70;
+    is_longstraight1 = is_straight1 = rpts1s_num > 70;
     //计算左线的conf0和判断左线的长直道
-    for (int i = 0; i <rpts0s_num&&i< 1.8/sample_dist; i++)
+    for (int i = 0; i <rpts0s_num; i++)
     {
         //if (rpts0an[i] == 0) continue;
         //小角点，用于长直道及路障判断
-        int im0_s = clip(i - (int) round(0.14 / sample_dist), 0, rpts0s_num - 1);//向前取一个点
-        int ip0_s = clip(i + (int) round(0.14 / sample_dist), 0, rpts0s_num - 1);//向后取一个点
+        int im0_s = clip(i - 7, 0, rpts0s_num - 1);//向前取一个点
+        int ip0_s = clip(i + 7, 0, rpts0s_num - 1);//向后取一个点
 
         conf0_s  = fabs(rpts0a[i]) - (fabs(rpts0a[im0_s]) + fabs(rpts0a[ip0_s])) / 2;
         conf0_s=conf0_s*180/PI;
@@ -994,15 +999,15 @@ void find_corners() {
 
         if(conf0_s>15&&!bend_flag) is_longstraight0 = false; //长直道入弯
         //路障
-        if (Lpt0_s_found == false&&Lconf_Min-10<conf0_s&&conf0_s<Lconf_Max&&(i<1.5/(sample_dist)))
+        if (Lpt0_s_found == false&&Lconf_Min-10<conf0_s&&conf0_s<Lconf_Max&&i<75)
         {
             Lpt0_s_rpts0s_id = i;
             Lpt0_s_found = true;
         }
 
         //大角点，用于十字及圆环判断
-        int im0 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts0s_num - 1);//向前取一个点
-        int ip0 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts0s_num - 1);//向后取一个点
+        int im0 = clip(i - 10, 0, rpts0s_num - 1);//向前取一个点
+        int ip0 = clip(i + 10, 0, rpts0s_num - 1);//向后取一个点
 
         conf0  = fabs(rpts0a[i]) - (fabs(rpts0a[im0]) + fabs(rpts0a[ip0])) / 2;
         conf0=conf0*180/PI;
@@ -1010,7 +1015,7 @@ void find_corners() {
         if(conf0>10&&bend_flag) is_longstraight0 = false; //弯入长直道
 
         //十字及圆环
-        if (rpts0an[i]!=0&&Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&(i<1.5/(sample_dist)))
+        if (rpts0an[i]!=0&&Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&i<75)
         {
 //            for (int j = -5; j <= 5; j++) {
 //                if (fabs(rpts0a[clip(i + j, 0, rpts0a_num - 1)]) > fabs(rpts0a[i])) {
@@ -1021,19 +1026,19 @@ void find_corners() {
             Lpt0_rpts0s_id = i;
             Lpt0_found = true;
         }
-        if(conf0>15&&i< 1.6/sample_dist) is_straight0 = false; //只要中间有大角度，就不是直道
+        if(conf0>15&&i<80) is_straight0 = false; //只要中间有大角度，就不是直道
 
         if(conf0>conf0_max)conf0_max = conf0;//用于图显
         if (Lpt0_found==true) break;//只找第一个角点
     }
 
     //计算右线的conf0和判断右线的长直道
-    for (int i = 0; i <rpts1s_num&&i< 1.8/sample_dist; i++)
+    for (int i = 0; i <rpts1s_num; i++)
     {
         //if (rpts1an[i] == 0) continue;
         //小角点，用于长直道及路障判断
-        int im1_s = clip(i - (int) round(0.14 / sample_dist), 0, rpts1s_num - 1);//向前取一个点
-        int ip1_s = clip(i + (int) round(0.14 / sample_dist), 0, rpts1s_num - 1);//向后取一个点
+        int im1_s = clip(i - 7, 0, rpts1s_num - 1);//向前取一个点
+        int ip1_s = clip(i + 7, 0, rpts1s_num - 1);//向后取一个点
 
         conf1_s  = fabs(rpts1a[i]) - (fabs(rpts1a[im1_s]) + fabs(rpts1a[ip1_s])) / 2;
         conf1_s=conf1_s*180/PI;
@@ -1042,15 +1047,15 @@ void find_corners() {
 
         if(conf1_s>15&&!bend_flag) is_longstraight1 = false;//长直道入弯
         //路障
-        if (Lpt1_s_found == false&&Lconf_Min-10<conf1_s&&conf1_s<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
+        if (Lpt1_s_found == false&&Lconf_Min-10<conf1_s&&conf1_s<Lconf_Max&&i<75)//限距离，限尖峰
         {
             Lpt1_s_rpts1s_id = i;
             Lpt1_s_found = true;
         }
 
         //大角点，用于十字及圆环判断
-        int im1 = clip(i - (int) round(angle_dist / sample_dist), 0, rpts1s_num - 1);//向前取一个点
-        int ip1 = clip(i + (int) round(angle_dist / sample_dist), 0, rpts1s_num - 1);//向后取一个点
+        int im1 = clip(i - 10, 0, rpts1s_num - 1);//向前取一个点
+        int ip1 = clip(i + 10, 0, rpts1s_num - 1);//向后取一个点
 
         conf1  = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
         conf1=conf1*180/PI;
@@ -1058,12 +1063,12 @@ void find_corners() {
         if(conf1>10&&bend_flag) is_longstraight1 = false; //弯入长直道
 
         //十字及圆环
-        if (rpts1an[i]!=0&&Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&(i<1.5/(sample_dist)))//限距离，限尖峰
+        if (rpts1an[i]!=0&&Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&i<75)//限距离，限尖峰
         {
             Lpt1_rpts1s_id = i;
             Lpt1_found = true;
         }
-        if(conf1>15&&i< 1.6/sample_dist) is_straight1 = false; //只要中间有大角度，就不是长直道
+        if(conf1>15&&i<80) is_straight1 = false; //只要中间有大角度，就不是长直道
 
         if(conf1>conf1_max)conf1_max = conf1;//用于图显
         if (Lpt1_found==true) break;//只找第一个角点
