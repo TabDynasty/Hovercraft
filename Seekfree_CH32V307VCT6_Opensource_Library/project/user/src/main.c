@@ -107,9 +107,15 @@ int main (void)
 {
     Init_all();     //初始化所有
     select_section();
-    Read_Load();    //加载菜单
-    MainMenu_Set(); //进入菜单
-    My_FlashWrite(flash_num); //读取菜单
+    if(flash_num>=0 && flash_num<=1)
+    {
+        Read_Load();    //加载菜单
+        MainMenu_Set(); //进入菜单
+        My_FlashWrite(flash_num); //读取菜单
+    }else{
+        read_param();   //菜单被刷时用
+    }
+
     Motor_Init();
     tft180_clear(RGB565_WHITE);
 
@@ -520,8 +526,11 @@ void select_section()
             case 1:
                 tft180_show_string(65,70 , "fast",RGB565_BLUE,RGB565_WHITE);
                   break;
+            case 2:
+                tft180_show_string(65,70 , "etc",RGB565_BLUE,RGB565_WHITE);
+                  break;
             default:
-                tft180_show_string(0,70 , "error,switch back",RGB565_RED,RGB565_WHITE);
+                tft180_show_string(0,70  , "error,switch back",RGB565_RED,RGB565_WHITE);
                 break;
         }
 

@@ -65,3 +65,5 @@ extern uint32 motor_Flag;
 
 extern void My_FlashWrite(int16 Boot);
 extern void My_FlashRead(int16 Boot);
+extern void read_param(void);
+

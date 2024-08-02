@@ -93,6 +93,7 @@ uint32 *Flash_Data[] = {
                         &circle_switch,
                         &LcrossBegin_thred,
                         &RcrossBegin_thred,
+                        &cross_begin_y,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -162,6 +163,7 @@ MENU_TABLE ElemImg_MenuTable[] =
     {"14.circle_swi",Menu_Null,&circle_switch},
     {"15.LcrossBeg",Menu_Null,&LcrossBegin_thred},
     {"16.RcrossBeg",Menu_Null,&RcrossBegin_thred},
+    {"17.cross_y",Menu_Null,&cross_begin_y},
 };
 
 // 二级菜单3  电机基础参数调节
@@ -708,4 +710,80 @@ void My_FlashRead(int16 Boot)
     {
         *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = flash_union_buffer[i].uint32_type;
     }
+}
+//读程序参数
+void read_param(void)
+{
+    mode_Flag = 0;
+    /*Base_Img*/
+    th_edge = 0;
+    begin_x = 11;
+    begin_y = 96;
+    sobelThres = 0;
+    find_type = 0;
+
+    /*Elem_Img*/
+    check_straight_num = 10;
+    check_bend_num = 3;
+    check_angle_num = 2;
+    LcircleIn_thred = 100;
+    RcircleIn_thred =100;
+    obs_Lpt_id = 30;
+    obs_dir_num = 10;
+    obs_dx = 10;
+    obs_distance = 1500;
+    cross_Lpt_id = 40;
+    out_distance = 3000;
+    stop_distance = 0;
+    garage_switch = 0;
+    circle_switch = 4;
+    LcrossBegin_thred = 30;
+    RcrossBegin_thred = 30;
+    cross_begin_y = 0;
+
+    /*Motor*/
+
+    centripetal_p_straight = 140;
+    centripetal_p_instraight = 265;
+    bottom_Speed_Max = 630;
+    bottom_Speed_Min = 624;
+    max_output = 480;
+    start_pwm = 640;
+
+
+    /*Ctrl*/
+    Speed_long_straight = 110;
+    Speed_short_straight = 90;
+    Speed_instraight = 78;
+    Speed_circle = 78;
+    aim_distance = 680;
+    angle_thred1 = 10;
+    angle_thred2 = 200;
+    anti_coefficient = 60;
+    break_dis = 600;
+    break_coefficient =0;
+    speed_up_conf = 20;
+    slow_down_conf = 12;
+    circle_slow = 5;
+
+    /*PID*/
+    Angle_vel[0] = 60;
+    Angle_vel[1] = 3;
+    Angle_vel[2] = 0;
+
+    Angle_vel_vel[0] = 100;
+    Angle_vel_vel[1] = 6;
+    Angle_vel_vel[2] = 0;
+
+    Angle_0[0] = 380;
+    Angle_0[1] = 0;
+    Angle_0[2] = 250;
+
+    Angle_1[0] = 330;
+    Angle_1[1] = 0;
+    Angle_1[2] = 240;
+
+    Speed[0] = 570;
+    Speed[1] = 0;
+    Speed[2] = 0;
 }

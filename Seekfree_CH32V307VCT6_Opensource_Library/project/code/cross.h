@@ -5,6 +5,7 @@
 /*============================= 结构体联合体定义 =============================*/
 enum cross_type_e {
     CROSS_NONE = 0,     // 非十字模式
+    CROSS_STRAIGHT,     // 正入十字
     CROSS_BEGIN,        // 找到上下两个L角点
     CROSS_IN,           // 近处L角点全丢了，固定搜线
 };
@@ -12,6 +13,7 @@ enum cross_type_e {
 /*================================ 全局变量 ==================================*/
 extern enum cross_type_e cross_type;
 extern int cross_Lpt_id;
+extern int cross_begin_y;
 
 extern int LcrossBegin_thred;
 extern int RcrossBegin_thred;

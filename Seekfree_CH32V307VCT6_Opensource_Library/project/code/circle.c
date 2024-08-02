@@ -159,7 +159,7 @@ void run_Lcircle()
             case CIRCLE_LEFT_END:
                 track_type = TRACK_RIGHT;
                 Integral_vel_flag=1;
-                if (total_distance>=3000)
+                if (total_distance>=2000)
                 {
 //                    aim_distance=440;
                     circle_type = CIRCLE_NONE;
@@ -235,7 +235,7 @@ void run_Rcircle()
             case CIRCLE_RIGHT_END:
                 track_type = TRACK_LEFT;
                 Integral_vel_flag=1;
-                if (total_distance>3000)
+                if (total_distance>2000)
                 {
 //                    aim_distance=440;
                     circle_type = CIRCLE_NONE;
