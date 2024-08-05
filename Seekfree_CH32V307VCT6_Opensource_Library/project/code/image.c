@@ -999,7 +999,7 @@ void find_corners() {
 
         if(conf0_s>15&&!bend_flag) is_longstraight0 = false; //长直道入弯
         //路障
-        if (Lpt0_s_found == false&&Lconf_Min-10<conf0_s&&conf0_s<Lconf_Max&&i<75)
+        if (Lpt0_s_found == false&&Lconf_Min-20<conf0_s&&conf0_s<Lconf_Max)
         {
             Lpt0_s_rpts0s_id = i;
             Lpt0_s_found = true;
@@ -1012,10 +1012,10 @@ void find_corners() {
         conf0  = fabs(rpts0a[i]) - (fabs(rpts0a[im0]) + fabs(rpts0a[ip0])) / 2;
         conf0=conf0*180/PI;
 
-        if(conf0>10&&bend_flag) is_longstraight0 = false; //弯入长直道
+        if(conf0>7&&bend_flag) is_longstraight0 = false; //弯入长直道
 
         //十字及圆环
-        if (rpts0an[i]!=0&&Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&i<75)
+        if (rpts0an[i]!=0&&Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max)
         {
 //            for (int j = -5; j <= 5; j++) {
 //                if (fabs(rpts0a[clip(i + j, 0, rpts0a_num - 1)]) > fabs(rpts0a[i])) {
@@ -1028,7 +1028,7 @@ void find_corners() {
         }
         if(conf0>15&&i<80) is_straight0 = false; //只要中间有大角度，就不是直道
 
-        if(conf0>conf0_max)conf0_max = conf0;//用于图显
+        if(conf0_s>conf0_max)conf0_max = conf0_s;//用于图显
         if (Lpt0_found==true) break;//只找第一个角点
     }
 
@@ -1047,7 +1047,7 @@ void find_corners() {
 
         if(conf1_s>15&&!bend_flag) is_longstraight1 = false;//长直道入弯
         //路障
-        if (Lpt1_s_found == false&&Lconf_Min-10<conf1_s&&conf1_s<Lconf_Max&&i<75)//限距离，限尖峰
+        if (Lpt1_s_found == false&&Lconf_Min-20<conf1_s&&conf1_s<Lconf_Max)//限距离，限尖峰
         {
             Lpt1_s_rpts1s_id = i;
             Lpt1_s_found = true;
@@ -1060,17 +1060,17 @@ void find_corners() {
         conf1  = fabs(rpts1a[i]) - (fabs(rpts1a[im1]) + fabs(rpts1a[ip1])) / 2;
         conf1=conf1*180/PI;
 
-        if(conf1>10&&bend_flag) is_longstraight1 = false; //弯入长直道
+        if(conf1>7&&bend_flag) is_longstraight1 = false; //弯入长直道
 
         //十字及圆环
-        if (rpts1an[i]!=0&&Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&i<75)//限距离，限尖峰
+        if (rpts1an[i]!=0&&Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max)//限距离，限尖峰
         {
             Lpt1_rpts1s_id = i;
             Lpt1_found = true;
         }
         if(conf1>15&&i<80) is_straight1 = false; //只要中间有大角度，就不是长直道
 
-        if(conf1>conf1_max)conf1_max = conf1;//用于图显
+        if(conf1_s>conf1_max)conf1_max = conf1_s;//用于图显
         if (Lpt1_found==true) break;//只找第一个角点
     }
 

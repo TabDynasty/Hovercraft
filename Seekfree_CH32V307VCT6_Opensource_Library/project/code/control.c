@@ -194,8 +194,8 @@ void control_Init()
            aim_idx = (int)clip(round(AIM_DISTANCE/1000.0/sample_dist), 0, rptsn_num - 1);
        // 计算远锚点偏差值
        float dx    = rptsn[aim_idx][0] - cx;
-       if(obstacle_type==OBSTACLE_LEFT_BEGIN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=10;
-       else if(obstacle_type==OBSTACLE_RIGHT_BEGIN||obstacle_type==OBSTACLE_RIGHT_OUT)dx-=10;
+       if(obstacle_type==OBSTACLE_LEFT_IN||obstacle_type==OBSTACLE_LEFT_OUT)dx+=obs_dx;
+       else if(obstacle_type==OBSTACLE_RIGHT_IN||obstacle_type==OBSTACLE_RIGHT_OUT)dx-=obs_dx;
 
        float dy    = cy - rptsn[aim_idx][1];
        float dn    = sqrt(dx * dx + dy * dy);
@@ -219,10 +219,10 @@ void control_Init()
        //外环角度环
        if(is_straight0&&is_straight1)
        {
-           angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
+           angle    = PID_Realize(&Angle_PID, r_Angle_0,pure_angle,0);
        }
        else{
-           angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
+           angle    = PID_Realize(&Angle_PID, r_Angle_1,pure_angle,0);
        }
 
    }
@@ -245,7 +245,7 @@ void check_all()
     check_obstacle();
     if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE)
     check_garage();
-    if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
+    if(garage_type!=GARAGE_STOP&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
     check_straight_road();
     if(garage_switch&&obstacle_type==OBSTACLE_RIGHT_BEGIN&&total_distance>obs_distance)
         garage_type=GARAGE_FOUND;//stop_distance=7000

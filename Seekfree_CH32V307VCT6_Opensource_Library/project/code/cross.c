@@ -93,7 +93,7 @@ void check_Cross1()
 void check_Cross()
 {
     //找到上下两个角点即进入CROSS_BEGIN
-    if(Lpt0_found&&Lpt1_found&&cross_type==CROSS_NONE)
+    if(Lpt0_found&&Lpt1_found&&(Lpt0_rpts0s_id>=LcrossBegin_thred||Lpt1_rpts1s_id>=RcrossBegin_thred)&&cross_type==CROSS_NONE)
         cross_type=CROSS_STRAIGHT;
     else if(Lpt0_found&&Lpt0_rpts0s_id<LcrossBegin_thred&&cross_type==CROSS_NONE&&!is_straight1&&rpts1s_num>5)
         {
@@ -157,6 +157,7 @@ void run_Cross()
             }
             if (rpts1s_num < 5 && rpts0s_num < 5) { not_have_line++; }
             if(not_have_line>2 && (rpts1s_num > 5 || rpts0s_num > 5))
+//            if(not_have_line>2 && (far_ipts0[0][1]>=begin_y+cross_begin_y || far_ipts1[0][1]>=begin_y+cross_begin_y))
             {
                 cross_type = CROSS_NONE;
                 not_have_line=0;
@@ -173,6 +174,7 @@ void run_Cross()
             else if(far_rpts0s_num > far_rpts1s_num)track_type = TRACK_LEFT;
             else if(far_rpts1s_num >= far_rpts0s_num)track_type = TRACK_RIGHT;
             break;
+
 
     }
 

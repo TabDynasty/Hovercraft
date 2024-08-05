@@ -117,6 +117,7 @@ int main (void)
     }
 
     Motor_Init();
+    PID_Init();
     tft180_clear(RGB565_WHITE);
 
     while(1)
@@ -259,8 +260,8 @@ void data_show(void)
                     tft180_show_int (1, 48,Ostu_Thres,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 64,(int)inv_far_Lpt1[0],3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 80,(int)inv_far_Lpt1[1],3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1,96,Lpt0_found,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1,112,Lpt1_found,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1,96,r_Angle_0[0],3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1,112,Angle_0[0],3,RGB565_RED,RGB565_WHITE);
                     //第二列
                     tft180_show_int   (35,96,(int)dir_leftnum1,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (35,112,(int)dir_rightnum0,3,RGB565_RED,RGB565_WHITE);
@@ -311,7 +312,17 @@ void data_show(void)
             if(show_pagex==0){
                 //显示原图，画边线
                 draw_Show();
-
+                if(Lpt0_s_found){
+                    int inv_Lpt0_s[2];
+                    inv_Lpt0_s[0]=Cal_inv_rot_x(rpts0s[clip(Lpt0_s_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_s_rpts0s_id,0,rpts0s_num-1)][1]);
+                    inv_Lpt0_s[1]=Cal_inv_rot_y(rpts0s[clip(Lpt0_s_rpts0s_id,0,rpts0s_num-1)][0],rpts0s[clip(Lpt0_s_rpts0s_id,0,rpts0s_num-1)][1]);
+                    tft180_draw_point((int)((inv_Lpt0_s[0])/x_Zoom),(int)(inv_Lpt0_s[1]/y_Zoom),RGB565_PURPLE   );//左小角点
+                }else if(Lpt1_s_found){
+                    int inv_Lpt1_s[2];
+                    inv_Lpt1_s[0]=Cal_inv_rot_x(rpts1s[clip(Lpt1_s_rpts1s_id,0,rpts1s_num-1)][0],rpts1s[clip(Lpt1_s_rpts1s_id,0,rpts1s_num-1)][1]);
+                    inv_Lpt1_s[1]=Cal_inv_rot_y(rpts1s[clip(Lpt1_s_rpts1s_id,0,rpts1s_num-1)][0],rpts1s[clip(Lpt1_s_rpts1s_id,0,rpts1s_num-1)][1]);
+                    tft180_draw_point((int)((inv_Lpt1_s[0])/x_Zoom),(int)(inv_Lpt1_s[1]/y_Zoom),RGB565_PURPLE   );//右小角点
+                }
                 //第1列
                 tft180_show_int (1, 64,ipts0[0][0],3,RGB565_RED,RGB565_WHITE);
                 tft180_show_int (1, 80,ipts1[0][0],3,RGB565_RED,RGB565_WHITE);
@@ -560,6 +571,7 @@ void Init_all(void)
     debug_init();                   // 初始化默认 Debug UART
     mt9v03x_init();
     dual_com_init();
+
     /*无线图传初始化*/
     #if (WIFI_SPI_SHOW == 1)
     while(wifi_spi_init(WIFI_SSID_TEST, WIFI_PASSWORD_TEST))
@@ -613,7 +625,6 @@ void Init_all(void)
     pit_ms_init(TIM7_PIT,1);
     pit_ms_init(TIM8_PIT,1000);
     /*软件初始化*/
-    PID_Init();
     Filters_Init();
 
 }

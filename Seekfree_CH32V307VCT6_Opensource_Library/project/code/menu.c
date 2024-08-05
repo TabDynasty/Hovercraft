@@ -728,8 +728,8 @@ void read_param(void)
     check_angle_num = 2;
     LcircleIn_thred = 100;
     RcircleIn_thred =100;
-    obs_Lpt_id = 30;
-    obs_dir_num = 10;
+    obs_Lpt_id = 50;
+    obs_dir_num = 5;
     obs_dx = 10;
     obs_distance = 1500;
     cross_Lpt_id = 40;
