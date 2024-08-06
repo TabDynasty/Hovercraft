@@ -219,10 +219,10 @@ void control_Init()
        //外环角度环
        if(is_straight0&&is_straight1)
        {
-           angle    = PID_Realize(&Angle_PID, r_Angle_0,pure_angle,0);
+           angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
        }
        else{
-           angle    = PID_Realize(&Angle_PID, r_Angle_1,pure_angle,0);
+           angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
        }
 
    }

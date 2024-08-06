@@ -260,8 +260,8 @@ void data_show(void)
                     tft180_show_int (1, 48,Ostu_Thres,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 64,(int)inv_far_Lpt1[0],3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 80,(int)inv_far_Lpt1[1],3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1,96,r_Angle_0[0],3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1,112,Angle_0[0],3,RGB565_RED,RGB565_WHITE);
+//                    tft180_show_int (1,96,r_Angle_0[0],3,RGB565_RED,RGB565_WHITE);
+//                    tft180_show_int (1,112,Angle_0[0],3,RGB565_RED,RGB565_WHITE);
                     //µÚ¶þÁÐ
                     tft180_show_int   (35,96,(int)dir_leftnum1,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (35,112,(int)dir_rightnum0,3,RGB565_RED,RGB565_WHITE);

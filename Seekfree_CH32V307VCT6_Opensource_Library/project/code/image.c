@@ -701,20 +701,29 @@ void rot_img_process()
     rpts1_num = ipts1_num;
 }
 
-void blur_points(float pts_in[][2], int num, float pts_out[][2], int half, int weight_sum){
+void blur_points(float pts_in[][2], int num, float pts_out[][2], int half, int sum_weight){
+
+    float window_sum0=0,window_sum1=0;
 
     for (int i = 0; i < num; i++) {
         pts_out[i][0] = pts_out[i][1] = 0;
-        for (int j = -half; j <= half; j++) {
-//            pts_out[i][0] += pts_in[clip(i + j, 0, num - 1)][0] * (half + 1 - abs(j));
-//            pts_out[i][1] += pts_in[clip(i + j, 0, num - 1)][1] * (half + 1 - abs(j));
-              pts_out[i][0] += pts_in[clip(i + j, 0, num - 1)][0];
-              pts_out[i][1] += pts_in[clip(i + j, 0, num - 1)][1];
+        if(i == 0)
+        {
+            for (int j = -half; j <= half; j++) {
+                window_sum0 += pts_in[clip(i + j, 0, num - 1)][0];
+                window_sum1 += pts_in[clip(i + j, 0, num - 1)][1];
+            }
+        }else{
+                window_sum0 += pts_in[clip(i + half, 0, num - 1)][0];
+                window_sum0 -= pts_in[clip(i - half-1, 0, num - 1)][0];
+                window_sum1 += pts_in[clip(i + half, 0, num - 1)][1];
+                window_sum1 -= pts_in[clip(i - half-1, 0, num - 1)][1];
         }
-        pts_out[i][0] /= weight_sum;
-        pts_out[i][1] /= weight_sum;
+        pts_out[i][0] = window_sum0/sum_weight;
+        pts_out[i][1] = window_sum1/sum_weight;
     }
 }
+
 
 void resample_points(float pts_in[][2], int num1, float pts_out[][2], int *num2, float dist){
     int remain = 0, len = 0;
