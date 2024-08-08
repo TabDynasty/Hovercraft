@@ -32,7 +32,7 @@ void check_Lcircle_Lobstacle()
 //        circle_obstacle_flag=1;
 //    }
 //    if(circle_obstacle_flag==1)
-    if(Lpt0_found && !Lpt1_found && is_straight1 && Lpt0_rpts0s_id<60)//左边长直道，右边近角点
+    if(Lpt0_found && !Lpt1_found && is_straight1 && Lpt0_rpts0s_id<LcircleIn_thred)//左边长直道，右边近角点
     {
 //          if(dir_rightnum0>10)obstacle_type=OBSTACLE_LEFT_BEGIN;
 //          else
@@ -63,7 +63,7 @@ void check_Rcircle_Robstacle()
 //
 //    }
 //    if(circle_obstacle_flag==1)
-    if (Lpt1_found && is_straight0 && Lpt1_rpts1s_id<60) //左边长直道，右边近角点
+    if (Lpt1_found && is_straight0 && Lpt1_rpts1s_id<RcircleIn_thred) //左边长直道，右边近角点
        {
 //            if(dir_leftnum1>10)obstacle_type=OBSTACLE_RIGHT_BEGIN;
 //            else
@@ -113,14 +113,15 @@ void run_Lcircle()
                     circle_type = CIRCLE_LEFT_IN;
                     none_left_line = 0;
                     have_left_line = 0;
-                    track_type = TRACK_RIGHT;
-                    if(ipts0_num<LcircleIn_thred)
+//                    track_type = TRACK_RIGHT;
+//                    if(ipts0_num<LcircleIn_thred)
                         track_type = TRACK_LEFT;
                 }
                 break;
             case CIRCLE_LEFT_IN:
-                track_type = TRACK_RIGHT;
-                if(ipts0_num<LcircleIn_thred){
+//                track_type = TRACK_RIGHT;
+//                if(ipts0_num<LcircleIn_thred)
+                {
                     track_type = TRACK_LEFT;
 //                    check_Left_Cross();}
 //                if(far_Lpt0_found)
@@ -190,15 +191,15 @@ void run_Rcircle()
                    circle_type = CIRCLE_RIGHT_IN;
                    none_right_line = 0;
                    have_right_line = 0;
-                   track_type = TRACK_LEFT;
-                   if(ipts1_num<RcircleIn_thred)
+//                   track_type = TRACK_LEFT;
+//                   if(ipts1_num<RcircleIn_thred)
                        {track_type = TRACK_RIGHT;}
                }
                 break;
                 //寻右线，左线丢线后有线
             case CIRCLE_RIGHT_IN:
-                track_type = TRACK_LEFT;
-                if(ipts1_num<RcircleIn_thred)
+//                track_type = TRACK_LEFT;
+//                if(ipts1_num<RcircleIn_thred)
                     {track_type = TRACK_RIGHT;
 //                    check_Right_Cross();}
 //                if(far_Lpt1_found)

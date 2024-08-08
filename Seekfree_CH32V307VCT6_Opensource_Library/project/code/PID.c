@@ -120,18 +120,18 @@ float PID_Realize_Inner(PID *sptr, int *PID, float NowData, float Point)
          }
      }
      //积分分离
-     if(fabs(pure_angle)> abs(angle_thred2))
-     {
+//     if(fabs(pure_angle)> abs(angle_thred2))
+//     {
          //sptr->SumError = 0; // 误差积分
          Realize = kp_t * iError
              + ki_t * sptr->SumError
              + kd_t * (iError - sptr->LastError);
-     }else {
-         sptr->SumError +=  iError; // 误差积分
-         Realize = kp_t * iError
-              //+ ki_t * sptr->SumError
-              + kd_t * (iError - sptr->LastError);
-    }
+//     }else {
+//         sptr->SumError +=  iError; // 误差积分
+//         Realize = kp_t * iError
+//              //+ ki_t * sptr->SumError
+//              + kd_t * (iError - sptr->LastError);
+//    }
      sptr->LastError = iError;           // 更新上次误差
      sptr->LastData  = NowData;          // 更新上次数据
 

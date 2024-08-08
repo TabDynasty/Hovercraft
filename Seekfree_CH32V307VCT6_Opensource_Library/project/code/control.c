@@ -135,7 +135,6 @@ void control_Init()
                 aimSpeed = Speed_short_straight;
             }else{
                 aimSpeed = Speed_instraight;
-
             }
         }
 
@@ -217,7 +216,7 @@ void control_Init()
        }
 
        //外环角度环
-       if(is_straight0&&is_straight1)
+       if(abs(pure_angle)<angle_thred1)
        {
            angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
        }

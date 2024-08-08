@@ -249,7 +249,7 @@ void data_show(void)
                 {
                     //tft180_show_int (1, 0,gain,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 16,Speed_now,3,RGB565_RED,RGB565_WHITE);
-                    tft180_show_int (1, 32,straight_road_type,4,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (1, 32,imu_data,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 48,Ostu_Thres,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 64,(int)inv_far_Lpt1[0],3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1, 80,(int)inv_far_Lpt1[1],3,RGB565_RED,RGB565_WHITE);
@@ -490,7 +490,7 @@ void get_offset_and_reset_flag(void)
           //获取陀螺仪偏置
           for(uint8 i=0;i<100;i++)        //采集100次
           {
-              mpu6050_get_gyro();//获取陀螺仪角速度
+              //mpu6050_get_gyro();//获取陀螺仪角速度
               off_setz += mpu6050_gyro_z;
               system_delay_ms(5);   //采样周期
           }

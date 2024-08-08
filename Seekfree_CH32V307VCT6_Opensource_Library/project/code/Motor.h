@@ -56,6 +56,7 @@ extern int speed_up_conf;
 extern int slow_down_conf;
 extern int Speed_now ;
 extern int ang_gain,vel_gain;
+extern float imu_data;
 #endif /* MOTOR_H_ */
 /*================================ ½Ó¿Úº¯Êý ==================================*/
 void Motor_Init(void);

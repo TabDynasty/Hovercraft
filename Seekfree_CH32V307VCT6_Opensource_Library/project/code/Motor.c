@@ -11,11 +11,11 @@
 #include "circle.h"
 /*=============================  电机引脚定义  ================================*/
 #define PWM_UP_PIN         TIM4_PWM_MAP1_CH1_D12
-#define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH2_D13
+#define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH3_D14
 #define PWM_1_PIN          TIM5_PWM_MAP0_CH1_A0
 #define PWM_2_PIN          TIM4_PWM_MAP1_CH4_D15
 #define PWM_3_PIN          TIM5_PWM_MAP0_CH2_A1
-#define PWM_4_PIN          TIM4_PWM_MAP1_CH3_D14
+#define PWM_4_PIN          TIM4_PWM_MAP1_CH2_D13
 ///*============================= 4路电机的起转pwm值  ================================*
 #define MOTOR_PWM_START      560
 /*================================ 全局变量 ==================================*/
@@ -211,13 +211,17 @@ int Stable_posture(float aim_angle_vel, int imu_angle_vel_data)
     int increment_max = 300;
     int spin_Increment;
     imu_data = mpu6050_gyro_transition(imu_angle_vel_data-off_setz);
-
-    imu_data = LowPass_Filter(&imu_dataz,(float)imu_data); //对采集到的imu值进行滤波
-
+  if(fabs(imu_data) >5)
+   {
+       imu_data = LowPass_Filter(&imu_dataz,(float)imu_data); //对采集到的imu值进行滤波
+   }else{
+       imu_data = 0;
+   }
     //debug_show_float("imuz",data,0);
 
-    if(abs(error)>angle_thred2)
+    if(abs(pure_angle)<angle_thred2)
         {
+            Angle_vel_PID.SumError = 0;
             spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel, imu_data,aim_angle_vel);   //pid内环
         }else{
             spin_Increment =(int)PID_Realize_Inner(&Angle_vel_PID, Angle_vel_vel, imu_data,aim_angle_vel);   //pid内环
