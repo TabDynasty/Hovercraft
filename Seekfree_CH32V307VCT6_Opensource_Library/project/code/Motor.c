@@ -22,7 +22,7 @@
 SPEED_st Motor;          /* 电机结构体*/
 //标志位
 bool Integral_vel_flag = 0;
-bool motorflag=0   ;
+bool motorflag=0;
 
 int centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
@@ -37,6 +37,7 @@ int circle_slow;//圆环降速
 int start_pwm;
 int bottom_Speed_Max;
 int bottom_Speed_Min;
+int bottom_slow;
 int speed_up_conf;
 int slow_down_conf;
 int ang_gain;
@@ -117,17 +118,7 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3+=-1*spin;
     }
     /**************给侧推防止漂移用*******************/
-//    if(is_straight0 == 1 && is_straight1 == 1)//直道防侧滑
-//    {
-//        if(angle> 0){
-//            pwm1+=force * centripetal_p_straight;
-//            pwm3+=force * centripetal_p_straight;
-//        }
-//        if(angle<0){
-//            pwm2+=force * centripetal_p_straight;
-//            pwm4+=force * centripetal_p_straight;
-//        }
-//    }else{                                    //弯道防甩出去
+    //弯道防甩出去
         if(angle> 0){
             pwm1+=force * centripetal_p_instraight;
             pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
@@ -146,17 +137,28 @@ void Motor_Set(int speed, int spin ,float force)
         pwm4  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
     }
     /*********************直道入弯****************************/
-    if(straight_road_type == STRAIGHT_OUT1)
+    if(straight_road_type == STRAIGHT_OUT1 )
     {
         pwm1  +=Speed_now * break_coefficient/10;
         pwm2  +=Speed_now * break_coefficient/10;
     }
+
+
     /*********************圆环减速****************************/
     if((circle_type == CIRCLE_LEFT_BEGIN && none_left_line == 0)||( circle_type == CIRCLE_RIGHT_BEGIN&& none_right_line == 0 ))
     {
         pwm1  += circle_slow;
         pwm2  += circle_slow;
     }
+
+    if( garage_type == GARAGE_FOUND)
+       {
+           pwm1  =200;
+           pwm2  =200;
+           pwm3 = 0;
+           pwm4 = 0;
+
+       }
     /***********************电池电压补偿*************************/
     power_conf = 12.8/power_level;
     pwm1 *= power_conf;

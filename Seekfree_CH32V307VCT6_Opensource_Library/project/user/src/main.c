@@ -107,9 +107,17 @@ int main (void)
 {
     Init_all();     //初始化所有
     select_section();
-    Read_Load();    //加载菜单
-    MainMenu_Set(); //进入菜单
-    My_FlashWrite(flash_num); //读取菜单
+    if(flash_num>=0 && flash_num<=1)
+    {
+        Read_Load();    //加载菜单
+        MainMenu_Set(); //进入菜单
+        My_FlashWrite(flash_num); //读取菜单
+    }else if(flash_num == 2){
+        read_param_slow();   //菜单被刷时用
+    }else{
+        read_param_fast();   //菜单被刷时用
+    }
+
     Motor_Init();
     tft180_clear(RGB565_WHITE);
 
@@ -224,7 +232,7 @@ void data_show(void)
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
                     //第3列存放远角点
-                    tft180_show_int (70, 64,circle_type,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (70, 64,garage_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (70, 80,total_distance,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (70, 96,Lpt0_found,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (70, 112,Lpt1_found,1,RGB565_RED,RGB565_WHITE);
@@ -519,6 +527,12 @@ void select_section()
                   break;
             case 1:
                 tft180_show_string(65,70 , "fast",RGB565_BLUE,RGB565_WHITE);
+                  break;
+            case 2:
+                tft180_show_string(45,70 , "etc_slow",RGB565_BLUE,RGB565_WHITE);
+                  break;
+            case 3:
+                tft180_show_string(45,70 , "etc_fast",RGB565_BLUE,RGB565_WHITE);
                   break;
             default:
                 tft180_show_string(0,70 , "error,switch back",RGB565_RED,RGB565_WHITE);

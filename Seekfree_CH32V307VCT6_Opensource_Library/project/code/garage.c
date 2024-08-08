@@ -39,6 +39,7 @@ void check_garage()
        }
        if(zebra_L_flag && zebra_R_flag && zebraR_x-zebraL_x>5)//检测到赛道中间有黑色像素点，且两像素点间隔一定距离
        {
+           total_distance=0;
            garage_type=GARAGE_FOUND;
            break;
        }
@@ -60,6 +61,7 @@ void run_garage()
     }
     if(garage_type==GARAGE_FOUND)//停车
     {
+
         Integral_vel_flag=1;
         if(total_distance>stop_distance)
         {

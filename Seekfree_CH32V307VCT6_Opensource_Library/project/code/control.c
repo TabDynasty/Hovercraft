@@ -69,12 +69,11 @@ void control_Init()
         run_Lobstacle();
         run_Robstacle();
     }
+    if(straight_road_type!=STRAIGHT_NONE)
+        Run_straight();
     if(garage_type!=GARAGE_NONE)
         run_garage();
-    if(straight_road_type!=STRAIGHT_NONE)
-    {
-        Run_straight();
-    }
+
     if(cross_type==CROSS_IN)//½üÊ®×Ö£¬ÇÐÑ°Ô¶Ïß
     {
         if (track_type == TRACK_LEFT){
@@ -161,12 +160,11 @@ void control_Init()
            begin_id = i;
        }
    }
-   if(straight_road_type == STRAIGHT_OUT1)
+   if(straight_road_type == STRAIGHT_OUT1 || garage_type == GARAGE_FOUND)
    {
-       Motor.PWM_fan_up =   INIT_PWM;
-       Motor.PWM_fan_down = INIT_PWM;
+       Motor.PWM_fan_up =   bottom_slow;
+       Motor.PWM_fan_down = bottom_slow;
    }else{
-
        if(fabs(pure_angle)>5)
        {
            Motor.PWM_fan_up =   bottom_Speed_Max - fabs(angle)*(bottom_Speed_Max-bottom_Speed_Min)*slow_down_conf/100/100;

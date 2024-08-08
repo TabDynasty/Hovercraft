@@ -112,6 +112,7 @@ extern image_t img_raw ;
 int x0,x1;
 int find_type=0;//0±íÊ¾Ê¹ÓÃ´ó½ò·¨Ñ°ÕÒÆğÊ¼µã£¬1±íÊ¾Ê¹ÓÃsobelÑ°ÕÒÆğÊ¼µã
 int lose_count;
+int cross_begin_x;//20
 /*================================ ½Ó¿Úº¯Êı ==================================*/
 //Sobelº¯Êı
 #define Sobel_Gx(addr,y,x,width)    (addr[(y-1)*width+x+1]+2*addr[y*width+x+1]+addr[(y+1)*width+x+1]-(addr[(y-1)*width+x-1]+2*addr[y*width+x-1]+addr[(y+1)*width+x-1]))
@@ -833,14 +834,28 @@ void process_image()
             }
             else {
                 int count0=1;
-                while(x0-count0>0 || x0+count0<img_raw.width){
-                    if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width-1),begin_y) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0-count0+1,1,img_raw.width),begin_y) >= Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×óºÚÓÒ°×
-                            x0=x0-count0+1;
-                            break;}
-                    if(AT_IMAGE(&img_raw,clip(x0+count0-1,0,img_raw.width-1),begin_y) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0+count0,1,img_raw.width),begin_y) >= Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×óºÚÓÒ°×
-                            x0=x0+count0;
-                            break;}
-                    count0++;}
+                if(cross_type)
+                    while(x0-count0>cross_begin_x || x0+count0<img_raw.width-cross_begin_x){
+                        if(AT_IMAGE(&img_raw,clip(x0-count0,cross_begin_x,img_raw.width-cross_begin_x-1),begin_y) < Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x0-count0+1,cross_begin_x+1,img_raw.width-cross_begin_x),begin_y) >= Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×óºÚÓÒ°×
+                                x0=x0-count0+1;
+                                break;}
+                        if(AT_IMAGE(&img_raw,clip(x0+count0-1,cross_begin_x,img_raw.width-cross_begin_x-1),begin_y) < Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x0+count0,cross_begin_x+1,img_raw.width-cross_begin_x),begin_y) >= Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×óºÚÓÒ°×
+                                x0=x0+count0;
+                                break;}
+                        count0++;}
+                else
+                    while(x0-count0>0 || x0+count0<img_raw.width){
+                        if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width-1),begin_y) < Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x0-count0+1,1,img_raw.width),begin_y) >= Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×óºÚÓÒ°×
+                                x0=x0-count0+1;
+                                break;}
+                        if(AT_IMAGE(&img_raw,clip(x0+count0-1,0,img_raw.width-1),begin_y) < Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x0+count0,1,img_raw.width),begin_y) >= Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×óºÚÓÒ°×
+                                x0=x0+count0;
+                                break;}
+                        count0++;}
             }
             if (AT_IMAGE(&img_raw, x0, begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres)
                 if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)<=abs(x1-img_raw.width/2)))
@@ -856,71 +871,32 @@ void process_image()
             }
             else {
                 int count1=1;
-                while(x1-count1>0 || x1+count1<img_raw.width){
-                    if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width),begin_y) < Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×ó°×ÓÒºÚ
-                            x1=x1-count1;
-                            break;}
-                    if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),begin_y) < Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×ó°×ÓÒºÚ
-                            x1=x1+count1-1;
-                            break;}
-                    count1++;}
+                if(cross_type)
+                    while(x1-count1>cross_begin_x || x1+count1<img_raw.width-cross_begin_x){
+                        if(AT_IMAGE(&img_raw,clip(x1-count1,cross_begin_x,img_raw.width-cross_begin_x-1),begin_y) >= Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x1-count1+1,cross_begin_x+1,img_raw.width-cross_begin_x),begin_y) < Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×ó°×ÓÒºÚ
+                                x1=x1-count1;
+                                break;}
+                        if(AT_IMAGE(&img_raw,clip(x1+count1-1,cross_begin_x,img_raw.width-cross_begin_x-1),begin_y) >= Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x1+count1,cross_begin_x+1,img_raw.width-cross_begin_x),begin_y) < Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×ó°×ÓÒºÚ
+                                x1=x1+count1-1;
+                                break;}
+                        count1++;}
+                else
+                    while(x1-count1>0 || x1+count1<img_raw.width){
+                        if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width),begin_y) < Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×ó°×ÓÒºÚ
+                                x1=x1-count1;
+                                break;}
+                        if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),begin_y) < Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×ó°×ÓÒºÚ
+                                x1=x1+count1-1;
+                                break;}
+                        count1++;}
             }
             if (AT_IMAGE(&img_raw, x1, begin_y) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres)
                 if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)>abs(x1-img_raw.width/2)))
                     findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//Ö»ÓĞ´Ë´¦Ê¹ÓÃÁËÓÒÊÖÑ²ÏßĞÂ°æ
                 else ipts1_num = 0;
             else ipts1_num = 0;
-//        /*===============================================ÌáÈ¡×ó±ßÏß==================================================*/
-//            if(origin_flag==0){
-//                x0 = img_raw.width / 2 - begin_x;
-//                for (; x0 > 0; x0--) if (AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres) {
-//                    break;}
-//            }
-//            else {
-//                int count=1;
-//                while(x0-count0>0 || x0+count0<img_raw.width || x1-count1>0 || x1+count1<img_raw.width){
-//                    if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width-1),begin_y) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0-count0+1,1,img_raw.width),begin_y) >= Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×óºÚÓÒ°×
-//                            x0=x0-count+1;
-//                            break;}
-//                    if(AT_IMAGE(&img_raw,clip(x0+count0-1,0,img_raw.width-1),begin_y) < Ostu_Thres && AT_IMAGE(&img_raw,clip(x0+count0,1,img_raw.width),begin_y) >= Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×óºÚÓÒ°×
-//                            x0=x0+count;
-//                            break;
-//                    if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width),begin_y) < Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×ó°×ÓÒºÚ
-//                            x1=x1-count;
-//                            break;}
-//                    if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),begin_y) < Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×ó°×ÓÒºÚ
-//                            x1=x1+count-1;
-//                            break;}
-//                    count++;}
-//            }
-//            if (AT_IMAGE(&img_raw, x0, begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw, x0 - 1, begin_y) < Ostu_Thres)
-//                if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)<=abs(x1-img_raw.width/2)))
-//                    findline_lefthand_adaptive01(&img_raw, adaptive_Block, clip_value, x0, begin_y, ipts0, &ipts0_num,dir_f0,&dir_backnum0,&dir_rightnum0);//Ö»ÓĞ´Ë´¦Ê¹ÓÃÁË×óÊÖÑ²ÏßĞÂ°æ
-//                else ipts0_num = 0;
-//            else ipts0_num = 0;
-//            /*===============================================ÌáÈ¡ÓÒ±ßÏß==================================================*/
-//            if(origin_flag==0){
-//                x1 = img_raw.width / 2 + begin_x;
-//                for (; x1 < img_raw.width - 1; x1++) if (AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres) {
-//                    break;}
-//                origin_flag=1;//²»Ê¹ÓÃ·À¶ªÏßÊ±¹Ø±Õ
-//            }
-//            else {
-//                int count1=1;
-//                while(x1-count1>0 || x1+count1<img_raw.width){
-//                    if(AT_IMAGE(&img_raw,clip(x1-count1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1-count1+1,1,img_raw.width),begin_y) < Ostu_Thres){//Ïò×óÑ°ÕÒ£¬×ó°×ÓÒºÚ
-//                            x1=x1-count1;
-//                            break;}
-//                    if(AT_IMAGE(&img_raw,clip(x1+count1-1,0,img_raw.width-1),begin_y) >= Ostu_Thres && AT_IMAGE(&img_raw,clip(x1+count1,1,img_raw.width),begin_y) < Ostu_Thres){//ÏòÓÒÑ°ÕÒ£¬×ó°×ÓÒºÚ
-//                            x1=x1+count1-1;
-//                            break;}
-//                    count1++;}
-//            }
-//            if (AT_IMAGE(&img_raw, x1, begin_y) >= Ostu_Thres&&AT_IMAGE(&img_raw, x1 + 1, begin_y) < Ostu_Thres)
-//                if(x0<x1||(x0>x1&&abs(x0-img_raw.width/2)>abs(x1-img_raw.width/2)))
-//                    findline_righthand_adaptive01(&img_raw, adaptive_Block, clip_value, x1, begin_y, ipts1, &ipts1_num,dir_f1,&dir_backnum1,&dir_leftnum1);//Ö»ÓĞ´Ë´¦Ê¹ÓÃÁËÓÒÊÖÑ²ÏßĞÂ°æ
-//                else ipts1_num = 0;
-//            else ipts1_num = 0;
         break;
     case 1:
         findpoint_sobel();

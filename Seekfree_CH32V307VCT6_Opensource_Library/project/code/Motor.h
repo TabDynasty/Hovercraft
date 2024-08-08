@@ -50,6 +50,7 @@ extern int circle_slow;//Ô²»·½µËÙ
 extern int start_pwm;
 extern int bottom_Speed_Max;
 extern int bottom_Speed_Min;
+extern int bottom_slow;
 extern int angle_thred1;
 extern int angle_thred2;
 extern int speed_up_conf;

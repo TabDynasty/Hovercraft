@@ -3,6 +3,7 @@
 #include "control.h"
 #include "zf_common_headfile.h"
 #include "Motor.h"
+#include "garage.h"
 enum straigh_troad_type_e straight_road_type = STRAIGHT_NONE;
 
 static uint8 check_straight = 0;//用于计直道标志的帧数
@@ -38,6 +39,8 @@ void Run_straight(void)
 {
     switch (straight_road_type) {
         case STRAIGHT_IN:
+            if(garage_type==GARAGE_FOUND||garage_type==GARAGE_STOP)
+                straight_road_type = STRAIGHT_NONE;
             if(bend_flag == true)
             {
                 check_bend++;

@@ -93,6 +93,8 @@ uint32 *Flash_Data[] = {
                         &circle_switch,
                         &LcrossBegin_thred,
                         &RcrossBegin_thred,
+                        &cross_begin_x,
+                        &bottom_slow,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -162,6 +164,7 @@ MENU_TABLE ElemImg_MenuTable[] =
     {"14.circle_swi",Menu_Null,&circle_switch},
     {"15.LcrossBeg",Menu_Null,&LcrossBegin_thred},
     {"16.RcrossBeg",Menu_Null,&RcrossBegin_thred},
+    {"17.cross_x",Menu_Null,&cross_begin_x},
 };
 
 // 二级菜单3  电机基础参数调节
@@ -174,6 +177,7 @@ MENU_TABLE Motor_MenuTable[] =
         {"3.MIN",Menu_Null,&bottom_Speed_Min},
         {"4.max_output",Menu_Null,&max_output},
         {"5.start_pwm",Menu_Null,&start_pwm},
+        {"6.bottom",Menu_Null, &bottom_slow},
 };
 // 二级菜单4  控制基础参数调节
 
@@ -708,4 +712,160 @@ void My_FlashRead(int16 Boot)
     {
         *((FLASH_WRITE_TYPE*)(Flash_Data[i])) = flash_union_buffer[i].uint32_type;
     }
+}
+
+//读程序参数
+void read_param_slow(void)
+{
+    mode_Flag = 0;
+    /*Base_Img*/
+    th_edge = 0;
+    begin_x = 11;
+    begin_y = 96;
+    sobelThres = 0;
+    find_type = 0;
+
+    /*Elem_Img*/
+    check_straight_num = 10;
+    check_bend_num = 2;
+    check_angle_num = 2;
+    LcircleIn_thred = 50;
+    RcircleIn_thred = 50;
+    obs_Lpt_id = 50;
+    obs_dir_num = 7;
+    obs_dx = 10;
+    obs_distance = 1500;
+    cross_Lpt_id = 40;
+    out_distance = 3000;
+    stop_distance = 1500;
+    garage_switch = 0;
+    circle_switch = 3;
+    LcrossBegin_thred = 30;
+    RcrossBegin_thred = 30;
+    cross_begin_x = 20;
+
+    /*Motor*/
+    centripetal_p_straight = 140;
+    centripetal_p_instraight = 263;
+    bottom_Speed_Max = 644;
+    bottom_Speed_Min = 630;
+    max_output = 480;
+    start_pwm = 640;
+    bottom_slow = 605;
+
+    /*Ctrl*/
+    Speed_long_straight = 70;
+    Speed_short_straight = 70;
+    Speed_instraight = 55;
+    Speed_circle = 55;
+    aim_distance = 680;
+    angle_thred1 = 10;
+    angle_thred2 = 8;
+    anti_coefficient = 60;
+    break_dis = 610;
+    break_coefficient = 16;
+    speed_up_conf = 0;
+    slow_down_conf = 12;
+    circle_slow = 0;
+
+    /*PID*/
+    Angle_vel[0] = 60;
+    Angle_vel[1] = 0;
+    Angle_vel[2] = 0;
+
+    Angle_vel_vel[0] = 100;
+    Angle_vel_vel[1] = 0;
+    Angle_vel_vel[2] = 0;
+
+    Angle_0[0] = 335;
+    Angle_0[1] = 0;
+    Angle_0[2] = 250;
+
+    Angle_1[0] = 380;
+    Angle_1[1] = 0;
+    Angle_1[2] = 200;
+
+    Speed[0] = 600;
+    Speed[1] = 0;
+    Speed[2] = 0;
+
+
+}
+
+//读程序参数
+void read_param_fast(void)
+{
+    mode_Flag = 0;
+    /*Base_Img*/
+    th_edge = 0;
+    begin_x = 11;
+    begin_y = 96;
+    sobelThres = 0;
+    find_type = 0;
+
+    /*Elem_Img*/
+    check_straight_num = 10;
+    check_bend_num = 2;
+    check_angle_num = 2;
+    LcircleIn_thred = 50;
+    RcircleIn_thred = 50;
+    obs_Lpt_id = 50;
+    obs_dir_num = 7;
+    obs_dx = 10;
+    obs_distance = 1500;
+    cross_Lpt_id = 40;
+    out_distance = 3000;
+    stop_distance = 1500;
+    garage_switch = 0;
+    circle_switch = 3;
+    LcrossBegin_thred = 30;
+    RcrossBegin_thred = 30;
+    cross_begin_x = 20;
+
+    /*Motor*/
+    centripetal_p_straight = 140;
+    centripetal_p_instraight = 293;
+    bottom_Speed_Max = 644;
+    bottom_Speed_Min = 630;
+    max_output = 480;
+    start_pwm = 640;
+    bottom_slow = 485;
+
+    /*Ctrl*/
+    Speed_long_straight = 100;
+    Speed_short_straight = 86;
+    Speed_instraight = 75;
+    Speed_circle = 75;
+    aim_distance = 680;
+    angle_thred1 = 10;
+    angle_thred2 = 8;
+    anti_coefficient = 60;
+    break_dis = 610;
+    break_coefficient = 16;
+    speed_up_conf = 0;
+    slow_down_conf = 12;
+    circle_slow = 0;
+
+    /*PID*/
+    Angle_vel[0] = 60;
+    Angle_vel[1] = 0;
+    Angle_vel[2] = 0;
+
+    Angle_vel_vel[0] = 100;
+    Angle_vel_vel[1] = 0;
+    Angle_vel_vel[2] = 0;
+
+    Angle_0[0] = 335;
+    Angle_0[1] = 0;
+    Angle_0[2] = 250;
+
+    Angle_1[0] = 380;
+    Angle_1[1] = 0;
+    Angle_1[2] = 200;
+
+    Speed[0] = 600;
+    Speed[1] = 0;
+    Speed[2] = 0;
+
+
 }
