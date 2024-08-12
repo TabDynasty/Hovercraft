@@ -10,11 +10,18 @@
 #include "straight_road.h"
 #include "circle.h"
 /*=============================  电机引脚定义  ================================*/
-#define PWM_UP_PIN         TIM4_PWM_MAP1_CH1_D12
-#define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH3_D14
-#define PWM_1_PIN          TIM5_PWM_MAP0_CH1_A0
-#define PWM_2_PIN          TIM4_PWM_MAP1_CH4_D15
-#define PWM_3_PIN          TIM5_PWM_MAP0_CH2_A1
+//#define PWM_UP_PIN         TIM4_PWM_MAP1_CH1_D12
+//#define PWM_DOWN_PIN       TIM4_PWM_MAP1_CH2_D13
+//#define PWM_1_PIN          TIM5_PWM_MAP0_CH1_A0
+//#define PWM_2_PIN          TIM4_PWM_MAP1_CH4_D15
+//#define PWM_3_PIN          TIM5_PWM_MAP0_CH2_A1
+//#define PWM_4_PIN          TIM4_PWM_MAP1_CH3_D14
+
+#define PWM_UP_PIN         TIM4_PWM_MAP1_CH4_D15
+#define PWM_DOWN_PIN       TIM5_PWM_MAP0_CH1_A0
+#define PWM_1_PIN          TIM5_PWM_MAP0_CH2_A1
+#define PWM_2_PIN          TIM4_PWM_MAP1_CH3_D14
+#define PWM_3_PIN          TIM4_PWM_MAP1_CH1_D12
 #define PWM_4_PIN          TIM4_PWM_MAP1_CH2_D13
 ///*============================= 4路电机的起转pwm值  ================================*
 #define MOTOR_PWM_START      560
@@ -94,6 +101,115 @@ void Motor_Init(void)
 // 参数说明     pwmn 对应引脚的pwm输入值
 // 返回参数     void
 //-------------------------------------------------------------------------------------------------------------------
+//小船
+//extern float power_level;
+//void Motor_Set(int speed, int spin ,float force)
+//{
+//
+//    int pwm1=0,pwm2=0,pwm3=0,pwm4=0;
+//    static float power_conf;
+//    /******给速度用**********/
+//    if(speed>=0)
+//    {
+//        pwm3+=speed;
+//        pwm4+=speed;
+//    }else{
+//        pwm1+=speed;
+//        pwm2+=speed;
+//    }
+//    /*********转向用***********/
+//    if(spin>=0){
+//        pwm1+=spin;
+//        pwm4+=spin;
+//    }else {
+//        pwm2+=-1*spin;
+//        pwm3+=-1*spin;
+//    }
+//    /**************给侧推防止漂移用*******************/
+//    //弯道防甩出去
+//        if(angle> 0){
+//            pwm1+=force * centripetal_p_instraight;
+//            pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
+//
+//        }
+//        if(angle< 0){
+//            pwm2+=force * centripetal_p_instraight;
+//            pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
+//        //}
+//    }
+//
+//    /*********************直道提速****************************/
+//    if(straight_road_type == STRAIGHT_IN)
+//    {
+//        pwm3  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
+//        pwm4  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
+//    }
+//    /*********************直道入弯****************************/
+//    if(straight_road_type == STRAIGHT_OUT1 )
+//    {
+//        pwm1  +=Speed_now * break_coefficient/10;
+//        pwm2  +=Speed_now * break_coefficient/10;
+//    }
+//
+//
+//    /*********************圆环减速****************************/
+//    if((circle_type == CIRCLE_LEFT_BEGIN && none_left_line == 0)||( circle_type == CIRCLE_RIGHT_BEGIN&& none_right_line == 0 ))
+//    {
+//        pwm1  += circle_slow;
+//        pwm2  += circle_slow;
+//    }
+//
+//    if( garage_type == GARAGE_FOUND)
+//       {
+//           pwm1  =200;
+//           pwm2  =200;
+//           pwm3 = 0;
+//           pwm4 = 0;
+//
+//       }
+//    /***********************电池电压补偿*************************/
+//    power_conf = 12.8/power_level;
+//    pwm1 *= power_conf;
+//    pwm2 *= power_conf;
+//    pwm3 *= power_conf;
+//    pwm4 *= power_conf;
+//    /*********************限幅防止越界***************************/
+//    if(pwm1 > max_output)
+//        pwm1 = max_output;
+//    if(pwm2 > max_output)
+//        pwm2 = max_output;
+//    if(pwm3 > max_output)
+//        pwm3 = max_output;
+//    if(pwm4 > max_output)
+//        pwm4 = max_output;
+//
+//    if(pwm1 <= 0)
+//        pwm1 = 0;
+//    if(pwm2 <=  0)
+//        pwm2 =  0;
+//    if(pwm3 <= 0)
+//        pwm3 = 0;
+//    if(pwm4 <= 0)
+//        pwm4 = 0;
+//    /***********************缓启动*******************************/
+//    if(slow_start_flag == true)
+//    {
+//        pwm1 = 0;
+//        pwm2 = 0;
+//        pwm3 = 0;
+//        pwm4 = 0;
+//    }
+//
+//
+//    /**********************最终赋值用*************************/
+//        pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
+//        pwm_set_duty(PWM_2_PIN, MOTOR_PWM_START+pwm2);
+//        pwm_set_duty(PWM_3_PIN, MOTOR_PWM_START+pwm3);
+//        pwm_set_duty(PWM_4_PIN, MOTOR_PWM_START+pwm4);
+//
+//}
+
+//大船
 extern float power_level;
 void Motor_Set(int speed, int spin ,float force)
 {
@@ -103,60 +219,60 @@ void Motor_Set(int speed, int spin ,float force)
     /******给速度用**********/
     if(speed>=0)
     {
-        pwm3+=speed;
-        pwm4+=speed;
-    }else{
         pwm1+=speed;
         pwm2+=speed;
+    }else{
+        pwm3+=speed;
+        pwm4+=speed;
     }
     /*********转向用***********/
     if(spin>=0){
-        pwm1+=spin;
-        pwm4+=spin;
+        pwm2+=spin;
+        pwm3+=spin;
     }else {
-        pwm2+=-1*spin;
-        pwm3+=-1*spin;
+        pwm1+=-1*spin;
+        pwm4+=-1*spin;
     }
     /**************给侧推防止漂移用*******************/
     //弯道防甩出去
         if(angle> 0){
-            pwm1+=force * centripetal_p_instraight;
-            pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
+            pwm4+=force * centripetal_p_instraight;
+            pwm2+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
 
         }
         if(angle< 0){
-            pwm2+=force * centripetal_p_instraight;
-            pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
+            pwm3+=force * centripetal_p_instraight;
+            pwm1+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
         //}
     }
 
     /*********************直道提速****************************/
     if(straight_road_type == STRAIGHT_IN)
     {
-        pwm3  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
-        pwm4  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
+        pwm1  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
+        pwm2  +=(Speed_long_straight-Speed_now) * speed_up_conf/10;
     }
     /*********************直道入弯****************************/
     if(straight_road_type == STRAIGHT_OUT1 )
     {
-        pwm1  +=Speed_now * break_coefficient/10;
-        pwm2  +=Speed_now * break_coefficient/10;
+        pwm3  +=Speed_now * break_coefficient/10;
+        pwm4  +=Speed_now * break_coefficient/10;
     }
 
 
     /*********************圆环减速****************************/
     if((circle_type == CIRCLE_LEFT_BEGIN && none_left_line == 0)||( circle_type == CIRCLE_RIGHT_BEGIN&& none_right_line == 0 ))
     {
-        pwm1  += circle_slow;
-        pwm2  += circle_slow;
+        pwm3  += circle_slow;
+        pwm4  += circle_slow;
     }
 
     if( garage_type == GARAGE_FOUND)
        {
-           pwm1  =200;
-           pwm2  =200;
-           pwm3 = 0;
-           pwm4 = 0;
+           pwm3  =200;
+           pwm4  =200;
+           pwm1 = 0;
+           pwm2 = 0;
 
        }
     /***********************电池电压补偿*************************/
@@ -191,7 +307,6 @@ void Motor_Set(int speed, int spin ,float force)
         pwm3 = 0;
         pwm4 = 0;
     }
-
 
     /**********************最终赋值用*************************/
         pwm_set_duty(PWM_1_PIN, MOTOR_PWM_START+pwm1);
@@ -282,7 +397,7 @@ int Side_circle(int now_angle, int aim_angle)
 //-------------------------------------------------------------------------------------------------------------------
 void pit_speed(void)
 {
-    Speed_now = -encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
+    Speed_now = encoder_get_count(TIM3_ENCOEDER);                              // 获取编码器计数
     encoder_clear_count(TIM3_ENCOEDER);                                        // 清空编码器计数
     //flag置为1时，开始积分
     if(!Integral_vel_flag){

@@ -50,7 +50,9 @@
 #include "straight_road.h"
 #include "optical_flow.h"
 #include "led_show.h"
-/*================================无线图传部分=================================*/
+/*================================无线图传部分====
+ *
+ * =============================*/
 #define WIFI_SSID_TEST          "RAQUEL"
 #define WIFI_PASSWORD_TEST      "987654321" // 如果需要连接的WIFI 没有密码则需要将 这里 替换为 NULL
 #define WIFI_SPI_SHOW            (0)        // 如果要启用无线图传,则置为1
