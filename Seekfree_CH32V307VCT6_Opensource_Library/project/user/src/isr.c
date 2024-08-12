@@ -342,6 +342,7 @@ void TIM6_IRQHandler(void)
     }
 }
 
+extern bool protect_flag;
 void TIM7_IRQHandler(void)
 {
     if(TIM_GetITStatus(TIM7, TIM_IT_Update) != RESET)
@@ -349,11 +350,14 @@ void TIM7_IRQHandler(void)
        TIM_ClearITPendingBit(TIM7, TIM_IT_Update );
        mpu6050_get_gyro ();
 
-       if(motorflag==1&&lose_count>5)
-//       if(motorflag==1)
+//       if(motorflag==1&&lose_count>5)
+       if(motorflag==1&&!protect_flag)
            Speed_Set();
        else
            Stop_Set();
+       if(motorflag==1&&(imu_data>300||imu_data<-300||lose_count<5))protect_flag=1;
+//       if(motorflag==1&&lose_count<5)protect_flag=1;
+       if(protect_flag)Stop_Set();
     }
 }
 

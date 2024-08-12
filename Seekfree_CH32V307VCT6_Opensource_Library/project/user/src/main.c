@@ -55,7 +55,7 @@
  * =============================*/
 #define WIFI_SSID_TEST          "RAQUEL"
 #define WIFI_PASSWORD_TEST      "987654321" // 如果需要连接的WIFI 没有密码则需要将 这里 替换为 NULL
-#define WIFI_SPI_SHOW            (0)        // 如果要启用无线图传,则置为1
+#define WIFI_SPI_SHOW            (1)        // 如果要启用无线图传,则置为1
 uint8 image_copy[MT9V03X_H][MT9V03X_W];     // 图像备份数组，在发送前将图像备份再进行发送，这样可以避免图像出现撕裂的问题
 /*================================ 全局变量 ==================================*/
 uint8 show_Img[MT9V03X_H][MT9V03X_W];/**< 用来展示图片*/
@@ -83,6 +83,7 @@ int8 show_pagex,show_pagey,key_pos;
 int frame_vote;
 bool slow_start_flag = true;
 extern int8 flash_num;
+bool protect_flag=0;
 
 /********此区域debug用*********/
 
@@ -158,7 +159,7 @@ int main (void)
             seekfree_assistant_oscilloscope_data.data[1] = pure_angle;
             seekfree_assistant_oscilloscope_data.data[2] = ang_gain;
             seekfree_assistant_oscilloscope_data.data[3] = vel_gain;
-            seekfree_assistant_oscilloscope_data.data[4] = mpu6050_gyro_z;
+            seekfree_assistant_oscilloscope_data.data[4] = imu_data;
             seekfree_assistant_oscilloscope_data.data[5] = Motor.PWM_fan_up;
             seekfree_assistant_oscilloscope_data.data[6] = Motor.PWM_fan_down;
             seekfree_assistant_oscilloscope_data.data[7] = farline_type;
