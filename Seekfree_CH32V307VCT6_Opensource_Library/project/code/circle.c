@@ -166,6 +166,7 @@ void run_Lcircle()
                     circle_type = CIRCLE_NONE;
                     Integral_vel_flag=0;
                     circle_num++;
+                    element_num++;
                 }
                 break;
         }
@@ -242,6 +243,7 @@ void run_Rcircle()
                     circle_type = CIRCLE_NONE;
                     Integral_vel_flag=0;
                     circle_num++;
+                    element_num++;
                 }
                 break;
         }

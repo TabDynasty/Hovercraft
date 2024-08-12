@@ -95,6 +95,28 @@ uint32 *Flash_Data[] = {
                         &RcrossBegin_thred,
                         &cross_begin_x,
                         &bottom_slow,
+
+                        &element_switch,
+                        &element[0],
+                        &element[1],
+                        &element[2],
+                        &element[3],
+                        &element[4],
+                        &element[5],
+                        &element[6],
+                        &element[7],
+                        &element[8],
+                        &element[9],
+                        &element[10],
+                        &element[11],
+                        &element[12],
+                        &element[13],
+                        &element[14],
+                        &element[15],
+                        &element[16],
+                        &element[17],
+                        &element[18],
+                        &element[19],
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -105,6 +127,7 @@ void Menu_ElemImg(void);
 void Menu_Motor(void);
 void Menu_Ctrl();
 void Menu_PID();
+void Menu_Fixed_Elem();
 //void Menu_Cross();
 //void Menu_Circle();
 //void Menu_Garage();
@@ -130,6 +153,7 @@ MENU_TABLE MainMenu_Table[] =
       {"3.MotorDebug",Menu_Motor,NULL},
       {"4.CtrlDebug",Menu_Ctrl,NULL},
       {"5.PIDDebug",Menu_PID,NULL},
+      {"6.Fixed_elem",Menu_Fixed_Elem,NULL},
 };
 
 //---------------------------------   二级菜单  -------------------------------\
@@ -199,7 +223,6 @@ MENU_TABLE Ctrl_MenuTable[] =
         {"12.circ_slow",Menu_Null,&circle_slow},
 };
 
-
 // 二级菜单5  PID基础参数调节
 
 MENU_PRMT PID_Prmt;
@@ -225,6 +248,36 @@ MENU_TABLE PID_MenuTable[] =
   {"Speed_I",Menu_Null,&Speed[1]},
   {"Spedd_D",Menu_Null,&Speed[2]},
 };
+
+// 二级菜单6  元素写死
+MENU_PRMT FIXED_Prmt;
+MENU_TABLE FIXED_MenuTable[] =
+{
+  {"Switch", Menu_Null,&element_switch},
+  {"ELEM_1", Menu_Null,&element[0]},
+  {"ELEM_2", Menu_Null,&element[1]},
+  {"ELEM_3", Menu_Null,&element[2]},
+  {"ELEM_4", Menu_Null,&element[3]},
+  {"ELEM_5", Menu_Null,&element[4]},
+  {"ELEM_6", Menu_Null,&element[5]},
+  {"ELEM_7", Menu_Null,&element[6]},
+  {"ELEM_8", Menu_Null,&element[7]},
+  {"ELEM_9", Menu_Null,&element[8]},
+  {"ELEM_10",Menu_Null,&element[9]},
+  {"ELEM_11",Menu_Null,&element[10]},
+  {"ELEM_12",Menu_Null,&element[11]},
+  {"ELEM_13",Menu_Null,&element[12]},
+  {"ELEM_14",Menu_Null,&element[13]},
+  {"ELEM_15",Menu_Null,&element[14]},
+  {"ELEM_16",Menu_Null,&element[15]},
+  {"ELEM_17",Menu_Null,&element[16]},
+  {"ELEM_18",Menu_Null,&element[17]},
+  {"ELEM_19",Menu_Null,&element[18]},
+  {"ELEM_20",Menu_Null,&element[19]},
+
+};
+
+
 // 二级菜单  选取Flash扇区 写存档
 MENU_PRMT Read_Flash_Prmt;
 
@@ -313,6 +366,21 @@ void Menu_PID(void)
     menuNum = sizeof(PID_MenuTable)/sizeof(PID_MenuTable[0]);         // 菜单项数
     Menu_Process("-= PIDDebug =-", &PID_Prmt, PID_MenuTable, menuNum);
 }
+
+/******************************************************************************
+* FunctionName   : Menu_Fixed_Elem()
+* Description    : 元素写死
+* EntryParameter : None
+* ReturnValue    : None
+*******************************************************************************/
+void Menu_Fixed_Elem(void)
+{
+    tft180_clear(RGB565_BLACK);
+    uint8 menuNum;
+    menuNum = sizeof(FIXED_MenuTable)/sizeof(FIXED_MenuTable[0]);         // 菜单项数
+    Menu_Process("-= FIXEDDebug =-", &FIXED_Prmt, FIXED_MenuTable, menuNum);
+}
+
 
 void Menu_Null(void)
 {
@@ -788,6 +856,7 @@ void read_param_slow(void)
     Speed[0] = 600;
     Speed[1] = 0;
     Speed[2] = 0;
+
 
 
 }

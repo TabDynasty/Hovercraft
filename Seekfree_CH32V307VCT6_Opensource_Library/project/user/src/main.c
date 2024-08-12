@@ -114,8 +114,10 @@ int main (void)
         My_FlashWrite(flash_num); //读取菜单
     }else if(flash_num == 2){
         read_param_slow();   //菜单被刷时用
+        MainMenu_Set(); //进入菜单
     }else{
         read_param_fast();   //菜单被刷时用
+        MainMenu_Set(); //进入菜单
     }
 
     Motor_Init();
@@ -227,7 +229,7 @@ void data_show(void)
                     tft180_show_int   (1,96,error,4,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (1,112,pure_angle,4,RGB565_RED,RGB565_WHITE);
                     //第2列存放近角点
-                    tft180_show_int (35, 64,circle_obstacle_flag,1,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (35, 64,circle_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35, 80,cross_type,1,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,96,ipts0_num,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (35,112,ipts1_num,3,RGB565_RED,RGB565_WHITE);
@@ -246,6 +248,7 @@ void data_show(void)
                     tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
 
                     tft180_show_int (140, 32,lose_count,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 48,element_num,3,RGB565_RED,RGB565_WHITE);
 //                    tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
 //                    tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 64,is_longstraight0,1,RGB565_RED,RGB565_WHITE);

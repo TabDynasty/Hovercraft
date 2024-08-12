@@ -25,6 +25,7 @@ void run_Lobstacle()
             if(total_distance>obs_distance){
                 obstacle_type=OBSTACLE_NONE;
                 Integral_vel_flag=0;
+                element_num++;
             }
             break;
         default:
@@ -41,6 +42,7 @@ void run_Robstacle()
             if(total_distance>obs_distance){
                 obstacle_type=OBSTACLE_NONE;
                 Integral_vel_flag=0;
+                element_num++;
             }
             break;
         default:

@@ -151,7 +151,7 @@ void run_Cross()
             {
                 cross_type = CROSS_NONE;
                 not_have_line=0;
-
+                element_num++;
             }
             if (far_Lpt1_found&&Lpt1_found) { track_type = TRACK_RIGHT; }
             else if (far_Lpt0_found&&Lpt0_found) { track_type = TRACK_LEFT; }
