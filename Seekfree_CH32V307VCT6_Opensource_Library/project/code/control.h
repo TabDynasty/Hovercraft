@@ -38,5 +38,6 @@ extern int obs_dx;
 extern int circle_num,circle_switch,garage_switch;
 extern int element_switch,element_num;
 extern int element[20];
+extern int gar_distance;
 
 #endif /* CONTROL_H_ */

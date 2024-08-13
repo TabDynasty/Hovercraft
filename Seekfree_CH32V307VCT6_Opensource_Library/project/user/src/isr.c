@@ -349,7 +349,7 @@ void TIM7_IRQHandler(void)
        TIM_ClearITPendingBit(TIM7, TIM_IT_Update );
        mpu6050_get_gyro ();
 
-       if(motorflag==1&&lose_count>5)
+       if(motorflag==1&&(lose_count>5||garage_type==GARAGE_OUT))
 //       if(motorflag==1)
            Speed_Set();
        else

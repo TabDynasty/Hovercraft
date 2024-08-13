@@ -117,6 +117,8 @@ uint32 *Flash_Data[] = {
                         &element[17],
                         &element[18],
                         &element[19],
+
+                        &gar_distance,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -189,6 +191,7 @@ MENU_TABLE ElemImg_MenuTable[] =
     {"15.LcrossBeg",Menu_Null,&LcrossBegin_thred},
     {"16.RcrossBeg",Menu_Null,&RcrossBegin_thred},
     {"17.cross_x",Menu_Null,&cross_begin_x},
+    {"18.gar_dis",Menu_Null,&gar_distance},
 };
 
 // 二级菜单3  电机基础参数调节
@@ -811,6 +814,7 @@ void read_param_slow(void)
     LcrossBegin_thred = 30;
     RcrossBegin_thred = 30;
     cross_begin_x = 20;
+    gar_distance=5000;
 
     /*Motor*/
     centripetal_p_straight = 140;
@@ -890,6 +894,7 @@ void read_param_fast(void)
     LcrossBegin_thred = 30;
     RcrossBegin_thred = 30;
     cross_begin_x = 20;
+    gar_distance=5000;
 
     /*Motor*/
     centripetal_p_straight = 140;
