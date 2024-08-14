@@ -802,9 +802,9 @@ void read_param_slow(void)
     check_angle_num = 2;
     LcircleIn_thred = 50;
     RcircleIn_thred = 50;
-    obs_Lpt_id = 50;
+    obs_Lpt_id = 60;
     obs_dir_num = 7;
-    obs_dx = 10;
+    obs_dx = 15;
     obs_distance = 1500;
     cross_Lpt_id = 40;
     out_distance = 3000;
@@ -882,9 +882,9 @@ void read_param_fast(void)
     check_angle_num = 2;
     LcircleIn_thred = 50;
     RcircleIn_thred = 50;
-    obs_Lpt_id = 50;
+    obs_Lpt_id = 60;
     obs_dir_num = 7;
-    obs_dx = 10;
+    obs_dx = 15;
     obs_distance = 1500;
     cross_Lpt_id = 40;
     out_distance = 3000;

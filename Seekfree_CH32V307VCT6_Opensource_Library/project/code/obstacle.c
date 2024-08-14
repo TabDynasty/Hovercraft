@@ -19,8 +19,8 @@ void check_obstacle()
 void run_Lobstacle()
 {
     switch (obstacle_type) {
-    track_type = TRACK_RIGHT;
         case OBSTACLE_LEFT_BEGIN:
+            track_type = TRACK_RIGHT;
             Integral_vel_flag=1;
             if(total_distance>obs_distance){
                 obstacle_type=OBSTACLE_NONE;
@@ -36,8 +36,8 @@ void run_Lobstacle()
 void run_Robstacle()
 {
     switch (obstacle_type) {
-    track_type = TRACK_LEFT;
         case OBSTACLE_RIGHT_BEGIN:
+            track_type = TRACK_LEFT;
             Integral_vel_flag=1;
             if(total_distance>obs_distance){
                 obstacle_type=OBSTACLE_NONE;

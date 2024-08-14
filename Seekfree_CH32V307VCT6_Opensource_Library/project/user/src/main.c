@@ -247,7 +247,7 @@ void data_show(void)
                     tft180_show_int   (105,96,far_Lpt0_found, 3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int   (105,112,far_Lpt1_found, 3,RGB565_RED,RGB565_WHITE);
 
-                    tft180_show_int (140, 32,lose_count,3,RGB565_RED,RGB565_WHITE);
+                    tft180_show_int (140, 32,aimSpeed,3,RGB565_RED,RGB565_WHITE);
                     tft180_show_int (140, 48,element_num,3,RGB565_RED,RGB565_WHITE);
 //                    tft180_show_int (140, 32,dir_rightnum0,2,RGB565_RED,RGB565_WHITE);
 //                    tft180_show_int (140, 48,dir_leftnum1,2,RGB565_RED,RGB565_WHITE);

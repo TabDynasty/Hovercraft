@@ -132,12 +132,14 @@ void control_Init()
         {
             aimSpeed = Speed_long_straight;
         }else{
-            if(bend_flag == false||cross_type)
+//            if(bend_flag == false||cross_type)
+            if(fabs(pure_angle)<angle_thred1)
             {
                 aimSpeed = Speed_short_straight;
             }else{
                 aimSpeed = Speed_instraight;
             }
+
         }
 
     if(circle_type == CIRCLE_LEFT_BEGIN||circle_type == CIRCLE_LEFT_IN

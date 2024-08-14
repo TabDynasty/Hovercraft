@@ -4,6 +4,7 @@
 #include "zf_common_headfile.h"
 #include "Motor.h"
 #include "garage.h"
+#include "cross.h"
 enum straigh_troad_type_e straight_road_type = STRAIGHT_NONE;
 
 static uint8 check_straight = 0;//用于计直道标志的帧数
@@ -19,11 +20,16 @@ void check_straight_road(void)
     if(bend_flag == false)
     {
         check_straight++;
+    }else{
+        check_straight = 0;
     }
 
-    if(pure_angle < angle_thred1 )
+//    if(fabs(pure_angle) < angle_thred1 )
+    if(fabs(pure_angle) < 5 )
     {
         check_angle++;
+    }else{
+        check_angle = 0;
     }
 
     if(check_straight>check_straight_num&& check_angle > check_angle_num)
@@ -59,13 +65,18 @@ void Run_straight(void)
                 }
             }
             //出直道
-            if(check_bend > check_bend_num )
+            if(check_bend > check_bend_num &&(conf0_max<15||conf1_max<15))
             {
                 if(total_distance > 500)
                     straight_road_type = STRAIGHT_OUT1;
                 else{
                     straight_road_type = STRAIGHT_NONE;
                 }
+                Integral_vel_flag = 0;
+            }
+            if(cross_type)
+            {
+                straight_road_type = STRAIGHT_NONE;
                 Integral_vel_flag = 0;
             }
             break;
