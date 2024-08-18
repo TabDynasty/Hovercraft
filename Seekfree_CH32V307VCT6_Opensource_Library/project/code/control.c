@@ -222,9 +222,11 @@ void control_Init()
        if(abs(pure_angle)<angle_thred1)
        {
            angle    = PID_Realize(&Angle_PID, Angle_0,pure_angle,0);
+           centripetal_p = centripetal_p_straight;
        }
        else{
            angle    = PID_Realize(&Angle_PID, Angle_1,pure_angle,0);
+           centripetal_p = centripetal_p_instraight;
        }
 
    }
@@ -251,13 +253,32 @@ void check_all()
 //        if(garage_switch&&obstacle_type==OBSTACLE_RIGHT_BEGIN&&total_distance>obs_distance)
 //            garage_type=GARAGE_FOUND;//stop_distance=7000
     }
-    else//写死
+    else if(element_switch==1)//正序写死
     {
         if(element[element_num]==1&&circle_type==CIRCLE_NONE)
             check_circle();
         if(element[element_num]==2&&cross_type==CROSS_NONE)
             check_Cross();
         if(element[element_num]==3&&obstacle_type==OBSTACLE_NONE)
+            check_obstacle();
+        if(element[element_num]==4&&garage_type==GARAGE_NONE)
+            check_garage();
+        if(garage_type==GARAGE_NONE&&circle_type==CIRCLE_NONE&&cross_type==CROSS_NONE&&obstacle_type==OBSTACLE_NONE&&straight_road_type==STRAIGHT_NONE)
+            check_straight_road();
+        if(garage_switch&&element[element_num]==4)
+        {
+            Integral_vel_flag=1;
+            if(total_distance>gar_distance)
+                garage_type=GARAGE_FOUND;
+        }
+    }
+    else//逆序写死，element_switch的值表示车库在元素数组中的下标
+    {
+        if(element[element_switch-1-element_num]==1&&circle_type==CIRCLE_NONE)
+            check_circle();
+        if(element[element_switch-1-element_num]==2&&cross_type==CROSS_NONE)
+            check_Cross();
+        if(element[element_switch-1-element_num]==3&&obstacle_type==OBSTACLE_NONE)
             check_obstacle();
         if(element[element_num]==4&&garage_type==GARAGE_NONE)
             check_garage();

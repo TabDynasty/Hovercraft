@@ -119,6 +119,7 @@ uint32 *Flash_Data[] = {
                         &element[19],
 
                         &gar_distance,
+                        &circle_begin_x,
                        };
 /*================================ 接口函数 ==================================*/
 void beep_On();
@@ -192,6 +193,7 @@ MENU_TABLE ElemImg_MenuTable[] =
     {"16.RcrossBeg",Menu_Null,&RcrossBegin_thred},
     {"17.cross_x",Menu_Null,&cross_begin_x},
     {"18.gar_dis",Menu_Null,&gar_distance},
+    {"19.circle_x",Menu_Null,&circle_begin_x},
 };
 
 // 二级菜单3  电机基础参数调节
@@ -799,7 +801,7 @@ void read_param_slow(void)
     /*Elem_Img*/
     check_straight_num = 10;
     check_bend_num = 2;
-    check_angle_num = 2;
+    check_angle_num = 6;
     LcircleIn_thred = 50;
     RcircleIn_thred = 50;
     obs_Lpt_id = 60;
@@ -814,16 +816,17 @@ void read_param_slow(void)
     LcrossBegin_thred = 30;
     RcrossBegin_thred = 30;
     cross_begin_x = 20;
-    gar_distance=5000;
+    gar_distance = 5000;
+    circle_begin_x = 0;
 
     /*Motor*/
     centripetal_p_straight = 140;
-    centripetal_p_instraight = 263;
-    bottom_Speed_Max = 644;
-    bottom_Speed_Min = 630;
+    centripetal_p_instraight = 253;
+    bottom_Speed_Max = 610;
+    bottom_Speed_Min = 605;
     max_output = 480;
     start_pwm = 640;
-    bottom_slow = 605;
+    bottom_slow = 585;
 
     /*Ctrl*/
     Speed_long_straight = 70;
@@ -832,7 +835,7 @@ void read_param_slow(void)
     Speed_circle = 55;
     aim_distance = 680;
     angle_thred1 = 10;
-    angle_thred2 = 8;
+    angle_thred2 = 10;
     anti_coefficient = 60;
     break_dis = 610;
     break_coefficient = 16;
@@ -845,15 +848,15 @@ void read_param_slow(void)
     Angle_vel[1] = 0;
     Angle_vel[2] = 0;
 
-    Angle_vel_vel[0] = 100;
+    Angle_vel_vel[0] = 90;
     Angle_vel_vel[1] = 0;
     Angle_vel_vel[2] = 0;
 
-    Angle_0[0] = 335;
+    Angle_0[0] = 385;
     Angle_0[1] = 0;
     Angle_0[2] = 250;
 
-    Angle_1[0] = 380;
+    Angle_1[0] = 320;
     Angle_1[1] = 0;
     Angle_1[2] = 200;
 
@@ -882,8 +885,8 @@ void read_param_fast(void)
     check_angle_num = 2;
     LcircleIn_thred = 50;
     RcircleIn_thred = 50;
-    obs_Lpt_id = 60;
-    obs_dir_num = 7;
+    obs_Lpt_id = 90;
+    obs_dir_num = 5;
     obs_dx = 15;
     obs_distance = 1500;
     cross_Lpt_id = 40;
@@ -894,25 +897,26 @@ void read_param_fast(void)
     LcrossBegin_thred = 30;
     RcrossBegin_thred = 30;
     cross_begin_x = 20;
-    gar_distance=5000;
+    gar_distance = 5000;
+    circle_begin_x = 0;
 
     /*Motor*/
-    centripetal_p_straight = 140;
+    centripetal_p_straight = 230;
     centripetal_p_instraight = 293;
-    bottom_Speed_Max = 644;
+    bottom_Speed_Max = 640;
     bottom_Speed_Min = 630;
     max_output = 480;
     start_pwm = 640;
     bottom_slow = 485;
 
     /*Ctrl*/
-    Speed_long_straight = 100;
-    Speed_short_straight = 86;
-    Speed_instraight = 75;
-    Speed_circle = 75;
+    Speed_long_straight = 110;
+    Speed_short_straight = 92;
+    Speed_instraight = 70;
+    Speed_circle = 72;
     aim_distance = 680;
     angle_thred1 = 10;
-    angle_thred2 = 8;
+    angle_thred2 = 10;
     anti_coefficient = 60;
     break_dis = 610;
     break_coefficient = 16;
@@ -925,17 +929,17 @@ void read_param_fast(void)
     Angle_vel[1] = 0;
     Angle_vel[2] = 0;
 
-    Angle_vel_vel[0] = 100;
+    Angle_vel_vel[0] = 90;
     Angle_vel_vel[1] = 0;
     Angle_vel_vel[2] = 0;
 
-    Angle_0[0] = 335;
+    Angle_0[0] = 385;
     Angle_0[1] = 0;
-    Angle_0[2] = 250;
+    Angle_0[2] = 60;
 
-    Angle_1[0] = 380;
+    Angle_1[0] = 340;
     Angle_1[1] = 0;
-    Angle_1[2] = 200;
+    Angle_1[2] = 60;
 
     Speed[0] = 600;
     Speed[1] = 0;

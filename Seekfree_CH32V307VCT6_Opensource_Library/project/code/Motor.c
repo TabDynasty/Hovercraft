@@ -24,7 +24,7 @@ SPEED_st Motor;          /* 电机结构体*/
 bool Integral_vel_flag = 0;
 bool motorflag=0;
 
-int centripetal_p_straight,centripetal_p_instraight = 0;
+int centripetal_p,centripetal_p_straight,centripetal_p_instraight = 0;
 int Speed_now = 0;
 int total_distance = 0;
 int aim_signal = 0;
@@ -54,7 +54,7 @@ void Speed_Set(void)
 {
     ang_gain = Stable_posture(angle,mpu6050_gyro_z);
     vel_gain = Vertical_circle(aimSpeed, Speed_now);
-    float centripetal_gain = (float)Speed_now  * abs((int)pure_angle)/1000;
+    float centripetal_gain = (float)Speed_now  * abs((int)pure_angle)/1000* centripetal_p;
 
     //fabs((float)Side_circle(pure_angle,0));
 //    debug_show_int("ang", ang_gain, 1);
@@ -120,13 +120,13 @@ void Motor_Set(int speed, int spin ,float force)
     /**************给侧推防止漂移用*******************/
     //弯道防甩出去
         if(angle> 0){
-            pwm1+=force * centripetal_p_instraight;
-            pwm3+=force * centripetal_p_instraight*anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
+            pwm1+=force ;
+            pwm3+=force *anti_coefficient/100; //过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
 
         }
         if(angle< 0){
-            pwm2+=force * centripetal_p_instraight;
-            pwm4+=force * centripetal_p_instraight*anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
+            pwm2+=force ;
+            pwm4+=force *anti_coefficient/100;//过弯由于电机线性差会加速，给侧推时候将后面电机乘以一个衰减系数
         //}
     }
 
@@ -151,13 +151,13 @@ void Motor_Set(int speed, int spin ,float force)
         pwm2  += circle_slow;
     }
 
+
     if( garage_type == GARAGE_FOUND)
        {
            pwm1  =200;
            pwm2  =200;
            pwm3 = 0;
            pwm4 = 0;
-
        }
     /***********************电池电压补偿*************************/
     power_conf = 12.8/power_level;

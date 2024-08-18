@@ -2,6 +2,7 @@
 #include "zf_common_headfile.h"
 #include "utils.h"
 #include "cross.h"
+#include "circle.h"
 #include "straight_road.h"
 /*============================= 宏定义/重定义 ================================*/
 #define AT                  AT_IMAGE
@@ -112,7 +113,7 @@ extern image_t img_raw ;
 int x0,x1;
 int find_type=0;//0表示使用大津法寻找起始点，1表示使用sobel寻找起始点
 int lose_count;
-int cross_begin_x;//20
+int cross_begin_x,circle_begin_x=20;//20
 /*================================ 接口函数 ==================================*/
 //Sobel函数
 #define Sobel_Gx(addr,y,x,width)    (addr[(y-1)*width+x+1]+2*addr[y*width+x+1]+addr[(y+1)*width+x+1]-(addr[(y-1)*width+x-1]+2*addr[y*width+x-1]+addr[(y+1)*width+x-1]))
@@ -845,6 +846,17 @@ void process_image()
                                 x0=x0+count0;
                                 break;}
                         count0++;}
+                else if(circle_type==CIRCLE_LEFT_BEGIN)
+                    while(x0-count0>circle_begin_x || x0+count0<img_raw.width-circle_begin_x){
+                        if(AT_IMAGE(&img_raw,clip(x0-count0,circle_begin_x,img_raw.width-circle_begin_x-1),begin_y) < Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x0-count0+1,circle_begin_x+1,img_raw.width-circle_begin_x),begin_y) >= Ostu_Thres){//向左寻找，左黑右白
+                                x0=x0-count0+1;
+                                break;}
+                        if(AT_IMAGE(&img_raw,clip(x0+count0-1,circle_begin_x,img_raw.width-circle_begin_x-1),begin_y) < Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x0+count0,circle_begin_x+1,img_raw.width-circle_begin_x),begin_y) >= Ostu_Thres){//向右寻找，左黑右白
+                                x0=x0+count0;
+                                break;}
+                        count0++;}
                 else
                     while(x0-count0>0 || x0+count0<img_raw.width){
                         if(AT_IMAGE(&img_raw,clip(x0-count0,0,img_raw.width-1),begin_y) < Ostu_Thres
@@ -879,6 +891,17 @@ void process_image()
                                 break;}
                         if(AT_IMAGE(&img_raw,clip(x1+count1-1,cross_begin_x,img_raw.width-cross_begin_x-1),begin_y) >= Ostu_Thres
                            && AT_IMAGE(&img_raw,clip(x1+count1,cross_begin_x+1,img_raw.width-cross_begin_x),begin_y) < Ostu_Thres){//向右寻找，左白右黑
+                                x1=x1+count1-1;
+                                break;}
+                        count1++;}
+                else if(circle_type==CIRCLE_RIGHT_BEGIN)
+                    while(x1-count1>circle_begin_x || x1+count1<img_raw.width-circle_begin_x){
+                        if(AT_IMAGE(&img_raw,clip(x1-count1,circle_begin_x,img_raw.width-circle_begin_x-1),begin_y) >= Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x1-count1+1,circle_begin_x+1,img_raw.width-circle_begin_x),begin_y) < Ostu_Thres){//向左寻找，左白右黑
+                                x1=x1-count1;
+                                break;}
+                        if(AT_IMAGE(&img_raw,clip(x1+count1-1,circle_begin_x,img_raw.width-circle_begin_x-1),begin_y) >= Ostu_Thres
+                           && AT_IMAGE(&img_raw,clip(x1+count1,circle_begin_x+1,img_raw.width-circle_begin_x),begin_y) < Ostu_Thres){//向右寻找，左白右黑
                                 x1=x1+count1-1;
                                 break;}
                         count1++;}
@@ -1001,14 +1024,18 @@ void find_corners() {
         //十字及圆环
         if (rpts0an[i]!=0&&Lpt0_found == false&&Lconf_Min<conf0&&conf0<Lconf_Max&&i<75)
         {
+//            rpts0an[i] = rpts0a[i];
 //            for (int j = -5; j <= 5; j++) {
 //                if (fabs(rpts0a[clip(i + j, 0, rpts0a_num - 1)]) > fabs(rpts0a[i])) {
 //                    rpts0an[i] = 0;
 //                    break;
 //                }
 //            }
+//            if(rpts0an[i]!=0)
+            {
             Lpt0_rpts0s_id = i;
             Lpt0_found = true;
+            }
         }
         if(conf0>15&&i<80) is_straight0 = false; //只要中间有大角度，就不是直道
 
@@ -1049,8 +1076,18 @@ void find_corners() {
         //十字及圆环
         if (rpts1an[i]!=0&&Lpt1_found == false&&Lconf_Min<conf1&&conf1<Lconf_Max&&i<75)//限距离，限尖峰
         {
+//            rpts1an[i] = rpts1a[i];
+//            for (int j = -5; j <= 5; j++) {
+//                if (fabs(rpts1a[clip(i + j, 0, rpts1a_num - 1)]) > fabs(rpts1a[i])) {
+//                    rpts1an[i] = 0;
+//                    break;
+//                }
+//            }
+//            if(rpts1an[i]!=0)
+            {
             Lpt1_rpts1s_id = i;
             Lpt1_found = true;
+            }
         }
         if(conf1>15&&i<80) is_straight1 = false; //只要中间有大角度，就不是长直道
 

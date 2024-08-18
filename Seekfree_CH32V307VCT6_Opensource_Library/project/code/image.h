@@ -121,5 +121,5 @@ extern float sobel0,sobel1;
 extern bool origin_flag;/**< ³õÊ¼Ö¡±êÖ¾*/
 extern int find_type;
 extern int lose_count;
-extern int cross_begin_x;
+extern int cross_begin_x,circle_begin_x;
 #endif /* IMAGE_H_ */

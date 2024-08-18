@@ -61,9 +61,8 @@ void run_garage()
     }
     if(garage_type==GARAGE_FOUND)//Í£³µ
     {
-
         Integral_vel_flag=1;
-        if(total_distance>stop_distance)
+        if(total_distance>stop_distance || Speed_now <10)
         {
             garage_type=GARAGE_STOP;
             Integral_vel_flag=0;
